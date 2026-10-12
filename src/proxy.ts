@@ -1,0 +1,40 @@
+import { createServerClient } from "@supabase/ssr";
+import { NextResponse, type NextRequest } from "next/server";
+import { localRedirect } from "@/lib/local-redirect";
+export async function proxy(request: NextRequest) {
+  let response = NextResponse.next({ request });
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+  if (!url || !key || url.includes("your-project") || key.includes("your-publishable-key"))
+    return response;
+  const supabase = createServerClient(url, key, {
+    cookies: {
+      getAll: () => request.cookies.getAll(),
+      setAll: (items) => {
+        items.forEach(({ name, value }) => request.cookies.set(name, value));
+        response = NextResponse.next({ request });
+        items.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
+      },
+    },
+  });
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (request.nextUrl.pathname.startsWith("/admin") && !user) {
+    const redirect = localRedirect("/login");
+    response.cookies.getAll().forEach((cookie) => redirect.cookies.set(cookie));
+    return redirect;
+  }
+  response.headers.set("Cache-Control", "private, no-store");
+  return response;
+}
+export const config = {
+  matcher: [
+    "/admin/:path*",
+    "/login",
+    "/reset-password",
+    "/update-password",
+    "/access-pending",
+    "/auth/:path*",
+  ],
+};
