@@ -15,7 +15,7 @@ export async function saveRecord(
   if (!entities[entity] || !canWrite(member.role, entity))
     return { error: "You do not have permission to change these records." };
   if (id && !z.uuid().safeParse(id).success) return { error: "Invalid record." };
-  let record: Record<string, string | number | null>;
+  let record: Record<string, string | number | boolean | null>;
   try {
     record = parseRecord(entity, form);
   } catch (error) {
@@ -48,6 +48,14 @@ export async function saveRecord(
   redirect(`/admin/${entity}?notice=saved`);
 }
 function mutationError(code: string, message: string) {
+  if (code === "23P01")
+    return "This driver or vehicle already has a confirmed assignment during these times. Change the assignment or schedule.";
+  if (
+    code === "23505" &&
+    (message.includes("one_driver_active_trip_idx") ||
+      message.includes("one_vehicle_active_trip_idx"))
+  )
+    return "The selected driver or vehicle already has an active trip. Complete or reassign that trip before starting another.";
   if (code === "23505")
     return "A record with these unique details already exists. Check the licence, registration plate or route.";
   if (code === "23503")
@@ -56,6 +64,16 @@ function mutationError(code: string, message: string) {
     return "Some entries are outside the allowed limits. Check capacity, passengers, locations and fare.";
   if (code === "42501") return "Your account does not have permission to make this change.";
   const safe = [
+    "Reassign or cancel confirmed trips before disabling this driver or vehicle",
+    "Record the end time of an existing assignment before confirming another trip",
+    "Choose an active route",
+    "New bookings must start as pending",
+    "This booking status transition is not allowed",
+    "Record a cancellation reason",
+    "Assign a driver, vehicle, category and end time before confirming",
+    "Vehicle is unavailable, incompatible or has insufficient capacity",
+    "Enter a flight number before recording its status",
+    "Archive related prices before changing this route",
     "Choose an active customer",
     "Choose active pickup and drop-off locations",
     "Driver is unavailable or licence has expired",
@@ -89,7 +107,7 @@ export async function archiveRecord(
 }
 export async function searchOptions(table: string, query: string) {
   const { supabase, member } = await requireStaff();
-  if (!["drivers", "vehicles", "customers", "locations"].includes(table))
+  if (!["drivers", "vehicles", "customers", "locations", "routes", "route_pricing"].includes(table))
     return { options: [], error: "Invalid selection." };
   const term = query
     .trim()

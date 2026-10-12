@@ -40,6 +40,17 @@ export function RecordForm({
                 initial={related[field.name]}
               />
             );
+          if (field.type === "checkbox")
+            return (
+              <label key={field.name} className="flex gap-3 items-center text-sm">
+                <input
+                  type="checkbox"
+                  name={field.name}
+                  defaultChecked={record ? Boolean(record[field.name]) : field.defaultChecked}
+                />
+                {field.label}
+              </label>
+            );
           return (
             <label
               key={field.name}
@@ -53,11 +64,19 @@ export function RecordForm({
                   required={field.required}
                   defaultValue={value || field.options[0]}
                 >
-                  {field.options.map((option) => (
-                    <option key={option} value={option}>
-                      {option.replaceAll("_", " ")}
-                    </option>
-                  ))}
+                  {field.options
+                    .filter(
+                      (option) =>
+                        entity !== "bookings" ||
+                        field.name !== "status" ||
+                        !!record ||
+                        option === "pending",
+                    )
+                    .map((option) => (
+                      <option key={option} value={option}>
+                        {option.replaceAll("_", " ")}
+                      </option>
+                    ))}
                 </select>
               ) : field.type === "textarea" ? (
                 <textarea
@@ -74,7 +93,9 @@ export function RecordForm({
                   required={field.required}
                   min={field.min}
                   max={
-                    field.type === "number" ? (field.step === "0.01" ? 10000000 : 1000) : undefined
+                    field.type === "number"
+                      ? (field.max ?? (field.step === "0.01" ? 10000000 : 1000))
+                      : undefined
                   }
                   step={field.step}
                   maxLength={200}
@@ -87,8 +108,9 @@ export function RecordForm({
       {entity === "bookings" && (
         <p className="text-xs text-muted mt-6">
           All pickup times use UAE time (UTC+4). Enter the agreed fare; route pricing is a
-          reference, not an automatic charge. Payment status records a payment received outside this
-          website.
+          reference, not an automatic charge. Only verified provider payments contribute to revenue.
+          Confirmed assignments reserve the driver and vehicle until the expected end plus the
+          configured turnaround buffer.
         </p>
       )}
       <div className="flex gap-3 mt-8 pt-6 border-t border-stone-100">

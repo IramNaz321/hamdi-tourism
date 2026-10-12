@@ -17,6 +17,7 @@ export async function requireStaff() {
     .maybeSingle();
   if (error) throw new Error("Unable to verify account access. Please contact the account owner.");
   if (!member?.active) redirect("/access-pending");
+  if (member.role === "driver") redirect("/driver-account");
   return {
     supabase,
     user,

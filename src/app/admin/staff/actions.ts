@@ -2,7 +2,7 @@
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { requireOwner, siteOrigin } from "@/lib/auth";
-import { createInvitationClient } from "@/lib/supabase/admin";
+import { createServiceClient } from "@/lib/supabase/admin";
 export type StaffState = { error?: string; success?: string };
 export async function inviteStaff(_: StaffState, form: FormData): Promise<StaffState> {
   const { supabase } = await requireOwner();
@@ -20,10 +20,10 @@ export async function inviteStaff(_: StaffState, form: FormData): Promise<StaffS
       role: form.get("role"),
     });
   if (!parsed.success) return { error: "Enter a name, valid email address and staff role." };
-  let invitationClient: ReturnType<typeof createInvitationClient>;
+  let invitationClient: ReturnType<typeof createServiceClient>;
   let origin: string;
   try {
-    invitationClient = createInvitationClient();
+    invitationClient = createServiceClient();
     origin = siteOrigin();
   } catch {
     return {
@@ -78,7 +78,7 @@ export async function updateStaff(
   const active = form.get("active") === "on";
   if (
     !z.uuid().safeParse(userId).success ||
-    !["owner", "manager", "dispatcher", "viewer"].includes(role)
+    !["owner", "manager", "dispatcher", "viewer", "driver"].includes(role)
   )
     return { error: "Invalid staff access settings." };
   const { error } = await supabase.rpc("set_staff_access", {

@@ -71,10 +71,16 @@ export function StaffAccessForm({
         <label className="field">
           <span className="sr-only">Role for {staff.display_name}</span>
           <select name="role" defaultValue={staff.role} className="min-h-0! py-2!">
-            <option value="viewer">Viewer</option>
-            <option value="dispatcher">Dispatcher</option>
-            <option value="manager">Manager</option>
-            <option value="owner">Owner</option>
+            {staff.role === "driver" ? (
+              <option value="driver">Driver</option>
+            ) : (
+              <>
+                <option value="viewer">Viewer</option>
+                <option value="dispatcher">Dispatcher</option>
+                <option value="manager">Manager</option>
+                <option value="owner">Owner</option>
+              </>
+            )}
           </select>
         </label>
         <label className="flex gap-2 items-center text-xs">

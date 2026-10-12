@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import Link from "next/link";
 import { LogOut, ArrowUpRight } from "lucide-react";
 import { requireStaff } from "@/lib/auth";
@@ -6,10 +7,26 @@ import { AdminNav } from "@/components/admin-nav";
 export const metadata = { title: "Business portal", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  const { member } = await requireStaff();
+  const { member, supabase } = await requireStaff();
+  const { data: settings, error } = await supabase
+    .from("business_settings")
+    .select("brand_color,ink_color,canvas_color,font_family")
+    .eq("organization_id", member.organization_id)
+    .maybeSingle();
+  if (error) throw new Error("Unable to load business appearance.");
+  const theme = settings
+    ? ({
+        "--brand": settings.brand_color,
+        "--ink": settings.ink_color,
+        "--canvas": settings.canvas_color,
+        color: settings.ink_color,
+        fontFamily:
+          settings.font_family === "serif" ? "Georgia, serif" : "Arial, Helvetica, sans-serif",
+      } as CSSProperties)
+    : undefined;
   return (
-    <div className="lg:flex min-h-screen">
-      <aside className="lg:w-64 lg:shrink-0 bg-white border-b lg:border-r border-stone-200 lg:sticky lg:top-0 lg:h-screen p-5 lg:p-6 flex flex-col">
+    <div className="lg:flex min-h-screen bg-canvas" style={theme}>
+      <aside className="lg:w-64 lg:shrink-0 bg-white border-b lg:border-r border-stone-200 lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto p-5 lg:p-6 flex flex-col">
         <div className="flex lg:block items-center justify-between">
           <Link className="brand lg:mb-10" href="/">
             HAMDI<span>TOURISM</span>

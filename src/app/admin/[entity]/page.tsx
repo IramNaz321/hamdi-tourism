@@ -18,7 +18,16 @@ export default async function Records({
   searchParams,
 }: {
   params: Promise<{ entity: string }>;
-  searchParams: Promise<{ page?: string; archived?: string; notice?: string }>;
+  searchParams: Promise<{
+    page?: string;
+    archived?: string;
+    notice?: string;
+    q?: string;
+    status?: string;
+    field?: string;
+    from?: string;
+    to?: string;
+  }>;
 }) {
   const { entity } = await params;
   const definition = entities[entity];
@@ -27,14 +36,45 @@ export default async function Records({
   const page = Math.min(100000, Math.max(1, Number.parseInt(query.page ?? "1", 10) || 1));
   const archived = query.archived === "true";
   const { supabase, member } = await requireStaff();
-  const { data, count, error } = await supabase
+  let request = supabase
     .from(entity)
     .select("*", { count: "exact" })
     .eq("organization_id", member.organization_id)
-    .eq("archived", archived)
+    .eq("archived", archived);
+  const searchField =
+    entity === "bookings"
+      ? "reference"
+      : entity === "customers" && ["name", "email", "phone"].includes(query.field ?? "")
+        ? query.field!
+        : entity === "vehicles" && query.field === "plate_number"
+          ? "plate_number"
+          : "name";
+  if (query.q)
+    request = request.ilike(searchField, `%${query.q.slice(0, 100).replace(/[\\%_]/g, "\\$&")}%`);
+  const statuses = definition.fields.find((field) => field.name === "status")?.options ?? [];
+  if (statuses.includes(query.status ?? "")) request = request.eq("status", query.status!);
+  function validDay(value: string | undefined) {
+    if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+    const day = new Date(`${value}T00:00:00Z`);
+    return !Number.isNaN(day.getTime()) && day.toISOString().slice(0, 10) === value;
+  }
+  if (entity === "bookings" && validDay(query.from))
+    request = request.gte("pickup_at", `${query.from}T00:00:00+04:00`);
+  if (entity === "bookings" && validDay(query.to))
+    request = request.lte("pickup_at", `${query.to}T23:59:59.999+04:00`);
+  const { data, count, error } = await request
     .order("created_at", { ascending: false })
     .order("id")
     .range((page - 1) * 25, page * 25 - 1);
+  const linkParams = new URLSearchParams();
+  for (const key of ["q", "status", "field", "from", "to"] as const)
+    if (query[key]) linkParams.set(key, query[key]!);
+  function pageLink(targetPage: number, archive = archived) {
+    const result = new URLSearchParams(linkParams);
+    result.set("page", String(targetPage));
+    result.set("archived", String(archive));
+    return `/admin/${entity}?${result}`;
+  }
   if (error) throw new Error("Unable to load records.");
   const rows = (data ?? []) as Record<string, string | number | boolean | null>[];
   const names: Record<string, string> = {};
@@ -60,7 +100,7 @@ export default async function Records({
     if (value === null || value === undefined || value === "")
       return <span className="text-muted">—</span>;
     if (column.endsWith("_id")) return names[String(value)] ?? "Unavailable record";
-    if (column === "price_aed") return money(Number(value));
+    if (column.endsWith("_aed")) return money(Number(value));
     if (column === "pickup_at") return dateTime(String(value));
     if (["status", "payment_status"].includes(column))
       return (
@@ -92,15 +132,70 @@ export default async function Records({
           {notice}
         </p>
       )}
+      <form className="panel p-5 flex flex-wrap gap-4 mb-6">
+        <input type="hidden" name="archived" value={String(archived)} />
+        <label className="field">
+          {entity === "bookings" ? "Booking reference" : "Search"}
+          <input name="q" defaultValue={query.q} maxLength={100} />
+        </label>
+        {entity === "customers" && (
+          <label className="field">
+            Search by
+            <select name="field" defaultValue={query.field ?? "name"}>
+              <option value="name">Name</option>
+              <option value="email">Email</option>
+              <option value="phone">Phone</option>
+            </select>
+          </label>
+        )}
+        {entity === "vehicles" && (
+          <label className="field">
+            Search by
+            <select name="field" defaultValue={query.field ?? "name"}>
+              <option value="name">Make / model name</option>
+              <option value="plate_number">Registration plate</option>
+            </select>
+          </label>
+        )}
+        {!!statuses.length && (
+          <label className="field">
+            Status
+            <select name="status" defaultValue={query.status ?? ""}>
+              <option value="">All</option>
+              {statuses.map((status) => (
+                <option key={status} value={status}>
+                  {status.replaceAll("_", " ")}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
+        {entity === "bookings" && (
+          <>
+            <label className="field">
+              Pickup from (UAE)
+              <input type="date" name="from" defaultValue={query.from} />
+            </label>
+            <label className="field">
+              Pickup through (UAE)
+              <input type="date" name="to" defaultValue={query.to} />
+            </label>
+          </>
+        )}
+        <button className="button self-end">Search records</button>
+        <Link className="button secondary self-end" href={`/admin/${entity}`}>
+          Clear
+        </Link>
+      </form>
       <div className="flex gap-5 mb-5 text-sm">
         <Link
-          href={`/admin/${entity}`}
+          href={pageLink(1, false)}
           className={!archived ? "font-semibold border-b-2 border-brand pb-2" : "text-muted pb-2"}
         >
           Active records
         </Link>
         <Link
-          href={`/admin/${entity}?archived=true`}
+          href={pageLink(1, true)}
           className={archived ? "font-semibold border-b-2 border-brand pb-2" : "text-muted pb-2"}
         >
           Archive
@@ -185,12 +280,8 @@ export default async function Records({
           Page {page} of {Math.max(1, Math.ceil((count ?? 0) / 25))}
         </span>
         <div className="flex gap-4">
-          {page > 1 && (
-            <Link href={`/admin/${entity}?page=${page - 1}&archived=${archived}`}>Previous</Link>
-          )}
-          {page * 25 < (count ?? 0) && (
-            <Link href={`/admin/${entity}?page=${page + 1}&archived=${archived}`}>Next</Link>
-          )}
+          {page > 1 && <Link href={pageLink(page - 1)}>Previous</Link>}
+          {page * 25 < (count ?? 0) && <Link href={pageLink(page + 1)}>Next</Link>}
         </div>
       </div>
     </>

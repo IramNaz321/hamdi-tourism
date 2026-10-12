@@ -11,6 +11,7 @@ export default function robots(): MetadataRoute.Robots {
         "/reset-password",
         "/update-password",
         "/access-pending",
+        "/driver-account",
       ],
     },
   };

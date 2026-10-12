@@ -1,3 +1,4 @@
+import { RecordContext } from "@/components/record-context";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { z } from "zod";
@@ -7,10 +8,14 @@ import { entities, canWrite, dateTime, money } from "@/lib/entities";
 import { RecordForm } from "@/components/record-form";
 export default async function EditRecord({
   params,
+  searchParams,
 }: {
   params: Promise<{ entity: string; id: string }>;
+  searchParams: Promise<{ history_page?: string }>;
 }) {
   const { entity, id } = await params;
+  const query = await searchParams;
+  const historyPage = Math.min(100000, Math.max(1, parseInt(query.history_page ?? "1", 10) || 1));
   const definition = entities[entity];
   if (!Object.hasOwn(entities, entity) || !z.uuid().safeParse(id).success) notFound();
   const { supabase, member } = await requireStaff();
@@ -59,7 +64,7 @@ export default async function EditRecord({
                 {related[field.name]?.name ??
                   (record[field.name] == null
                     ? "—"
-                    : field.name === "pickup_at"
+                    : ["pickup_at", "end_at"].includes(field.name)
                       ? dateTime(record[field.name])
                       : field.name === "price_aed"
                         ? money(Number(record[field.name]))
@@ -69,6 +74,7 @@ export default async function EditRecord({
           ))}
         </dl>
       )}
+      <RecordContext entity={entity} record={record} page={historyPage} />
     </>
   );
 }

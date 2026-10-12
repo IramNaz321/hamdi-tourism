@@ -1,4 +1,5 @@
 "use client";
+import { PasswordInput } from "@/components/password-input";
 import { useActionState } from "react";
 import Link from "next/link";
 import { ArrowRight, LockKeyhole } from "lucide-react";
@@ -47,13 +48,10 @@ export function AuthForm({
       {mode !== "reset" && (
         <label className="field">
           {mode === "update" ? "New password" : "Password"}
-          <input
+          <PasswordInput
             name="password"
-            type="password"
             autoComplete={mode === "login" ? "current-password" : "new-password"}
-            required
             minLength={mode === "update" ? 12 : undefined}
-            maxLength={128}
           />
         </label>
       )}
@@ -61,14 +59,7 @@ export function AuthForm({
         <>
           <label className="field">
             Confirm password
-            <input
-              name="confirm"
-              type="password"
-              autoComplete="new-password"
-              required
-              minLength={12}
-              maxLength={128}
-            />
+            <PasswordInput name="confirm" autoComplete="new-password" minLength={12} />
           </label>
           <p className="text-sm text-muted">Use at least 12 characters and a unique password.</p>
         </>

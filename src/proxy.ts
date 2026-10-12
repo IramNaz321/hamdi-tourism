@@ -20,7 +20,11 @@ export async function proxy(request: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (request.nextUrl.pathname.startsWith("/admin") && !user) {
+  if (
+    (request.nextUrl.pathname.startsWith("/admin") ||
+      request.nextUrl.pathname === "/driver-account") &&
+    !user
+  ) {
     const redirect = localRedirect("/login");
     response.cookies.getAll().forEach((cookie) => redirect.cookies.set(cookie));
     return redirect;
@@ -35,6 +39,7 @@ export const config = {
     "/reset-password",
     "/update-password",
     "/access-pending",
+    "/driver-account",
     "/auth/:path*",
   ],
 };
