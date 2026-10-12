@@ -85,6 +85,8 @@ npm run test:browser # Unconfigured environment only; desktop + mobile
 
 With preinstalled Chromium, use `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:browser`. Browser checks intentionally require missing Supabase configuration and do not submit real customer requests. PostgreSQL checks use a minimal Auth/Storage schema shim with rolled-back synthetic fixtures to exercise actual RLS, RPCs, constraints, triggers, media policies and Realtime publication membership. They do **not** prove hosted Supabase Auth/SMTP/Storage/Realtime or CAPTCHA works. CI runs the checks without client secrets.
 
+See [guarded database operations and acceptance](docs/SUPABASE-OPERATIONS.md) for catalog audits, manual-migration baselining, owner planning, secure access, and approval gates.
+
 ## Review and deployment
 
 Review the migrations and sensitive server actions, run CI and the staging acceptance checklist, then merge the pull request into `main`. Merging code does not apply migrations or configure secrets. Use HTTPS, protect project/hosting administrator accounts, configure monitoring, backups, retention and tested restores. Privacy and applicable UAE business requirements need client review before launch.
