@@ -19,6 +19,8 @@ For production: `npm ci && npm run build && npm start`, or deploy to a Next.js-c
 
 Without real Supabase configuration the website renders useful unavailable states. It invents no selectable locations, vehicles or fares. Sign-in and password reset are explicitly unavailable, and protected management routes redirect to login. No hosted authentication or email delivery is claimed as verified merely because the application builds.
 
+See [project-specific secure connection instructions](docs/SUPABASE-CONNECTION.md) for the confirmed Supabase project and read-only preflight command.
+
 ## Supabase configuration — required before live use
 
 1. Select the real client's Supabase project. Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` from its API settings. **Never** substitute a service-role key for the publishable key.

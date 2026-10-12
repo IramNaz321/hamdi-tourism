@@ -1,10 +1,16 @@
 import "server-only";
 import { createClient } from "@supabase/supabase-js";
+import { publicSupabaseConfig } from "./config";
 export function createServiceClient() {
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!key || key.includes("your-server-only"))
     throw new Error("This operation is not configured. Contact your account owner.");
-  return createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, key, {
+  const config = publicSupabaseConfig(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+  );
+  if (!config) throw new Error("Supabase public configuration is missing or invalid.");
+  return createClient(config.url, key, {
     auth: { autoRefreshToken: false, persistSession: false },
   });
 }

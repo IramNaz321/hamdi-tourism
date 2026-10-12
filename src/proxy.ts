@@ -1,13 +1,14 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { localRedirect } from "@/lib/local-redirect";
+import { publicSupabaseConfig } from "@/lib/supabase/config";
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-  if (!url || !key || url.includes("your-project") || key.includes("your-publishable-key"))
-    return response;
-  const supabase = createServerClient(url, key, {
+  const publicConfig = publicSupabaseConfig(url, key);
+  if (!publicConfig) return response;
+  const supabase = createServerClient(publicConfig.url, publicConfig.key, {
     cookies: {
       getAll: () => request.cookies.getAll(),
       setAll: (items) => {
