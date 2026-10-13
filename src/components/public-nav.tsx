@@ -1,7 +1,9 @@
 "use client";
+import { homeCopy, type HomeLanguage } from "@/lib/home-language";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Menu, ArrowUpRight } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -10,17 +12,19 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-const links = [
-  ["Home", "/"],
-  ["Airport Transfers", "/#transfers"],
-  ["Book Now", "/book"],
-  ["Passenger Account", "/passenger"],
-  ["Our Fleet", "/#fleet"],
-  ["Destinations", "/#destinations"],
-  ["About Us", "/#about"],
-  ["Contact Us", "/#contact"],
-];
-export function PublicNav({ name, logo }: { name: string; logo?: string }) {
+export function PublicNav({
+  name,
+  logo,
+  language = "en",
+}: {
+  name: string;
+  logo?: string;
+  language?: HomeLanguage;
+}) {
+  const router = useRouter();
+  const copy = homeCopy[language];
+  const destinations = ["/", "/#transfers", "/#fleet", "/track", "/#about", "/#contact"];
+  const links = copy.links.map((label, index) => [label, destinations[index]]);
   const [open, setOpen] = useState(false);
   return (
     <header className="premium-header">
@@ -50,9 +54,25 @@ export function PublicNav({ name, logo }: { name: string; logo?: string }) {
             </Link>
           ))}
         </div>
-        <Link href="/login" className="hidden lg:flex items-center gap-2 text-xs font-semibold">
-          Staff Sign In <ArrowUpRight size={14} />
-        </Link>
+        <div className="flex items-center gap-2 sm:gap-3">
+          <select
+            aria-label="Website language"
+            className="header-language"
+            value={language}
+            onChange={(event) => router.push(`/?lang=${event.target.value}`)}
+          >
+            <option value="en">EN</option>
+            <option value="ar">العربية</option>
+            <option value="ur">اردو</option>
+            <option value="hi">हिन्दी</option>
+          </select>
+          <Link href="/login" className="header-login hidden sm:flex">
+            {copy.login}
+          </Link>
+          <Link href="/book" className="header-book hidden sm:flex">
+            {copy.bookNow}
+          </Link>
+        </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button
@@ -70,7 +90,7 @@ export function PublicNav({ name, logo }: { name: string; logo?: string }) {
               Airport Transfers & Chauffeur Services
             </DialogDescription>
             <div className="flex flex-col mt-6 gap-1">
-              {[...links, ["Staff Sign In", "/login"]].map(([label, href]) => (
+              {[...links, [copy.login, "/login"], [copy.bookNow, "/book"]].map(([label, href]) => (
                 <Link
                   onClick={() => setOpen(false)}
                   key={label}

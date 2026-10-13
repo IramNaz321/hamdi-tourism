@@ -12,6 +12,7 @@ export const requireStaff = cache(async function requireStaff() {
     error: authError,
   } = await supabase.auth.getUser();
   if (authError || !user) redirect("/login");
+  if (!user.email_confirmed_at) redirect("/login?notice=unconfirmed");
   const { data: member, error } = await supabase
     .from("staff_members")
     .select("user_id, organization_id, role, display_name, active")

@@ -40,7 +40,7 @@ export function TravelConcierge({ bookingId }: { bookingId?: string } = {}) {
     >
       {open && (
         <section className="panel p-5 mb-3 w-96 max-w-full max-h-[75vh] overflow-y-auto space-y-4">
-          <header className="flex justify-between">
+          <header className="sticky top-0 z-10 bg-white py-2 flex justify-between">
             <h2 className="font-semibold">Travel concierge</h2>
             <button aria-label="Close travel concierge" onClick={() => setOpen(false)}>
               ✕

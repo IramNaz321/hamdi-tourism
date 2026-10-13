@@ -59,7 +59,10 @@ test("concierge supports RTL and honestly reports absent provider configuration"
 }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "Travel concierge", exact: true }).click();
-  await page.getByLabel("Language").selectOption("ar");
+  await page
+    .getByRole("complementary", { name: "Travel concierge" })
+    .getByLabel("Language")
+    .selectOption("ar");
   await expect(page.getByLabel("Your question")).toHaveAttribute("dir", "rtl");
   await page.getByLabel("Your question").fill("ما هي خدمة النقل؟");
   await page.getByRole("button", { name: "Ask concierge" }).click();

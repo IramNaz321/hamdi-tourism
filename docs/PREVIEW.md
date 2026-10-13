@@ -8,7 +8,7 @@ October 13, 2026. Captured from the running production-style application with ho
 
 ![Mobile homepage](previews/mobile.png)
 
-The hero now shows a licensed real black luxury-sedan marketing photograph. Four licensed category photographs are bundled as static assets and display even without Supabase fleet records. User-triggered synthesized V8-style audio remains separate from actual vehicle make, engine or availability. See [Photo credits](VEHICLE-PHOTOS.md).
+The hero now shows an original photorealistic Dubai sunset marketing visualization with a rear-view black sedan, golden decorative route and navigation preview card. The reference image mentioned in the upload was absent, so exact visual matching remains unverified. Four licensed category photographs are bundled as static assets and display even without Supabase fleet records. User-triggered synthesized V8-style audio remains separate from actual vehicle make, engine or availability. See [Photo credits](VEHICLE-PHOTOS.md).
 
 ## Desktop and mobile screens
 

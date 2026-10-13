@@ -26,7 +26,9 @@ function subscribeMute(callback: () => void) {
 }
 export function JourneyArt({
   photo,
+  scene = false,
 }: {
+  scene?: boolean;
   photo?: { src: string; alt: string; credit: string; source: string; license: string } | null;
 }) {
   const muted = useSyncExternalStore(subscribeMute, muteSnapshot, () => false);
@@ -142,8 +144,18 @@ export function JourneyArt({
     setNotice(next ? "Sound muted." : "Sound enabled. Choose Rev engine to listen.");
   }
   return (
-    <div className="car-stage pointer-events-none" data-car-revving={revving}>
-      {photo ? (
+    <div
+      className={scene ? "cinematic-engine" : "car-stage pointer-events-none"}
+      data-car-revving={revving}
+    >
+      {scene ? (
+        <button
+          type="button"
+          aria-label="Rev the car engine"
+          className="cinematic-car-hotspot"
+          onClick={() => void rev()}
+        />
+      ) : photo ? (
         <div className="space-y-2">
           <button
             type="button"

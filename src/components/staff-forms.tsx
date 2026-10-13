@@ -55,15 +55,17 @@ export function StaffAccessForm({
   staff: { user_id: string; role: string; active: boolean; display_name: string };
 }) {
   const [state, action, pending] = useActionState(updateStaff.bind(null, staff.user_id), {});
+  if (staff.role === "owner")
+    return (
+      <p className="text-xs text-muted">
+        Business owner · Access protected. Staff controls cannot modify this account.
+      </p>
+    );
   return (
     <form
       action={action}
       onSubmit={(e) => {
-        if (
-          !window.confirm(
-            `Update access for ${staff.display_name}? Owners can manage all records and staff access.`,
-          )
-        )
+        if (!window.confirm(`Update staff permissions for ${staff.display_name}?`))
           e.preventDefault();
       }}
     >
@@ -78,7 +80,6 @@ export function StaffAccessForm({
                 <option value="viewer">Viewer</option>
                 <option value="dispatcher">Dispatcher</option>
                 <option value="manager">Manager</option>
-                <option value="owner">Owner</option>
               </>
             )}
           </select>

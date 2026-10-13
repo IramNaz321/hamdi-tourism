@@ -3,10 +3,12 @@ test("public website renders the required sections without fictional fleet or fa
   page,
 }, testInfo) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "Your Journey, Our Priority" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Your Journey, Beautifully Connected" }),
+  ).toBeVisible();
   await expect(page.getByRole("heading", { name: "Our Fleet", exact: true })).toHaveCount(0);
   const contrast = await page
-    .getByRole("link", { name: "Explore Our Fleet", exact: true })
+    .getByRole("link", { name: "Book Your Transfer", exact: true })
     .evaluate((node) => {
       const style = getComputedStyle(node);
       const luminance = (color: string) => {

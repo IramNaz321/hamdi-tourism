@@ -484,3 +484,322 @@ svg {
     max-width: min(560px, 48vw);
   }
 }
+
+/* Cinematic composition from the client's written reference specification. */
+.premium-header .brand {
+  color: var(--brand);
+}
+.header-language {
+  background: transparent;
+  color: white;
+  border: 0;
+  width: 68px;
+  padding: 0.5rem;
+  font-size: 12px;
+}
+.header-language option {
+  background: var(--ink);
+  color: white;
+}
+.header-login,
+.header-book {
+  border: 1px solid var(--brand);
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1.25rem;
+  border-radius: 8px;
+  font-size: 13px;
+}
+.header-login {
+  color: var(--brand);
+}
+.header-book {
+  background: var(--brand);
+  color: var(--ink);
+  font-weight: 700;
+}
+.cinematic-hero {
+  position: relative;
+  min-height: 900px;
+  overflow: hidden;
+  color: var(--canvas);
+  background: var(--ink);
+}
+.cinematic-backdrop,
+.cinematic-shade {
+  position: absolute;
+  inset: 0;
+}
+.cinematic-backdrop img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.cinematic-shade {
+  background:
+    linear-gradient(90deg, rgba(8, 13, 23, 0.88), rgba(8, 13, 23, 0.28) 57%, transparent 85%),
+    linear-gradient(0deg, #111827 0%, transparent 28%);
+  pointer-events: none;
+}
+.cinematic-copy {
+  position: relative;
+  z-index: 3;
+  padding: 80px 40px 0;
+  max-width: 660px;
+  pointer-events: none;
+}
+.cinematic-copy a {
+  pointer-events: auto;
+}
+.cinematic-copy .eyebrow {
+  color: var(--brand);
+  font-size: 12px;
+}
+.cinematic-copy h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(46px, 4.8vw, 72px);
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  margin-top: 25px;
+  font-weight: 400;
+}
+.cinematic-copy h1 span {
+  display: block;
+  color: var(--brand);
+}
+.cinematic-description {
+  font-size: 17px;
+  line-height: 1.8;
+  max-width: 450px;
+  margin-top: 24px;
+  color: #f8f6f1dd;
+}
+.cinematic-booking-state {
+  margin-top: 24px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #f8f6f1dd;
+  max-width: 450px;
+}
+.service-preview-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+.service-preview-link > span {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid #f8f6f188;
+  border-radius: 50%;
+}
+.cinematic-route {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.route-halo {
+  fill: none;
+  stroke: var(--brand);
+  stroke-width: 13px;
+  filter: blur(9px);
+  opacity: 0.8;
+}
+.route-line {
+  fill: none;
+  stroke: #f7cc75;
+  stroke-width: 3px;
+  filter: drop-shadow(0 0 5px #ffcb6b);
+}
+.cinematic-route circle,
+.preview-route circle {
+  fill: var(--brand);
+  stroke: #fff4d2;
+  stroke-width: 2px;
+}
+.cinematic-route-label {
+  position: absolute;
+  z-index: 2;
+  top: 59%;
+  left: 50%;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #111827cc;
+  border: 1px solid #c5a46d66;
+  font-size: 12px;
+}
+.cinematic-route-label svg {
+  color: var(--brand);
+}
+.cinematic-route-label span {
+  color: #f8f6f199;
+  font-size: 10px;
+}
+.cinematic-navigation {
+  position: absolute;
+  z-index: 4;
+  bottom: 45px;
+  left: 40px;
+  width: 310px;
+  padding: 20px;
+  border: 1px solid #c5a46d77;
+  border-radius: 20px;
+  background: #080d17dc;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 0 22px #c5a46d18;
+  color: var(--canvas);
+}
+.preview-badge {
+  font-size: 10px;
+  color: var(--brand);
+  border: 1px solid #c5a46d55;
+  border-radius: 6px;
+  padding: 3px 6px;
+}
+.navigation-map-preview {
+  position: relative;
+  height: 90px;
+  margin: 14px 0;
+  overflow: hidden;
+  background: repeating-linear-gradient(135deg, #1c2634 0, #1c2634 1px, #0d1420 1px, #0d1420 24px);
+  border: 1px solid #ffffff0e;
+  border-radius: 10px;
+}
+.preview-route {
+  position: absolute;
+  width: 100%;
+  height: 145%;
+  top: -55%;
+}
+.navigation-map-preview > span {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  display: flex;
+  gap: 5px;
+  font-size: 10px;
+  color: var(--brand);
+}
+.cinematic-navigation dt {
+  color: #f8f6f199;
+  margin-bottom: 5px;
+}
+.navigation-features {
+  font-size: 12px;
+  display: grid;
+  gap: 10px;
+}
+.navigation-features a,
+.navigation-features p {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.navigation-features svg {
+  color: var(--brand);
+}
+.cinematic-engine {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.cinematic-car-hotspot {
+  position: absolute;
+  z-index: 2;
+  left: 55%;
+  top: 44%;
+  width: 44%;
+  height: 39%;
+  background: transparent;
+  pointer-events: auto;
+  border-radius: 20px;
+}
+.cinematic-car-hotspot:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: -10px;
+}
+.cinematic-engine .car-controls {
+  position: absolute;
+  z-index: 5;
+  bottom: 60px;
+  right: 30px;
+}
+.cinematic-disclosure {
+  position: absolute;
+  z-index: 4;
+  bottom: 15px;
+  right: 25px;
+  font-size: 10px;
+  color: #f8f6f1aa;
+}
+@media (max-width: 1023px) {
+  .cinematic-hero {
+    min-height: 1200px;
+  }
+  .cinematic-copy {
+    padding: 50px 22px 0;
+    max-width: 650px;
+  }
+  .cinematic-copy h1 {
+    font-size: clamp(34px, 8.6vw, 55px);
+  }
+  .cinematic-description {
+    font-size: 15px;
+    max-width: 460px;
+  }
+  .cinematic-backdrop {
+    top: 410px;
+    bottom: auto;
+    height: 430px;
+  }
+  .cinematic-backdrop img {
+    object-position: right;
+  }
+  .cinematic-shade {
+    background: linear-gradient(0deg, #111827, transparent 39%, transparent 59%, #111827 69%);
+  }
+  .cinematic-route {
+    top: 410px;
+    height: 430px;
+    width: 170%;
+    left: -40%;
+  }
+  .cinematic-route-label {
+    top: 600px;
+    left: 20px;
+    max-width: calc(100% - 40px);
+  }
+  .cinematic-car-hotspot {
+    top: 610px;
+    left: 8%;
+    width: 88%;
+    height: 215px;
+  }
+  .cinematic-engine .car-controls {
+    top: 810px;
+    bottom: auto;
+    right: 22px;
+  }
+  .cinematic-navigation {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    width: calc(100% - 44px);
+    max-width: 400px;
+    margin: 480px 22px 60px;
+  }
+  .cinematic-disclosure {
+    right: 22px;
+    left: 22px;
+    bottom: 18px;
+  }
+}

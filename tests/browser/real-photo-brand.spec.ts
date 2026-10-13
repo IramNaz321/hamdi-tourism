@@ -18,7 +18,7 @@ test("no illustrated hero car remains and the two-line gold wordmark is centered
   await page.goto("/");
   await expect(page.locator(".car-stage > svg")).toHaveCount(0);
   const photo = page.getByRole("img", {
-    name: "Real black luxury sedan — marketing showcase photograph",
+    name: "Original marketing visualization of a black luxury sedan on a Dubai highway at sunset, with Burj Khalifa in the background",
   });
   await expect(photo).toBeVisible();
   expect(await photo.evaluate((node) => (node as HTMLImageElement).naturalWidth)).toBeGreaterThan(

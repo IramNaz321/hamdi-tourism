@@ -4,7 +4,9 @@ test("capture genuine fleet, booking, unavailable tracking and concierge screens
   page,
 }, info) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "Your Journey, Our Priority" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Your Journey, Beautifully Connected" }),
+  ).toBeVisible();
   await page.locator("#fleet").screenshot({ path: `docs/previews/${info.project.name}-fleet.png` });
   await page.goto("/fleet");
   await page.screenshot({ path: `docs/previews/${info.project.name}-gallery.png`, fullPage: true });

@@ -1,4 +1,5 @@
 "use server";
+import { staffAccessChangeAllowed } from "@/lib/staff-access-policy";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { requireOwner, siteOrigin } from "@/lib/auth";
@@ -73,7 +74,7 @@ export async function updateStaff(
   _: StaffState,
   form: FormData,
 ): Promise<StaffState> {
-  const { supabase } = await requireOwner();
+  const { supabase, member } = await requireOwner();
   const role = String(form.get("role"));
   const active = form.get("active") === "on";
   if (
@@ -81,6 +82,18 @@ export async function updateStaff(
     !["owner", "manager", "dispatcher", "viewer", "driver"].includes(role)
   )
     return { error: "Invalid staff access settings." };
+  const target = await supabase
+    .from("staff_members")
+    .select("role")
+    .eq("user_id", userId)
+    .eq("organization_id", member.organization_id)
+    .maybeSingle();
+  if (target.error || !target.data) return { error: "Unable to verify this staff account." };
+  if (!staffAccessChangeAllowed(target.data.role, role))
+    return {
+      error:
+        "Owner access cannot be changed through staff controls. Driver role changes require verified driver account management.",
+    };
   const { error } = await supabase.rpc("set_staff_access", {
     target_user_id: userId,
     new_role: role,

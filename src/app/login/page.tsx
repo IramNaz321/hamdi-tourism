@@ -18,7 +18,7 @@ export default async function Login({
       data: { user },
       error,
     } = await client.auth.getUser();
-    if (!error && user) {
+    if (!error && user?.email_confirmed_at) {
       if (returnTo) redirect(returnTo);
       const membership = await client
         .from("staff_members")
@@ -31,6 +31,12 @@ export default async function Login({
   }
   return (
     <AuthShell title="Welcome back" description="Sign in to manage your journeys, team and fleet.">
+      {notice === "unconfirmed" && (
+        <p role="alert" className="notice mb-5">
+          Confirm your email using your invitation or confirmation link before accessing the staff
+          portal.
+        </p>
+      )}
       {notice === "invalid-link" && (
         <p role="alert" className="notice error mb-5">
           This link is invalid or has expired. Ask for a new invitation or password reset link.

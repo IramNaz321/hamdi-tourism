@@ -3,6 +3,8 @@ import { spawnSync } from "node:child_process";
 const env = {
   ...process.env,
   HAMDI_BROWSER_TESTS: "true",
+  ROUTING_ENABLED: "false",
+  ORS_API_KEY: "",
   NEXT_PUBLIC_SUPABASE_URL: "",
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "",
   SUPABASE_SERVICE_ROLE_KEY: "",

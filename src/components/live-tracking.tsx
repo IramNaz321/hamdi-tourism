@@ -1,4 +1,6 @@
 "use client";
+import { TripRoadRoute } from "./trip-road-route";
+import { type RoadRoute } from "@/lib/road-routing";
 import { useCallback, useEffect, useState, useRef } from "react";
 import dynamic from "next/dynamic";
 import { browserClient } from "@/lib/supabase/browser";
@@ -24,6 +26,18 @@ export function LiveTracking({
   const [status, setStatus] = useState("Loading verified trip information…");
   const [connected, setConnected] = useState(false);
   const [showMap, setShowMap] = useState(false);
+  const [routeEnabled, setRouteEnabled] = useState(false);
+  const [routes, setRoutes] = useState<Record<string, RoadRoute>>({});
+  const onRoute = useCallback(
+    (id: string, route?: RoadRoute) =>
+      setRoutes((previous) => {
+        const next = { ...previous };
+        if (route) next[id] = route;
+        else delete next[id];
+        return next;
+      }),
+    [],
+  );
   const [clock, setClock] = useState(() => Date.now());
   const refresh = useCallback(async () => {
     const epoch = invalidateFetch();
@@ -166,16 +180,38 @@ export function LiveTracking({
                 : "No current shared GPS location. Waiting for driver consent and a fresh device update."}
             </p>
           )}
+          <TripRoadRoute trip={trip} enabled={showMap && routeEnabled} onRoute={onRoute} />
         </div>
       ))}
       {records.length > 0 &&
         (showMap ? (
-          <Map trips={records} />
+          <>
+            <label className="flex gap-3 text-sm">
+              <input
+                type="checkbox"
+                checked={routeEnabled}
+                onChange={(event) => setRouteEnabled(event.target.checked)}
+              />
+              Enable road routes and ETA. This shares authorized trip coordinates with the
+              configured routing provider.
+            </label>
+            <Map
+              trips={records}
+              routes={Object.values(routes).filter((route) =>
+                records.some(
+                  (trip) =>
+                    trip.id === route.tripId &&
+                    trip.sharing_allowed &&
+                    !isStale(trip.location, clock),
+                ),
+              )}
+            />
+          </>
         ) : (
           <>
             <p className="text-xs text-muted">
-              Opening the map connects to OpenStreetMap’s tile service. No estimated arrival time is
-              shown.
+              Opening the map connects to OpenStreetMap’s tile service. Road route estimates require
+              a separate opt-in and configured routing provider.
             </p>
             <button className="button secondary" onClick={() => setShowMap(true)}>
               Show live map

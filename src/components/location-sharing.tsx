@@ -123,7 +123,8 @@ export function LocationSharing({ tripId, eligible }: { tripId: string; eligible
           Your trip’s verified passenger and authorized operations team can view shared GPS. Keep
           this page open; browser GPS cannot guarantee background updates. Only the latest position
           is kept. If stopping cannot reach the server, the last position expires within two
-          minutes.
+          minutes. Optional road-route estimates share trip coordinates with the configured routing
+          provider when enabled.
         </p>
         <p role="status" className="text-sm">
           {message}

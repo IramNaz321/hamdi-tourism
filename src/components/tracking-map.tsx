@@ -1,5 +1,6 @@
 "use client";
-import { Circle, MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
+import { Circle, MapContainer, Marker, Popup, Polyline, TileLayer, useMap } from "react-leaflet";
+import type { RoadRoute } from "@/lib/road-routing";
 import { divIcon, latLngBounds } from "leaflet";
 import { useEffect, useRef } from "react";
 import { type TrackingSnapshot, isStale } from "@/lib/tracking";
@@ -27,7 +28,13 @@ function Bounds({ coordinates }: { coordinates: [number, number][] }) {
   }, [map, coordinates]);
   return null;
 }
-export default function TrackingMap({ trips }: { trips: TrackingSnapshot[] }) {
+export default function TrackingMap({
+  trips,
+  routes = [],
+}: {
+  trips: TrackingSnapshot[];
+  routes?: RoadRoute[];
+}) {
   const coordinates: [number, number][] = [];
   for (const t of trips) {
     if (t.location) coordinates.push([t.location.latitude, t.location.longitude]);
@@ -48,6 +55,13 @@ export default function TrackingMap({ trips }: { trips: TrackingSnapshot[] }) {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
+      {routes.map((route) => (
+        <Polyline
+          key={route.tripId}
+          positions={route.coordinates}
+          pathOptions={{ color: "#C5A46D", weight: 4 }}
+        />
+      ))}
       {trips.flatMap((t) =>
         [t.pickup, t.destination]
           .filter((p) => p.latitude !== null && p.longitude !== null)

@@ -1,5 +1,5 @@
 /** Bound streamed API bodies before allocation. Never log webhook bodies or prompts. */
-export async function readLimitedBody(request: Request, limit: number) {
+export async function readLimitedBody(request: Pick<Request, "headers" | "body">, limit: number) {
   if (Number(request.headers.get("content-length") ?? 0) > limit)
     throw new Error("Payload too large");
   if (!request.body) return "";

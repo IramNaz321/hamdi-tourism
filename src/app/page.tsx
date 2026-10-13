@@ -1,10 +1,10 @@
-import { marketingPhotos } from "@/lib/marketing-photos";
+import { CinematicHero } from "@/components/cinematic-hero";
+import { homeLanguage } from "@/lib/home-language";
 import { FleetGallery } from "@/components/fleet-gallery";
 import { TravelConcierge } from "@/components/travel-concierge";
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import {
-  ArrowRight,
   ArrowUpRight,
   Plane,
   CarFront,
@@ -20,11 +20,10 @@ import {
 import { websiteContent, enquiriesConfigured } from "@/lib/website";
 import { PublicNav } from "@/components/public-nav";
 import { TransferEnquiry } from "@/components/transfer-enquiry";
-import { JourneyArt } from "@/components/journey-art";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 export const dynamic = "force-dynamic";
-export default async function Home() {
+export default async function Home({ searchParams }: { searchParams: Promise<{ lang?: string }> }) {
+  const language = homeLanguage((await searchParams).lang);
   const { settings, locations, fleet, logo_url } = await websiteContent();
   const name = "HAMDI TOURISM";
   const destinations = locations.filter((l) => l.featured_destination);
@@ -43,55 +42,9 @@ export default async function Home() {
         <style>{`:root { --brand: ${settings.brand_color}; --ink: ${settings.ink_color}; --canvas: ${settings.canvas_color}; }`}</style>
       )}
       <TravelConcierge />
-      <PublicNav name={name} logo={logo_url} />
+      <PublicNav name={name} logo={logo_url} language={language} />
       <main>
-        <section className="relative bg-ink text-white min-h-[570px] lg:min-h-[640px] overflow-hidden">
-          <div className="absolute inset-0 pointer-events-none bg-linear-to-r from-ink via-ink/85 to-ink/10" />
-          <div className="hero-copy max-w-7xl mx-auto px-6 lg:px-10 py-22 lg:py-28 relative z-10">
-            <p className="eyebrow text-white/75! mb-6">
-              UAE AIRPORT TRANSFERS & CHAUFFEUR SERVICES
-            </p>
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl leading-[1.08] tracking-tight max-w-2xl font-medium">
-              Your Journey,
-              <br />
-              <span className="hero-highlight">Our Priority</span>
-            </h1>
-            <p className="text-white/75 text-lg leading-relaxed max-w-lg mt-7">
-              Arrive, explore and travel at your own pace. Arrange your UAE airport transfer or
-              private chauffeur journey with {name}.
-            </p>
-            <div className="flex flex-wrap gap-3 mt-9">
-              <Button asChild variant="gold">
-                <a href="/book">
-                  Book Your Transfer <ArrowRight />
-                </a>
-              </Button>
-              <Button asChild variant="outline">
-                <a href="#fleet">
-                  Explore Our Fleet <ArrowUpRight />
-                </a>
-              </Button>
-            </div>
-            {!fleet.length && (
-              <p className="text-sm text-white/80 mt-5 max-w-lg" role="status">
-                Online booking is currently unavailable. Published vehicles, routes and fares are
-                required before accepting a reservation.
-              </p>
-            )}
-            <div className="flex flex-wrap gap-6 mt-10 text-xs text-white/70">
-              <span className="flex gap-2 items-center">
-                <Plane size={16} /> Airport transfers
-              </span>
-              <span className="flex gap-2 items-center">
-                <CarFront size={16} /> Private chauffeurs
-              </span>
-              <span className="flex gap-2 items-center">
-                <MapPin size={16} /> United Arab Emirates
-              </span>
-            </div>
-          </div>
-          <JourneyArt photo={marketingPhotos.hero} />
-        </section>
+        <CinematicHero language={language} bookingAvailable={fleet.length > 0} />
         <section
           id="transfers"
           className="max-w-7xl mx-auto px-5 lg:px-10 relative z-20 -mt-10 pb-20"
