@@ -249,3 +249,36 @@ section[id] {
 .hero-highlight {
   color: color-mix(in srgb, var(--brand) 40%, white);
 }
+
+/* Let the existing hero illustration receive input through empty copy space. */
+.hero-copy {
+  pointer-events: none;
+}
+.hero-copy a,
+.hero-copy button {
+  pointer-events: auto;
+}
+.car-interaction {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+}
+.car-interaction:focus-visible {
+  outline: 2px solid #f0ddac;
+  outline-offset: 6px;
+}
+[data-car-revving="true"] .car-interaction {
+  animation: car-rev 120ms ease-in-out infinite alternate;
+}
+@keyframes car-rev {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-2px) rotate(-0.15deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-car-revving="true"] .car-interaction {
+    animation: none;
+  }
+}
