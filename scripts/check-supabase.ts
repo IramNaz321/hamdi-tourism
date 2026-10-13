@@ -1,6 +1,8 @@
 /** Read-only hosted preflight. Never creates users, writes rows or runs SQL. */
 import { existsSync } from "node:fs";
 import { createClient } from "@supabase/supabase-js";
+import { authPolicy, readOnlyFetch } from "./verification/logic";
+import { isServerSupabaseKey } from "../src/lib/supabase/key-validation";
 import { publicSupabaseConfig } from "../src/lib/supabase/config";
 async function main() {
   if (existsSync(".env.local")) process.loadEnvFile(".env.local");
@@ -29,17 +31,23 @@ async function main() {
     if (!ok) failed = true;
   }
   try {
-    const response = await fetch(`${config.url}/auth/v1/settings`, {
+    const response = await readOnlyFetch(`${config.url}/auth/v1/settings`, {
       headers: { apikey: config.key },
       signal: AbortSignal.timeout(15000),
     });
     report("Auth endpoint accepts the public key", response.ok);
     if (response.ok) {
       const settings = await response.json();
-      report("Public signup disabled", settings.disable_signup === true);
+      const policy = authPolicy(settings, process.env.PASSENGER_AUTH_ENABLED === "true");
+      report(
+        "Public signup matches the approved application mode",
+        policy.signupPolicy === "matches_application_mode",
+      );
+      report("Email confirmation required", policy.emailConfirmation === "required");
     }
     const publicClient = createClient(config.url, config.key, {
       auth: { persistSession: false, autoRefreshToken: false },
+      global: { fetch: readOnlyFetch },
     });
     // With an anonymous session, even a nonempty organization must expose no private rows.
     for (const table of [
@@ -50,21 +58,31 @@ async function main() {
       "staff_members",
       "business_settings",
     ]) {
-      const { data, error } = await publicClient.from(table).select("*").limit(1);
+      const { data, error } = await publicClient
+        .from(table)
+        .select(
+          table === "staff_members"
+            ? "user_id"
+            : table === "business_settings"
+              ? "organization_id"
+              : "id",
+        )
+        .limit(1);
       report(
         `${table}: anonymous operational reads denied or empty`,
         (!error && data?.length === 0) || error?.code === "42501",
       );
     }
     const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    if (!serviceKey || serviceKey.includes("your-server-only")) {
+    if (!isServerSupabaseKey(serviceKey)) {
       console.log(
         "NOT VERIFIED: server key, hosted table accessibility, owner membership and private storage (server key missing).",
       );
       failed = true;
     } else {
-      const service = createClient(config.url, serviceKey, {
+      const service = createClient(config.url, serviceKey!.trim(), {
         auth: { persistSession: false, autoRefreshToken: false },
+        global: { fetch: readOnlyFetch },
       });
       for (const table of [
         "organizations",

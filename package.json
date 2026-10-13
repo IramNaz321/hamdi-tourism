@@ -19,7 +19,8 @@
     "db:baseline": "tsx scripts/database/baseline.ts",
     "check:owner": "tsx scripts/check-owner-session.ts",
     "db:driver-migration": "tsx scripts/database/driver-migration.ts",
-    "db:passenger-migration": "tsx scripts/database/passenger-migration.ts"
+    "db:passenger-migration": "tsx scripts/database/passenger-migration.ts",
+    "check:hosted": "tsx scripts/verification/hosted.ts"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.3.0",

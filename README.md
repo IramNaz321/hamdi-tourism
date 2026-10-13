@@ -105,3 +105,7 @@ The existing website now links to `/book` and `/passenger`. Verified accounts ca
 Migration 009 is pending separate approval after the verified migration-008 rollout. Use the guarded passenger migration workflow; never push/replay all SQL against this existing project. Stripe Checkout/webhooks, server-only OpenAI concierge (English/Arabic/Urdu/Hindi) and optional Resend outbox delivery are implemented but have **not** been verified against actual providers. All provider variables belong in secure server configuration; `.env.example` lists names only. Registration/live payments/real email sending remain opt-in. Guest booking is not enabled without an approved identity flow.
 
 See [Phase 3 verification](docs/PHASE-3-VERIFICATION.md) for exact local tests, privacy/security scope, external blockers and production acceptance. Current production readiness remains **NO**; merging code does not migrate Supabase, enable providers or deploy hosting.
+
+## Hosted verification and launch preparation
+
+Run `npm run check:hosted` with securely supplied project bindings for read-only catalog/history/Auth/Owner discovery. It compares 001–007, 001–008 and 001–009 separately, never treating a missing ledger as an empty database. See [Phase 4 verification](docs/PHASE-4-VERIFICATION.md) for actual access status and the exact approval-gated plan. Hosted readiness remains unverified; no migration, role change, merge or deployment runs automatically.

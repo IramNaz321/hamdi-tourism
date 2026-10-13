@@ -8,6 +8,7 @@ on:
         type: choice
         options:
           [
+            verify-read-only,
             audit,
             audit-driver,
             audit-passenger,
@@ -44,6 +45,11 @@ jobs:
     environment: ${{ endsWith(inputs.operation, '-apply') && 'hamdi-supabase-change' || 'hamdi-supabase-read' }}
     env:
       SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+      NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL }}
+      PASSENGER_AUTH_ENABLED: ${{ vars.PASSENGER_AUTH_ENABLED }}
       HAMDI_ORGANIZATION_ID: ${{ vars.HAMDI_ORGANIZATION_ID }}
       OPERATION: ${{ inputs.operation }}
       OWNER_USER_ID: ${{ inputs.owner_user_id }}
@@ -61,6 +67,7 @@ jobs:
         run: |
           set -euo pipefail
           case "$OPERATION" in
+            verify-read-only) npm run check:hosted ;;
             audit) npm run db:audit ;;
             audit-driver) npm run db:audit -- --with-driver ;;
             audit-passenger) npm run db:audit -- --with-passenger ;;

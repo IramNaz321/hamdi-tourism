@@ -24,12 +24,17 @@ async function main() {
     }
     await audit(client);
     const user = await client.query(
-      "select id,email_confirmed_at is not null as confirmed, deleted_at is not null as deleted from auth.users where id=$1" +
+      "select id,email_confirmed_at is not null as confirmed, deleted_at is not null as deleted,(banned_until is not null and banned_until>now()) as banned from auth.users where id=$1" +
         (apply ? " for update" : ""),
       [userId],
     );
-    if (user.rowCount !== 1 || !user.rows[0].confirmed || user.rows[0].deleted)
-      throw new Error("Real user must exist and be confirmed.");
+    if (
+      user.rowCount !== 1 ||
+      !user.rows[0].confirmed ||
+      user.rows[0].deleted ||
+      user.rows[0].banned
+    )
+      throw new Error("Real user must exist, be confirmed, not deleted and not currently banned.");
     const member = await client.query(
       "select organization_id,role,active from public.staff_members where user_id=$1",
       [userId],
@@ -62,7 +67,7 @@ async function main() {
     );
     const org = organization.rows[0].id;
     const inserted = await client.query(
-      "insert into public.staff_members(user_id,organization_id,email,display_name,role) select id,$2,email,$3,'owner' from auth.users where id=$1 and email_confirmed_at is not null and deleted_at is null",
+      "insert into public.staff_members(user_id,organization_id,email,display_name,role) select id,$2,email,$3,'owner' from auth.users where id=$1 and email_confirmed_at is not null and deleted_at is null and (banned_until is null or banned_until<=now())",
       [userId, org, name],
     );
     if (inserted.rowCount !== 1)
