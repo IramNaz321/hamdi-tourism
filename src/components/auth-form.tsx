@@ -7,9 +7,11 @@ import { login, resetPassword, updatePassword } from "@/app/auth/actions";
 export function AuthForm({
   mode,
   configured = true,
+  returnTo,
 }: {
   mode: "login" | "reset" | "update";
   configured?: boolean;
+  returnTo?: string;
 }) {
   const [state, action, pending] = useActionState(
     mode === "login" ? login : mode === "reset" ? resetPassword : updatePassword,
@@ -17,6 +19,7 @@ export function AuthForm({
   );
   return (
     <form action={action} className="space-y-5">
+      {mode === "login" && returnTo && <input type="hidden" name="returnTo" value={returnTo} />}
       {!configured && (
         <p className="notice">
           Admin access is not available yet. Please contact the business owner.

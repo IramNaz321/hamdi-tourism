@@ -17,8 +17,8 @@ export function OperationsMap({ points }: { points: MapPoint[] }) {
     <section className="panel p-6 mt-6">
       <h2 className="font-semibold mb-3">Journey locations</h2>
       <p className="text-sm text-muted mb-5">
-        This map shows configured pickup and destination locations. Driver location sharing is not
-        available.
+        This map shows configured pickup and destination locations. Shared driver GPS is displayed
+        separately in live tracking when available.
       </p>
       {!points.length ? (
         <p className="notice">No mapped locations are available for these journeys.</p>

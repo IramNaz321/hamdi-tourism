@@ -1,6 +1,8 @@
 "use client";
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
+import { LocationSharing } from "@/components/location-sharing";
+import { nextDriverAction, driverActions } from "@/lib/tracking";
 import { updateDriverTrip } from "@/app/driver-account/actions";
 export type DriverTrip = {
   id: string;
@@ -14,29 +16,55 @@ export type DriverTrip = {
   destination_latitude: number | null;
   destination_longitude: number | null;
   passengers: number;
-  luggage: number;
+  luggage: number | null;
   flight_number: string | null;
+  flight_status: string;
   instructions: string | null;
   customer_name: string;
   customer_phone: string;
   vehicle: string;
   registration: string;
   accepted_at: string | null;
+  en_route_at: string | null;
+  handover_at: string | null;
   arrived_at: string | null;
   picked_up_at: string | null;
 };
+function subscribeOnline(callback: () => void) {
+  window.addEventListener("online", callback);
+  window.addEventListener("offline", callback);
+  return () => {
+    window.removeEventListener("online", callback);
+    window.removeEventListener("offline", callback);
+  };
+}
+function useOnline() {
+  return useSyncExternalStore(
+    subscribeOnline,
+    () => navigator.onLine,
+    () => true,
+  );
+}
 export function DriverRefresh() {
   const router = useRouter();
+  const online = useOnline();
   useEffect(() => {
     const id = setInterval(() => {
-      if (!document.hidden) router.refresh();
+      if (!document.hidden && navigator.onLine) router.refresh();
     }, 20000);
     return () => clearInterval(id);
   }, [router]);
   return (
-    <button className="button secondary" onClick={() => router.refresh()}>
-      Refresh trips
-    </button>
+    <div className="space-y-2">
+      <button disabled={!online} className="button secondary" onClick={() => router.refresh()}>
+        Refresh trips
+      </button>
+      {!online && (
+        <p role="status" className="text-sm text-muted">
+          You are offline. Reconnect before changing trips or sharing location.
+        </p>
+      )}
+    </div>
   );
 }
 function navigation(name: string, latitude: number | null, longitude: number | null) {
@@ -44,17 +72,10 @@ function navigation(name: string, latitude: number | null, longitude: number | n
   return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}`;
 }
 export function DriverTripCard({ trip }: { trip: DriverTrip }) {
+  const online = useOnline();
   const [state, action, pending] = useActionState(updateDriverTrip, {});
-  const next =
-    trip.status === "in_progress"
-      ? trip.picked_up_at
-        ? { value: "complete", label: "Complete trip" }
-        : null
-      : !trip.accepted_at
-        ? { value: "accept", label: "Accept trip" }
-        : !trip.arrived_at
-          ? { value: "arrive", label: "Arrived at pickup" }
-          : { value: "pickup", label: "Passenger picked up · Start trip" };
+  const nextAction = nextDriverAction(trip);
+  const next = nextAction ? { value: nextAction, label: driverActions[nextAction] } : null;
   return (
     <article className="panel p-6 space-y-5">
       <div className="flex flex-wrap justify-between gap-3">
@@ -69,7 +90,8 @@ export function DriverTripCard({ trip }: { trip: DriverTrip }) {
           {trip.pickup} → {trip.destination}
         </p>
         <p className="text-sm text-muted mt-2">
-          {trip.passengers} passengers · {trip.luggage} luggage
+          {trip.passengers} passengers ·{" "}
+          {trip.luggage == null ? "Luggage not recorded" : `${trip.luggage} luggage`}
         </p>
       </div>
       <p>
@@ -79,7 +101,11 @@ export function DriverTripCard({ trip }: { trip: DriverTrip }) {
         </a>
       </p>
       {trip.flight_number && <p className="text-sm">Flight: {trip.flight_number}</p>}
-      {trip.instructions && <p className="text-sm whitespace-pre-wrap">{trip.instructions}</p>}
+      {trip.instructions && (
+        <p dir="auto" className="text-sm whitespace-pre-wrap">
+          {trip.instructions}
+        </p>
+      )}
       <p className="text-sm">
         Vehicle: {trip.vehicle || "Details unavailable"} ·{" "}
         {trip.registration || "Registration unavailable"}
@@ -102,6 +128,20 @@ export function DriverTripCard({ trip }: { trip: DriverTrip }) {
           Navigate to destination
         </a>
       </div>
+      <ol aria-label="Trip progress" className="flex flex-wrap gap-2 text-xs">
+        {[
+          { label: "Assigned", recorded: true },
+          { label: "Accepted", recorded: !!trip.accepted_at },
+          { label: "En route", recorded: !!trip.en_route_at },
+          { label: "Arrived", recorded: !!trip.arrived_at },
+          { label: "Picked up", recorded: !!trip.picked_up_at || !!trip.handover_at },
+        ].map((step) => (
+          <li key={step.label} className="badge">
+            {step.recorded ? "✓ " : ""}
+            {step.label}
+          </li>
+        ))}
+      </ol>
       {state.error && (
         <p role="alert" className="text-sm text-red-700">
           {state.error}
@@ -111,7 +151,7 @@ export function DriverTripCard({ trip }: { trip: DriverTrip }) {
         <form action={action}>
           <input type="hidden" name="id" value={trip.id} />
           <input type="hidden" name="action" value={next.value} />
-          <button className="button" disabled={pending}>
+          <button className="button" disabled={pending || !online}>
             {pending ? "Saving…" : next.label}
           </button>
         </form>
@@ -119,6 +159,15 @@ export function DriverTripCard({ trip }: { trip: DriverTrip }) {
         <p className="text-sm text-muted">
           Contact your dispatcher to review this trip’s progress.
         </p>
+      )}
+      {(trip.en_route_at || trip.handover_at || trip.status === "in_progress") && (
+        <LocationSharing
+          tripId={trip.id}
+          eligible={
+            !!(trip.en_route_at || trip.handover_at) &&
+            ["confirmed", "in_progress"].includes(trip.status)
+          }
+        />
       )}
     </article>
   );

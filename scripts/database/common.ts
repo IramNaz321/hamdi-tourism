@@ -42,12 +42,24 @@ export async function connect() {
 }
 export type Catalog = Record<string, unknown>;
 export type Reference = { migrations: Record<string, string>; catalog: Catalog };
-export function reference() {
-  const result = JSON.parse(readFileSync("supabase/schema-reference.json", "utf8")) as Reference;
+export function reference(withDriver = process.argv.includes("--with-driver")) {
+  const result = JSON.parse(
+    readFileSync(
+      withDriver ? "supabase/schema-reference-driver.json" : "supabase/schema-reference.json",
+      "utf8",
+    ),
+  ) as Reference;
   const currentFiles = readdirSync("supabase/migrations")
     .filter((n) => n.endsWith(".sql"))
     .sort();
-  if (JSON.stringify(currentFiles) !== JSON.stringify(Object.keys(result.migrations).sort()))
+  const recordedFiles = Object.keys(result.migrations).sort();
+  const extraFiles = currentFiles.filter((file) => !recordedFiles.includes(file));
+  if (
+    recordedFiles.some((file) => !currentFiles.includes(file)) ||
+    extraFiles.some(
+      (file) => file.split("_")[0] <= recordedFiles[recordedFiles.length - 1].split("_")[0],
+    )
+  )
     throw new Error(
       "Migration file set differs from the reviewed reference; update the migration strategy before applying changes.",
     );
@@ -81,7 +93,7 @@ export function compareCatalog(expected: Catalog, actual: Catalog) {
   const protectedTables = Object.keys(expected)
     .filter((k) => k.startsWith("table:"))
     .map((k) => `policy:public.${k.slice(6)}.`);
-  protectedTables.push("policy:storage.objects.");
+  protectedTables.push("policy:storage.objects.", "policy:realtime.messages.");
   for (const key of Object.keys(actual))
     if (
       key.startsWith("policy:") &&
@@ -95,8 +107,8 @@ export function compareCatalog(expected: Catalog, actual: Catalog) {
   }
   return [...new Set(mismatches)].sort();
 }
-export async function audit(client: Client) {
-  const mismatches = compareCatalog(reference().catalog, await catalog(client));
+export async function audit(client: Client, withDriver = process.argv.includes("--with-driver")) {
+  const mismatches = compareCatalog(reference(withDriver).catalog, await catalog(client));
   if (mismatches.length) {
     for (const name of mismatches) console.log(`REVIEW REQUIRED: ${name}`);
     throw new Error(
@@ -118,8 +130,16 @@ export async function audit(client: Client) {
     [["bookings", "drivers", "vehicles", "booking_enquiries"]],
   );
   if (realtime.rowCount !== 4) throw new Error("Realtime publication requires review.");
+  if (withDriver) {
+    const cron = await client.query("select to_regclass('cron.job') is not null as exists");
+    if (!cron.rows[0].exists) throw new Error("Tracking retention worker requires configuration.");
+    const job = await client.query(
+      "select 1 from cron.job where jobname='hamdi-private-tracking-retention' and active and schedule='* * * * *' and command='select public.purge_expired_tracking()' and database=current_database()",
+    );
+    if (job.rowCount !== 1) throw new Error("Tracking retention worker requires configuration.");
+  }
   console.log(
-    `PASS: ${projectRef} schema matches ${Object.keys(reference().catalog).length} expected catalog objects; private storage and Realtime verified.`,
+    `PASS: ${projectRef} schema matches ${Object.keys(reference(withDriver).catalog).length} expected catalog objects; private storage and Realtime verified.`,
   );
 }
 export function reportError() {

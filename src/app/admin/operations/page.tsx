@@ -1,3 +1,4 @@
+import { LiveTracking } from "@/components/live-tracking";
 import Link from "next/link";
 import { requireStaff } from "@/lib/auth";
 import { dateTime } from "@/lib/entities";
@@ -48,9 +49,13 @@ export default async function Operations() {
       <h1 className="text-3xl font-semibold mb-3">Live operations</h1>
       <p className="text-sm text-muted mb-6">
         Follow real journey statuses and assignments. Flight statuses are manually recorded. No
-        driver GPS positions are shown.
+        driver GPS is inferred or simulated. Shared GPS appears only when authorized tracking is
+        configured.
       </p>
       <OperationsUpdates organizationId={member.organization_id} />
+      <div className="mt-6">
+        <LiveTracking organizationId={member.organization_id} />
+      </div>
       <section className="panel overflow-hidden mt-6">
         {records.length ? (
           <div className="overflow-x-auto">

@@ -59,5 +59,6 @@ export const config = {
     "/access-pending",
     "/driver-account",
     "/auth/:path*",
+    "/track/:path*",
   ],
 };

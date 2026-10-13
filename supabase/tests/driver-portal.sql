@@ -4,6 +4,7 @@ create function public.test_assert(ok boolean,label text) returns void language 
 create function public.test_reject(command text,expected text[],label text) returns void language plpgsql as $$ declare rejected boolean:=false; begin begin execute command; exception when others then if sqlstate=any(expected) then rejected:=true;else raise;end if;end;if not rejected then raise exception 'FAILED: %',label;end if;raise notice 'PASS: %',label;end $$;
 insert into public.organizations(id,name) values('10000000-0000-4000-8000-000000000001','Local test only');
 insert into auth.users(id,email) values('20000000-0000-4000-8000-000000000001','driver@example.test'),('20000000-0000-4000-8000-000000000002','other-driver@example.test');
+update auth.users set email_confirmed_at=now();
 insert into public.staff_members(user_id,organization_id,email,display_name,role) select id,'10000000-0000-4000-8000-000000000001',email,'Local driver','driver' from auth.users;
 insert into public.drivers(id,organization_id,name,phone,license_number,status,auth_user_id) values('30000000-0000-4000-8000-000000000001','10000000-0000-4000-8000-000000000001','Local driver','000','LOCAL','available','20000000-0000-4000-8000-000000000001');
 insert into public.drivers(id,organization_id,name,phone,license_number,status,auth_user_id) values('30000000-0000-4000-8000-000000000002','10000000-0000-4000-8000-000000000001','Other local driver','000','LOCAL-OTHER','available','20000000-0000-4000-8000-000000000002');
@@ -29,6 +30,7 @@ set local role authenticated;
 select public.test_reject($q$select public.driver_trip_action('70000000-0000-4000-8000-000000000001','pickup')$q$,array['P0001'],'pickup before arrival rejected');
 select public.driver_trip_action('70000000-0000-4000-8000-000000000001','accept');
 select public.test_reject($q$select public.driver_trip_action('70000000-0000-4000-8000-000000000001','accept')$q$,array['P0001'],'duplicate acceptance rejected');
+select public.driver_trip_action('70000000-0000-4000-8000-000000000001','en_route');
 select public.driver_trip_action('70000000-0000-4000-8000-000000000001','arrive');
 select public.driver_trip_action('70000000-0000-4000-8000-000000000001','pickup');
 select public.test_assert(public.driver_assigned_trips()->0->>'status'='in_progress','pickup follows real booking transition');

@@ -282,3 +282,17 @@ section[id] {
     animation: none;
   }
 }
+
+.live-car-marker {
+  font-size: 26px;
+  transition: transform 220ms linear;
+}
+.journey-point-marker {
+  color: var(--brand);
+  font-size: 20px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .live-car-marker {
+    transition: none;
+  }
+}

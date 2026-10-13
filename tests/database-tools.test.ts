@@ -1,6 +1,11 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { compareCatalog, projectRef, verifiedDatabaseUrl } from "../scripts/database/common";
+import {
+  compareCatalog,
+  projectRef,
+  verifiedDatabaseUrl,
+  reference,
+} from "../scripts/database/common";
 test("database project guard rejects another project, URI overrides and insecure routing", () => {
   const saved = process.env.SUPABASE_DB_URL;
   try {
@@ -40,4 +45,11 @@ test("catalog comparison detects missing objects, policy broadening and altered 
     }),
     ["function:public.dashboard()"],
   );
+});
+
+test("baseline and driver catalogs remain distinct and pending migration does not replay history", () => {
+  assert.equal(Object.keys(reference(false).migrations).length, 7);
+  assert.equal(Object.keys(reference(true).migrations).length, 8);
+  assert.ok(reference(true).catalog["table:trip_live_locations"]);
+  assert.equal(reference(false).catalog["table:trip_live_locations"], undefined);
 });

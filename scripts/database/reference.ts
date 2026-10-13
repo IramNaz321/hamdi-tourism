@@ -39,8 +39,13 @@ async function main() {
     if (!ready) throw new Error("Local reference database unavailable.");
     const migrations: Record<string, string> = {};
     let sql = readFileSync("supabase/tests/auth-shim.sql", "utf8");
+    const base = Object.keys(
+      JSON.parse(readFileSync("supabase/schema-reference.json", "utf8")).migrations,
+    );
     for (const file of readdirSync("supabase/migrations")
-      .filter((n) => n.endsWith(".sql"))
+      .filter(
+        (n) => n.endsWith(".sql") && (process.argv.includes("--with-driver") || base.includes(n)),
+      )
       .sort()) {
       const content = readFileSync(`supabase/migrations/${file}`, "utf8");
       migrations[file] = createHash("sha256").update(content).digest("hex");
@@ -54,7 +59,9 @@ async function main() {
       ),
     );
     writeFileSync(
-      "supabase/schema-reference.json",
+      process.argv.includes("--with-driver")
+        ? "supabase/schema-reference-driver.json"
+        : "supabase/schema-reference.json",
       JSON.stringify({ migrations, catalog }, null, 2) + "\n",
     );
     console.log(

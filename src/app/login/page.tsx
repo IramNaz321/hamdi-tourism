@@ -1,3 +1,4 @@
+import { trackingPath } from "@/lib/tracking";
 import { AuthShell } from "@/components/auth-shell";
 import { AuthForm } from "@/components/auth-form";
 import { redirect } from "next/navigation";
@@ -7,9 +8,10 @@ export const dynamic = "force-dynamic";
 export default async function Login({
   searchParams,
 }: {
-  searchParams: Promise<{ notice?: string }>;
+  searchParams: Promise<{ notice?: string; next?: string }>;
 }) {
-  const { notice } = await searchParams;
+  const { notice, next } = await searchParams;
+  const returnTo = trackingPath(next);
   if (isConfigured() && notice !== "invalid-link") {
     const client = await createClient();
     const {
@@ -17,6 +19,7 @@ export default async function Login({
       error,
     } = await client.auth.getUser();
     if (!error && user) {
+      if (returnTo) redirect(returnTo);
       const membership = await client
         .from("staff_members")
         .select("role,active")
@@ -33,7 +36,7 @@ export default async function Login({
           This link is invalid or has expired. Ask for a new invitation or password reset link.
         </p>
       )}
-      <AuthForm mode="login" configured={isConfigured()} />
+      <AuthForm mode="login" configured={isConfigured()} returnTo={returnTo ?? undefined} />
     </AuthShell>
   );
 }

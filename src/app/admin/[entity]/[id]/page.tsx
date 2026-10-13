@@ -74,6 +74,11 @@ export default async function EditRecord({
           ))}
         </dl>
       )}
+      {entity === "bookings" && (
+        <Link className="button secondary mt-6" href={`/admin/bookings/${id}/tracking`}>
+          View live tracking
+        </Link>
+      )}
       <RecordContext entity={entity} record={record} page={historyPage} />
     </>
   );

@@ -1,4 +1,5 @@
 "use server";
+import { trackingPath } from "@/lib/tracking";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { createClient, isConfigured } from "@/lib/supabase/server";
@@ -14,7 +15,7 @@ export async function login(_: AuthState, form: FormData): Promise<AuthState> {
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) return { error: "Unable to sign in. Check your credentials or try again later." };
-  redirect("/admin");
+  redirect(trackingPath(form.get("returnTo")) ?? "/admin");
 }
 export async function logout() {
   if (isConfigured()) {

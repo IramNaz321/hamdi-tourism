@@ -39,3 +39,11 @@ Complete real browser acceptance using the verified owner's own sign-in: login, 
 Writing tests against the hosted business requires explicit mutation approval plus genuine client-approved inputs. Verify actual drivers and licences, registered vehicles and capacities, real served locations/routes/fares, then real customer-requested bookings. Never create sample fixtures, payments or GPS locations on this project. Use archive/restore only with approval and preserve audit/history. Existing local automated tests use disposable fixtures and never connect to hosted Supabase.
 
 Phase 1 acceptance remains incomplete until hosted schema, owner, Auth/email, CRUD/settings/staff roles and permissions are verified. Driver Portal/GPS changes require reviewed new schema/RLS and consent/retention decisions. Passenger accounts, payments and AI require provider choices, real credentials, payment/webhook verification, location-sharing privacy controls and client decisions. No simulated payment success, driver movement or concierge responses will be substituted for these integrations.
+
+## Driver/GPS migration 008
+
+Keep the original seven-migration reference unchanged. `npm run db:audit` checks that baseline; `npm run db:audit -- --with-driver` checks the separate eight-migration reference plus an active once-per-minute pg_cron retention job. `npm run db:reference -- --with-driver` rebuilds only the driver reference using disposable PostgreSQL.
+
+Set the genuine `HAMDI_ORGANIZATION_ID` securely alongside database/application configuration. `npm run db:driver-migration` prepares a read-only plan and prints a project-plus-hash approval target. Only after explicit authorization use `npm run db:driver-migration -- --apply --approve <reviewed-target>`. The transaction refuses schema drift, incorrect historical ledger, missing active confirmed Owner or missing retention worker. It applies only 008; it never repeats 001–007 or seeds records. The old driver proposal must not be applied alongside 008; an already applied proposal needs a separately reviewed upgrade.
+
+Protected workflow choices include driver-plan and driver-apply once this workflow is on the default branch. The apply approval field must contain the exact reviewed target. See [Phase 2 verification](PHASE-2-VERIFICATION.md) for scope, consent, retention and hosted acceptance gates.
