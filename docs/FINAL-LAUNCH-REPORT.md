@@ -54,7 +54,7 @@ Browser GPS is explicitly emulated test-device data; local booking/provider fixt
 
 ## Required client approvals and exact rollout
 
-The safest next action is **publish the saved pooler network update**, then the agent retries `npm run check:hosted` autonomously. No SQL copying is necessary.
+The pooler hostname update is now **published and verified in the current configuration**. PostgreSQL still fails at transport before authentication, even though proxy CONNECT now returns 200. The next action is to run the existing read-only `npm run check:hosted` through the PostgreSQL-capable Codespaces runner with its secure database binding. No SQL copying or repeated publication is necessary. See the latest [Phase 4 retry](PHASE-4-VERIFICATION.md#post-publication-postgresql-retry--october-13-2026).
 
 After actual catalog verification:
 
@@ -121,3 +121,7 @@ The internal codes remain compatible with existing database constraints and pric
 **Current verification:** ESLint, TypeScript and production build pass. **55 unit tests**, **195 disposable PostgreSQL assertions** and **44 desktop/mobile browser checks** pass, including category consistency, microphone click/review/mute/cleanup, permission denial and genuine login/Admin protection. Speech APIs in browser tests are explicitly mocked device responses; hosted Auth/physical microphone/model/GPS acceptance remains unverified. Read-only hosted audit was rerun with the same results: API accessible, account confirmed, no membership/organizations, 17 API-exposed tables, PostgreSQL network blocked. No SQL/migration/record/permission/message/payment/deployment mutations were performed.
 
 All 16 desktop/mobile PNGs show actual running UI, including four categories, homepage, chatbot with voice controls, booking, tracking, login and protected Admin access. They were decoded and visually checked. There is no external browser-forwarding capability or approved hosting destination here; the Codespaces private Ports → 3000 → Open in Browser procedure remains the real preview route. No publicly accessible website URL is claimed.
+
+## Latest network publication result
+
+The user-published hostname update was verified in the new runtime configuration. `SUPABASE_DB_URL` exists and the project guard passes. Native DNS/TCP remain unavailable; the configured proxy now grants CONNECT (200), but closes normal PostgreSQL SSL negotiation and the direct-TLS PostgreSQL attempt before a usable database session. Certificate verification was retained. This is still a transport blocker, not evidence of a wrong password. HTTPS API checks continue to succeed, showing the confirmed user without membership/organization and the original 17 API-exposed public tables. Full catalog/ledger verification, migration 008–009 necessity and Owner bootstrap remain blocked. No hosted mutation occurred. See [Phase 4](PHASE-4-VERIFICATION.md) for exact evidence and the single next runner action; earlier draft-publication instructions are historical and superseded.

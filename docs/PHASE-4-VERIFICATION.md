@@ -2,7 +2,7 @@
 
 Reviewed on October 13, 2026, starting from `e48fbe6` on `feat/hamdi-tourism-application`.
 
-**Current status: production readiness NO.** Secure bindings are now available and read-only Supabase HTTPS API verification succeeds. The confirmed Auth account has no staff membership, and organizations are empty. Direct PostgreSQL catalog access still fails at network transport before authentication. See the current [Final launch report](FINAL-LAUNCH-REPORT.md). The sections below retain historical missing-configuration findings and must not be interpreted as the current blocker.
+**Current status: production readiness NO.** Secure bindings are now available and read-only Supabase HTTPS API verification succeeds. The confirmed Auth account has no staff membership, and organizations are empty. The pooler network update is now published. Direct PostgreSQL catalog access still fails at network transport before authentication; the proxy accepts CONNECT but terminates PostgreSQL traffic. See the current [Final launch report](FINAL-LAUNCH-REPORT.md). The sections below retain historical missing-configuration findings and must not be interpreted as the current blocker.
 
 ## What is known and what is reported
 
@@ -106,3 +106,38 @@ After secure configuration is saved, return to the conversation. The agent will 
 ## Current published-environment follow-up
 
 The final completion task now has valid-shaped Supabase bindings. Node's supported HTTPS proxy enabled actual Auth/API reads: the specified account exists and is email-confirmed, membership is absent, organizations are empty, and 17 public API tables are exposed. PostgreSQL inspection remains blocked by network/DNS and an HTTP CONNECT 403 for the pooler's port 5432. A saved pooler-host allowlist update requires publication; activation must be followed by a new connection test. Do not treat historical missing-secret findings as the current blocker or assume a table count proves the SQL catalog. See [Final launch report](FINAL-LAUNCH-REPORT.md) for current verified evidence, pending Owner authorization, exact blockers and the launch package.
+
+## Post-publication PostgreSQL retry — October 13, 2026
+
+**Result: the read-only PostgreSQL audit is blocked by transport, not a proven credential rejection.** The current environment version includes `aws-0-ap-northeast-1.pooler.supabase.com`; there is no unpublished draft. All four required Supabase binding names are present, and the existing project/URI guard accepts the database binding. No values were displayed or saved.
+
+Observed checks:
+
+- Native database DNS: `EAI_AGAIN`; direct TCP probe timed out.
+- Configured HTTP proxy CONNECT to the existing pooler port 5432: **200**. This improves on the earlier 403 and confirms the published hostname update reached the current configuration.
+- The supported environment proxy was tested without bypassing its policy. PostgreSQL SSLRequest was sent without credentials; the connection closed before the server's SSL response.
+- Direct TLS certificate verification succeeded through the same approved proxy, but a read-only PostgreSQL direct-TLS connection also terminated before a usable database session. TLS/CONNECT success is not PostgreSQL protocol support. No password rejection or authenticated catalog query was established.
+- The temporary transport diagnostic was removed after it failed; the repository verifier/guards remain unchanged. No TLS verification was disabled or fallback host used.
+
+The existing `npm run check:hosted` finished with incomplete hosted checks and exit status 1. Real HTTPS API reads still verify: the target Auth account exists and is confirmed; its staff membership is absent; `organizations` is empty; 17 recognized public tables are API-exposed, including `verified_payments`; original operational anonymous reads are denied. This does not establish full RLS, functions, constraints, indexes, migration ledger, cron or Realtime acceptance.
+
+### Migrations 008–009
+
+Local reviewed references and hashes validate: 001–007 has 17 tables, 001–008 has 22, and 001–009 has **32**. Hosted API is missing all 15 new expected table names, but absence from API exposure is not proof of absence from PostgreSQL. Neither migration can be certified needed/applied until the actual catalog is read.
+
+| Migration                             | Reviewed SHA-256                                                   | Status                                                    |
+| ------------------------------------- | ------------------------------------------------------------------ | --------------------------------------------------------- |
+| `202610120008_driver_tracking.sql`    | `b4224e941c97339f67da406dda898dcb7a3ea50f5b6b692e95c8c2eb339fe1e1` | Hosted installation unverified; no application authorized |
+| `202610120009_passenger_platform.sql` | `f19619e42e0ec5797afe782e21d45b0f1c6bbc59b1b1013cd76907aff5c2675c` | Hosted installation unverified; no application authorized |
+
+Conditional safe plan: compare the real catalog with all three stages; inspect private migration history; baseline only already-exactly-matching SQL after explicit approval; never rerun 001–007. Partial/drifted installations require an exact reviewed repair plan. Apply 008 then 009 only when genuinely pending, with separate reviewed project/hash approval and existing tooling prerequisites met. No baseline or migration was executed.
+
+### Real Owner prerequisites
+
+The client-supplied real name is **Hamid Shah**. Target Auth UUID remains `988e629b-6770-4b93-b9ba-7c1bce325680`. A confirmed Auth email is not an Owner grant. After catalog access, recheck eligible Auth state, all organizations and any existing membership. If still empty, the reviewed proposed change is one genuine HAMDI TOURISM organization and one active Owner membership for that existing account, using Hamid Shah as display name; no duplicate Auth user and no operational seed. Obtain explicit client authorization for the account/Owner permission change before executing. Set only the resulting genuine organization UUID securely, then verify actual login and role/RLS isolation. This plan is conditional and was not executed.
+
+### One next action
+
+Use the existing Codespaces PostgreSQL-capable runner for **`npm run check:hosted`**, on the current feature branch with `SUPABASE_DB_URL` securely configured there. Codex secret bindings do not automatically transfer into Codespaces. No manual SQL is required. If the runner binding is missing, enter it only in secure Codespaces settings, never chat or Git. This Codex environment currently has no connected remote Codespaces execution tool. The existing Actions workflow cannot be dispatched autonomously here because it is absent from the default branch; no merge/default-branch change was authorized.
+
+Do **not** publish the same hostname update again or reset the password based on these transport results. A working PostgreSQL-capable connection/runner is the prerequisite before migration/Owner approval can be requested against a verified plan. No live SQL, data, permission, Auth account, booking, charge, message or GPS mutation occurred.
