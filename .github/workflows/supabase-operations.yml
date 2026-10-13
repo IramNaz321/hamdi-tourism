@@ -7,7 +7,19 @@ on:
         required: true
         type: choice
         options:
-          [audit, baseline-plan, baseline-apply, owner-plan, owner-apply, driver-plan, driver-apply]
+          [
+            audit,
+            audit-driver,
+            audit-passenger,
+            baseline-plan,
+            baseline-apply,
+            owner-plan,
+            owner-apply,
+            driver-plan,
+            driver-apply,
+            passenger-plan,
+            passenger-apply,
+          ]
       owner_user_id:
         description: Confirmed real Auth UUID, required for owner operations
         required: false
@@ -50,10 +62,14 @@ jobs:
           set -euo pipefail
           case "$OPERATION" in
             audit) npm run db:audit ;;
+            audit-driver) npm run db:audit -- --with-driver ;;
+            audit-passenger) npm run db:audit -- --with-passenger ;;
             baseline-plan) npm run db:baseline ;;
             baseline-apply) npm run db:baseline -- --apply --approve "$APPROVAL" ;;
             owner-plan) npm run db:owner -- --user-id "$OWNER_USER_ID" --name "$OWNER_NAME" ;;
             owner-apply) npm run db:owner -- --user-id "$OWNER_USER_ID" --name "$OWNER_NAME" --apply --approve "$APPROVAL" ;;
+            passenger-plan) npm run db:passenger-migration ;;
+            passenger-apply) npm run db:passenger-migration -- --apply --approve "$APPROVAL" ;;
             driver-plan) npm run db:driver-migration ;;
             driver-apply) npm run db:driver-migration -- --apply --approve "$APPROVAL" ;;
             *) exit 1 ;;

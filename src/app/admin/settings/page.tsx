@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { requireOwner } from "@/lib/auth";
 import { SettingsForm } from "@/components/settings-form";
 import { MediaUpload } from "@/components/media-upload";
@@ -44,6 +45,9 @@ export default async function Settings() {
   return (
     <>
       <p className="eyebrow mb-3">OWNER CONTROLS</p>
+      <Link href="/admin/passenger-platform" className="button secondary">
+        Passenger booking configuration
+      </Link>
       <h1 className="text-3xl font-semibold mb-3">Business settings</h1>
       <p className="text-sm text-muted mb-8">
         Manage your contact information, policies, website appearance and operations.

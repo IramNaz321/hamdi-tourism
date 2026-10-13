@@ -25,6 +25,11 @@ test("public website renders the required sections without fictional fleet or fa
     });
   expect(contrast).toBeGreaterThanOrEqual(4.5);
   await page.getByRole("link", { name: "Book Your Transfer", exact: true }).click();
+  await expect(page).toHaveURL(/\/book$/);
+  await expect(
+    page.getByRole("heading", { name: "Online booking is currently unavailable" }),
+  ).toBeVisible();
+  await page.getByRole("link", { name: "Request a transfer enquiry", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Plan your transfer" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Get a route quote" })).toBeDisabled();
   await expect(page.locator('select[name="pickup_id"] option')).toHaveCount(1);

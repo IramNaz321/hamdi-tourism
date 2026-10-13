@@ -6,12 +6,23 @@ function loginRedirect(request: NextRequest) {
   // Next.js proxy requires absolute locations. Explicit public origins handle
   // reverse proxies; loopback development stays on the actual request origin.
   const target = loginRedirectUrl(request.nextUrl.origin, process.env);
+  if (
+    request.nextUrl.pathname === "/passenger" ||
+    request.nextUrl.pathname.startsWith("/passenger/bookings/")
+  ) {
+    target.pathname = "/passenger/login";
+    target.search = "";
+    target.searchParams.set("next", request.nextUrl.pathname);
+  }
   const response = NextResponse.redirect(target, 303);
   response.headers.set("Cache-Control", "private, no-store");
   return response;
 }
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
+  const privatePassenger =
+    request.nextUrl.pathname === "/passenger" ||
+    request.nextUrl.pathname.startsWith("/passenger/bookings/");
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
   const publicConfig = publicSupabaseConfig(url, key);
@@ -20,7 +31,8 @@ export async function proxy(request: NextRequest) {
     if (
       request.nextUrl.pathname === "/admin" ||
       request.nextUrl.pathname.startsWith("/admin/") ||
-      request.nextUrl.pathname === "/driver-account"
+      request.nextUrl.pathname === "/driver-account" ||
+      privatePassenger
     )
       return loginRedirect(request);
     return response;
@@ -40,7 +52,8 @@ export async function proxy(request: NextRequest) {
   } = await supabase.auth.getUser();
   if (
     (request.nextUrl.pathname.startsWith("/admin") ||
-      request.nextUrl.pathname === "/driver-account") &&
+      request.nextUrl.pathname === "/driver-account" ||
+      privatePassenger) &&
     !user
   ) {
     const redirect = loginRedirect(request);
@@ -60,5 +73,7 @@ export const config = {
     "/driver-account",
     "/auth/:path*",
     "/track/:path*",
+    "/passenger/:path*",
+    "/book",
   ],
 };

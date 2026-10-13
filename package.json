@@ -18,7 +18,8 @@
     "db:owner": "tsx scripts/database/owner.ts",
     "db:baseline": "tsx scripts/database/baseline.ts",
     "check:owner": "tsx scripts/check-owner-session.ts",
-    "db:driver-migration": "tsx scripts/database/driver-migration.ts"
+    "db:driver-migration": "tsx scripts/database/driver-migration.ts",
+    "db:passenger-migration": "tsx scripts/database/passenger-migration.ts"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.3.0",
@@ -36,6 +37,8 @@
     "react-leaflet": "^5.0.0",
     "server-only": "^0.0.1",
     "sharp": "^0.35.5",
+    "stripe": "^23.0.0",
+    "svix": "^2.8.0",
     "tailwind-merge": "^3.7.0",
     "zod": "^4.0.0"
   },

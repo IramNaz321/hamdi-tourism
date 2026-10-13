@@ -11,4 +11,4 @@ for attempt in {1..30}; do
   sleep 1
 done
 docker exec "$container" pg_isready -h 127.0.0.1 -U postgres >/dev/null
-cat supabase/tests/auth-shim.sql supabase/migrations/*.sql supabase/tests/rls.sql supabase/tests/expanded.sql supabase/tests/driver-portal.sql supabase/tests/tracking.sql | docker exec -i "$container" psql -h 127.0.0.1 -U postgres -d hamdi_test -v ON_ERROR_STOP=1
+cat supabase/tests/auth-shim.sql supabase/migrations/*.sql supabase/tests/rls.sql supabase/tests/expanded.sql supabase/tests/driver-portal.sql supabase/tests/tracking.sql supabase/tests/passenger.sql | docker exec -i "$container" psql -h 127.0.0.1 -U postgres -d hamdi_test -v ON_ERROR_STOP=1

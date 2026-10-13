@@ -61,5 +61,10 @@ export async function updatePassword(_: AuthState, form: FormData): Promise<Auth
     return {
       error: "Unable to save this password. Choose a different password or request a new link.",
     };
-  redirect("/admin");
+  const { data: member } = await supabase
+    .from("staff_members")
+    .select("role")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  redirect(member ? (member.role === "driver" ? "/driver-account" : "/admin") : "/passenger");
 }

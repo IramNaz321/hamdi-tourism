@@ -1,3 +1,4 @@
+import { TravelConcierge } from "@/components/travel-concierge";
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import {
@@ -41,6 +42,7 @@ export default async function Home() {
       {settings && (
         <style>{`:root { --brand: ${settings.brand_color}; --ink: ${settings.ink_color}; --canvas: ${settings.canvas_color}; }`}</style>
       )}
+      <TravelConcierge />
       <PublicNav name={name} logo={logo_url} />
       <main>
         <section className="relative bg-ink text-white min-h-[570px] lg:min-h-[640px] overflow-hidden">
@@ -71,7 +73,7 @@ export default async function Home() {
             </p>
             <div className="flex flex-wrap gap-3 mt-9">
               <Button asChild variant="gold">
-                <a href="#transfers">
+                <a href="/book">
                   Book Your Transfer <ArrowRight />
                 </a>
               </Button>

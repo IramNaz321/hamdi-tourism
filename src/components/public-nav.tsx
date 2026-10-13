@@ -13,6 +13,8 @@ import {
 const links = [
   ["Home", "/"],
   ["Airport Transfers", "/#transfers"],
+  ["Book Now", "/book"],
+  ["Passenger Account", "/passenger"],
   ["Our Fleet", "/#fleet"],
   ["Destinations", "/#destinations"],
   ["About Us", "/#about"],

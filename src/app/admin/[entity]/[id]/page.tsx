@@ -1,3 +1,4 @@
+import { PassengerBookingAdmin } from "@/components/passenger-booking-admin";
 import { RecordContext } from "@/components/record-context";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -79,6 +80,7 @@ export default async function EditRecord({
           View live tracking
         </Link>
       )}
+      {entity === "bookings" && <PassengerBookingAdmin id={id} />}
       <RecordContext entity={entity} record={record} page={historyPage} />
     </>
   );

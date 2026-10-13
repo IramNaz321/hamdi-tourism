@@ -42,10 +42,17 @@ export async function connect() {
 }
 export type Catalog = Record<string, unknown>;
 export type Reference = { migrations: Record<string, string>; catalog: Catalog };
-export function reference(withDriver = process.argv.includes("--with-driver")) {
+export function reference(
+  withDriver = process.argv.includes("--with-driver"),
+  withPassenger = process.argv.includes("--with-passenger"),
+) {
   const result = JSON.parse(
     readFileSync(
-      withDriver ? "supabase/schema-reference-driver.json" : "supabase/schema-reference.json",
+      withPassenger
+        ? "supabase/schema-reference-passenger.json"
+        : withDriver
+          ? "supabase/schema-reference-driver.json"
+          : "supabase/schema-reference.json",
       "utf8",
     ),
   ) as Reference;
@@ -107,12 +114,19 @@ export function compareCatalog(expected: Catalog, actual: Catalog) {
   }
   return [...new Set(mismatches)].sort();
 }
-export async function audit(client: Client, withDriver = process.argv.includes("--with-driver")) {
-  const mismatches = compareCatalog(reference(withDriver).catalog, await catalog(client));
+export async function audit(
+  client: Client,
+  withDriver = process.argv.includes("--with-driver"),
+  withPassenger = process.argv.includes("--with-passenger"),
+) {
+  const mismatches = compareCatalog(
+    reference(withDriver, withPassenger).catalog,
+    await catalog(client),
+  );
   if (mismatches.length) {
     for (const name of mismatches) console.log(`REVIEW REQUIRED: ${name}`);
     throw new Error(
-      "Schema differs from the seven-migration reference. No migration or bootstrap was applied.",
+      "Schema differs from the selected reviewed migration reference. No migration or bootstrap was applied.",
     );
   }
   const bucket = await client.query(
@@ -130,7 +144,7 @@ export async function audit(client: Client, withDriver = process.argv.includes("
     [["bookings", "drivers", "vehicles", "booking_enquiries"]],
   );
   if (realtime.rowCount !== 4) throw new Error("Realtime publication requires review.");
-  if (withDriver) {
+  if (withDriver || withPassenger) {
     const cron = await client.query("select to_regclass('cron.job') is not null as exists");
     if (!cron.rows[0].exists) throw new Error("Tracking retention worker requires configuration.");
     const job = await client.query(
@@ -139,7 +153,7 @@ export async function audit(client: Client, withDriver = process.argv.includes("
     if (job.rowCount !== 1) throw new Error("Tracking retention worker requires configuration.");
   }
   console.log(
-    `PASS: ${projectRef} schema matches ${Object.keys(reference(withDriver).catalog).length} expected catalog objects; private storage and Realtime verified.`,
+    `PASS: ${projectRef} schema matches ${Object.keys(reference(withDriver, withPassenger).catalog).length} expected catalog objects; private storage and Realtime verified.`,
   );
 }
 export function reportError() {

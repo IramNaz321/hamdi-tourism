@@ -6,6 +6,8 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: [
         "/track",
+        "/passenger",
+        "/api",
         "/admin",
         "/login",
         "/auth",

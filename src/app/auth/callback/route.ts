@@ -6,7 +6,12 @@ export async function GET(request: NextRequest) {
   if (isConfigured() && code) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) return localRedirect("/update-password");
+    if (!error)
+      return localRedirect(
+        request.nextUrl.searchParams.get("next") === "/passenger"
+          ? "/passenger"
+          : "/update-password",
+      );
   }
   return localRedirect("/login?notice=invalid-link");
 }
