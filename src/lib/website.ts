@@ -36,7 +36,7 @@ export type PublicVehicle = {
   name: string;
   category: string;
   capacity: number;
-  luggage_capacity: number;
+  luggage_capacity: number | null;
   description: string | null;
   image_path: string | null;
   image_url?: string;

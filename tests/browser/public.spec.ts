@@ -181,3 +181,21 @@ test("Midnight Luxury theme and gold booking CTA preserve accessible contrast", 
   });
   expect(ratio).toBeGreaterThanOrEqual(4.5);
 });
+
+test("published fleet gallery and unknown vehicle detail never invent vehicles", async ({
+  page,
+}) => {
+  await page.goto("/fleet");
+  await expect(
+    page.getByRole("heading", { name: "Your journey. The right vehicle." }),
+  ).toBeVisible();
+  await expect(
+    page.getByText(
+      "Published fleet details and approved vehicle photographs are currently unavailable.",
+      { exact: false },
+    ),
+  ).toBeVisible();
+  await expect(page.locator("img")).toHaveCount(0);
+  await page.goto("/fleet/a0000000-0000-4000-8000-000000000001");
+  await expect(page.getByRole("heading", { name: "Page not found" })).toBeVisible();
+});

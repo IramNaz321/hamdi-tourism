@@ -1,15 +1,31 @@
-# Website preview
+# Actual website preview
 
-Captured from the actual production build. Supabase is not configured in these screenshots, so quotes, contact information and owner-managed fleet/destination records correctly show unavailable or empty states. These screenshots do not demonstrate live authentication, email delivery or uploads. Real owner uploads replace the illustrative hero and fill the fleet/destination image cards once published.
+October 13, 2026. Captured from the running production-style application with hosted credentials removed for safety. These are actual UI screens, not invented bookings, vehicle records, GPS positions or AI responses. All 12 PNGs were decoded and visually inspected. The real hosted asset audit found no published fleet vehicles or approved vehicle photographs. A photograph gallery cannot truthfully be populated yet.
 
-## Desktop
+## Homepage — includes the fleet gallery
 
-![Hamdi Tourism desktop homepage](previews/desktop.png)
+![Desktop homepage](previews/desktop.png)
 
-## Mobile
+![Mobile homepage](previews/mobile.png)
 
-![Hamdi Tourism mobile homepage](previews/mobile.png)
+The red BMW X6-inspired illustration and synthesized V8-style interaction are separate from the bookable fleet. No authentic BMW photograph, recording or bookable vehicle is claimed.
 
-The current screenshots show Midnight Luxury with an original red coupe-SUV illustration and synthesized V8-style sound controls. The illustration is not a fleet listing or authentic BMW photograph/recording. Browser checks capture the actual running isolated build; no hosted accounts or bookings are created. Both files were decoded as valid PNGs.
+## Desktop and mobile screens
 
-For an actual browser preview in your existing Codespace, pull the feature branch without overwriting local changes, keep your secrets in the ignored environment settings, run `npm ci` and `npm run dev`, then use **Ports → 3000 → Open in Browser**. Keep the forwarded port private. Configure that exact HTTPS preview origin for Auth redirects before testing real accounts. A static PNG does not verify the backend. No production or public deployment has been performed.
+| Screen                    | Desktop                                | Mobile                                |
+| ------------------------- | -------------------------------------- | ------------------------------------- |
+| Homepage fleet section    | [Open](previews/desktop-fleet.png)     | [Open](previews/mobile-fleet.png)     |
+| Published vehicle gallery | [Open](previews/desktop-gallery.png)   | [Open](previews/mobile-gallery.png)   |
+| Booking                   | [Open](previews/desktop-booking.png)   | [Open](previews/mobile-booking.png)   |
+| Tracking                  | [Open](previews/desktop-tracking.png)  | [Open](previews/mobile-tracking.png)  |
+| Travel concierge          | [Open](previews/desktop-concierge.png) | [Open](previews/mobile-concierge.png) |
+
+Booking, tracking and concierge screenshots honestly show unavailable configuration/access. There is no fictitious trip or moving map marker. Public vehicle details use genuine published records only; no such record currently exists to photograph.
+
+## Open the actual website in your browser
+
+There is no external port-forwarding or approved deployment capability in this Codex environment. The local production server was started successfully and its homepage returned HTTP 200, but its internal address is not a client-accessible URL.
+
+In your existing Codespace, update this feature branch without overwriting local changes, run `npm ci` and `npm run dev`, then select **Ports → 3000 → Open in Browser**. Keep the port private. That produces the real Codespaces HTTPS preview URL. Add that exact preview origin to the approved Auth redirect configuration before real-account tests. Secrets remain in ignored environment settings. No production deployment or merge has been performed.
+
+Missing approved assets and hosted launch blockers are documented in [Final launch report](FINAL-LAUNCH-REPORT.md). Screenshots are suitable for design review, not proof of hosted operational readiness.

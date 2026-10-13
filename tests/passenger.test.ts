@@ -247,3 +247,7 @@ test("API bodies are limited by actual streamed bytes even without content-lengt
     "valid",
   );
 });
+test("published vehicle preference survives only a strict local booking return path", () => {
+  assert.equal(passengerReturnPath(`/book?vehicle=${id}`), `/book?vehicle=${id}`);
+  assert.equal(passengerReturnPath(`/book?vehicle=${id}&next=https://evil.test`), "/passenger");
+});

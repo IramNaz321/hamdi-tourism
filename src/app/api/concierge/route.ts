@@ -98,7 +98,7 @@ export async function POST(request: Request) {
       },
       body: JSON.stringify({
         model: process.env.OPENAI_MODEL,
-        max_output_tokens: 600,
+        max_output_tokens: 220,
         store: false,
         instructions: conciergeSystem,
         input: [

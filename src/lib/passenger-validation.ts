@@ -24,6 +24,7 @@ export const passengerReturnPath = (value: unknown) =>
   typeof value === "string" &&
   (value === "/passenger" ||
     value === "/book" ||
+    /^\/book\?vehicle=[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/.test(value) ||
     /^\/passenger\/bookings\/[a-f0-9-]{36}$/.test(value))
     ? value
     : "/passenger";

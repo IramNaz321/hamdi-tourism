@@ -43,12 +43,12 @@ No deployment token or approved hosting destination is available. No public/priv
 ## Actual test results
 
 - ESLint and TypeScript: passed after excluding generated `.next-test` output.
-- Unit tests: **53 passed**.
+- Unit tests: **54 passed**.
 - Disposable PostgreSQL/RLS: **195 assertions passed**. Includes tenant isolation, financial evidence/idempotency/refunds, assigned-driver lifecycle, passenger access, GPS consent/revocation/retention and outbox controls.
 - Production build: passed with the current environment.
 - Isolated production-style browser build: passed.
-- Desktop/mobile Chromium: **34 passed**, including new theme/CTA contrast tests, forms, public/protected routes, car audio lifecycle, reduced motion, RTL concierge fallback, genuine GPS-controller permission tests and isolated booking-component interactions.
-- PNG decode/open checks: desktop 1280×3877 and mobile 1082×16582 physical pixels (mobile device scale); valid PNGs. No fake fleet/location was introduced to make screenshots attractive.
+- Desktop/mobile Chromium: **38 passed**, including new theme/CTA contrast tests, forms, public/protected routes, car audio lifecycle, reduced motion, RTL concierge fallback, genuine GPS-controller permission tests and isolated booking-component interactions.
+- PNG decode/open checks: desktop 1280×4058 and mobile 1082×17110 physical pixels (mobile device scale); valid PNGs. No fake fleet/location was introduced to make screenshots attractive.
 
 Browser GPS is explicitly emulated test-device data; local booking/provider fixtures stay local. These passes do not certify real hosted bookings, physical sensors, broker authorization or provider payments/messages/model output. No real charge, booking, driver, GPS fix, customer email or OpenAI request was created.
 
@@ -84,3 +84,17 @@ Secure hosting requirements:
 - Backups/restore, legal/provider-processing and retention/erasure policy, monitoring/rollback, administrator MFA decision and exact release approval remain launch requirements.
 
 **Client delivery verdict:** share the design screenshots/private preview for review now. Do not hand over the website as a functioning production business platform until Owner/schema/configuration and hosted acceptance gates pass.
+
+## Final client fleet and preview update
+
+The homepage now carries Midnight Luxury through the services, fleet, destinations and contact sections, with ivory cards for readable forms. Existing Admin/Driver/Passenger functionality was reused. The BMW X6-inspired red interaction remains separate from the bookable fleet. No authentic photograph or licensed recording is claimed.
+
+Added `/fleet`, published-only `/fleet/[id]`, shared responsive vehicle photographs and actual passenger/luggage capacities, and booking vehicle preference links. Unknown or unpublished IDs return 404. Missing luggage capacity is explicitly unpublished; no capacity is invented. Photos preserve the full car with responsive aspect ratios, lazy loading and async decoding. Upload processing remains the existing validated image pipeline. Private signed image URLs are not placed in a public optimizer cache; failed/expired URLs show an honest fallback.
+
+**Actual asset inventory:** repository and available uploads contain no client-approved vehicle photographs or confirmed client fleet model list. Read-only hosted queries returned **zero published non-archived vehicles**, **zero published photograph references**, and **zero root entries in `business-media`**. The storage listing is a read operation despite its SDK HTTP POST transport. No uploads, signed-URL creation, publication or business records were performed during this inventory. Missing assets are the client's exact approved fleet list and licensed photographs for those models, plus corresponding genuine published vehicle/capacity/luggage records. Do not substitute stock luxury cars. Owner setup/authorization must precede business publication.
+
+The multilingual concierge system instruction now limits answers to 1–3 sentences about Hamdi transfers, bookings, UAE airport travel, pricing and trip assistance, with a fixed unrelated-topic response (translated when appropriate). Actual provider output remains unverified because OpenAI is not configured/enabled. No AI request or spend was incurred. Real GPS/map code is preserved and local privacy/device-controller tests pass; hosted GPS, Realtime and physical-device acceptance remain pending. No moving marker was fabricated for screenshots.
+
+All **12** homepage/gallery/fleet/booking/tracking/concierge PNGs were regenerated from the actual running isolated production-style application, decoded with Sharp and visually inspected as a contact sheet. Both homepage screenshots include the genuine empty fleet gallery. Browser tests used no hosted credentials; these are honest missing-configuration screens, not successful booking/tracking/chatbot demonstrations. Production server startup was also verified and the homepage returned HTTP 200. No externally forwarded URL or deployment capability is available in this environment; a loopback address is not a usable client preview link. [Preview and all screenshots](PREVIEW.md) gives the existing Codespaces private browser-preview path.
+
+Current checks: clean ESLint, TypeScript, production build, 54 unit tests, 195 disposable PostgreSQL assertions and 38 desktop/mobile browser tests. These do not make the hosted business production-ready. Hosted API access succeeds, but PostgreSQL transport remains blocked; there is still no organization or Owner membership. Migrations, permissions and deployment were not changed.

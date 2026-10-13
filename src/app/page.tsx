@@ -1,3 +1,4 @@
+import { FleetGallery } from "@/components/fleet-gallery";
 import { TravelConcierge } from "@/components/travel-concierge";
 import type { CSSProperties } from "react";
 import Link from "next/link";
@@ -10,7 +11,6 @@ import {
   MapPin,
   Clock3,
   Users,
-  Luggage,
   Mail,
   Phone,
   MessageCircle,
@@ -38,7 +38,7 @@ export default async function Home() {
       } as CSSProperties)
     : undefined;
   return (
-    <div style={theme}>
+    <div style={theme} className="luxury-public">
       {settings && (
         <style>{`:root { --brand: ${settings.brand_color}; --ink: ${settings.ink_color}; --canvas: ${settings.canvas_color}; }`}</style>
       )}
@@ -158,58 +158,10 @@ export default async function Home() {
             Review our published vehicles and share your passenger and luggage requirements. Our
             team will confirm a suitable assignment.
           </p>
-          {fleet.length ? (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
-              {fleet.map((vehicle) => (
-                <Card key={vehicle.id} className="overflow-hidden">
-                  {vehicle.image_url ? (
-                    <picture>
-                      <img
-                        src={vehicle.image_url}
-                        alt={vehicle.name}
-                        className="w-full h-64 object-cover"
-                      />
-                    </picture>
-                  ) : (
-                    <div className="h-52 flex items-center justify-center bg-stone-100">
-                      <CarFront size={54} strokeWidth={1} className="text-muted" />
-                    </div>
-                  )}
-                  <div className="p-6">
-                    <p className="eyebrow mb-3 capitalize">{vehicle.category}</p>
-                    <h3 className="text-xl font-semibold">{vehicle.name}</h3>
-                    {vehicle.description && (
-                      <p className="text-sm text-muted leading-relaxed mt-3">
-                        {vehicle.description}
-                      </p>
-                    )}
-                    <div className="flex gap-5 mt-5 text-xs text-muted">
-                      <span className="flex gap-2 items-center">
-                        <Users size={15} />
-                        {vehicle.capacity} seats
-                      </span>
-                      <span className="flex gap-2 items-center">
-                        <Luggage size={15} />
-                        {vehicle.luggage_capacity} luggage
-                      </span>
-                    </div>
-                    <a href="#transfers" className="text-sm font-semibold flex gap-2 mt-6">
-                      Enquire about a transfer <ArrowUpRight size={16} />
-                    </a>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <Card className="p-10 mt-10 text-center">
-              <CarFront size={40} className="mx-auto text-brand mb-5" />
-              <h3 className="font-semibold text-lg">Let’s find the right fit.</h3>
-              <p className="text-muted text-sm mt-3">
-                Published fleet details are currently unavailable. Contact our team with your
-                passenger and luggage requirements.
-              </p>
-            </Card>
-          )}
+          <FleetGallery fleet={fleet} />
+          <Link href="/fleet" className="button secondary mt-6">
+            Explore the published vehicle gallery
+          </Link>
         </section>
         <section id="destinations" className="bg-white py-20">
           <div className="max-w-7xl mx-auto px-6 lg:px-10">

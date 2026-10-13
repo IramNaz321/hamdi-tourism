@@ -386,3 +386,47 @@ svg {
 .car-stage {
   z-index: 1;
 }
+/* Public Midnight canvas; ivory cards retain dark readable text. */
+.luxury-public {
+  background: var(--ink);
+  color: white;
+}
+.luxury-public #services,
+.luxury-public #destinations {
+  background: var(--ink);
+  color: white;
+}
+.luxury-public .text-muted {
+  color: #cbd5e1;
+}
+.luxury-public .eyebrow {
+  color: var(--brand);
+}
+.luxury-public .panel,
+.luxury-public [data-slot="card"],
+.luxury-public #about {
+  color: var(--ink);
+}
+.luxury-public .panel .text-muted,
+.luxury-public [data-slot="card"] .text-muted,
+.luxury-public #about .text-muted {
+  color: var(--muted);
+}
+.luxury-public .panel .eyebrow,
+.luxury-public [data-slot="card"] .eyebrow,
+.luxury-public #about .eyebrow {
+  color: color-mix(in srgb, var(--brand) 35%, var(--ink));
+}
+.luxury-public footer {
+  color: white;
+  border-color: color-mix(in srgb, var(--brand) 25%, transparent);
+}
+.vehicle-photo {
+  border: 1px solid var(--line);
+}
+.luxury-public .notice {
+  color: var(--ink);
+}
+.luxury-public .notice.error {
+  color: #923523;
+}

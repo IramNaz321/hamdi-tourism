@@ -1,4 +1,5 @@
 "use client";
+import { VehiclePhoto } from "./vehicle-photo";
 import { useActionState, useState } from "react";
 import Link from "next/link";
 import { quotePassenger, createPassengerBooking, type BookingState } from "@/app/passenger/actions";
@@ -7,12 +8,16 @@ export function PassengerBookingForm({
   locations,
   fleet,
   profile,
+  preferredVehicle,
 }: {
   locations: PublicLocation[];
   fleet: PublicVehicle[];
+  preferredVehicle?: string;
   profile?: { name: string; email: string; phone: string } | null;
 }) {
-  const [vehicleId, setVehicle] = useState(fleet[0]?.id ?? "");
+  const [vehicleId, setVehicle] = useState(
+    fleet.find((v) => v.id === preferredVehicle)?.id ?? fleet[0]?.id ?? "",
+  );
   const vehicle = fleet.find((v) => v.id === vehicleId);
   const [kind, setKind] = useState("one_way");
   const [dirty, setDirty] = useState(true);
@@ -174,15 +179,7 @@ export function PassengerBookingForm({
           </legend>
           {fleet.map((v) => (
             <label key={v.id} className="border rounded-xl p-4 space-y-2 cursor-pointer">
-              {v.image_url && (
-                <picture>
-                  <img
-                    src={v.image_url}
-                    alt={v.name}
-                    className="w-full h-32 object-cover rounded-lg"
-                  />
-                </picture>
-              )}
+              <VehiclePhoto src={v.image_url} name={v.name} />
               <span className="flex gap-3 items-center">
                 <input
                   type="radio"

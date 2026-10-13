@@ -1,10 +1,17 @@
+import { z } from "zod";
 import Link from "next/link";
 import { websiteContent, publicBusinessId } from "@/lib/website";
 import { createClient, isConfigured } from "@/lib/supabase/server";
 import { PassengerProfileForm } from "@/components/passenger-forms";
 import { PassengerBookingForm } from "@/components/passenger-booking";
 export const dynamic = "force-dynamic";
-export default async function BookPage() {
+export default async function BookPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ vehicle?: string }>;
+}) {
+  const parsedPreference = z.uuid().safeParse((await searchParams).vehicle);
+  const preference = parsedPreference.success ? parsedPreference.data : undefined;
   const content = await websiteContent();
   let ready = false;
   let signedIn = false;
@@ -54,7 +61,10 @@ export default async function BookPage() {
             Your account keeps bookings and tracking private. Complete your profile before
             requesting a quote.
           </p>
-          <Link className="button" href="/passenger/login?next=/book">
+          <Link
+            className="button"
+            href={`/passenger/login?next=${encodeURIComponent(preference ? `/book?vehicle=${preference}` : "/book")}`}
+          >
             Sign in to book
           </Link>
           <Link className="button secondary" href="/passenger/register">
@@ -68,6 +78,7 @@ export default async function BookPage() {
             locations={content.locations}
             fleet={content.fleet}
             profile={profile}
+            preferredVehicle={preference}
           />
         </>
       )}
