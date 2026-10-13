@@ -1,6 +1,6 @@
 # Actual website preview
 
-October 13, 2026. Captured from the running production-style application with hosted credentials removed for safety. These are actual UI screens, not invented bookings, vehicle records, GPS positions or AI responses. All 16 PNGs were decoded and visually inspected. The four client-requested service categories appear on the homepage and booking page. The real hosted asset audit found no published fleet vehicles or approved vehicle photographs. A photograph gallery cannot truthfully be populated yet.
+October 13, 2026. Captured from the running production-style application with hosted credentials removed for safety. These are actual UI screens, not invented bookings, vehicle records, GPS positions or AI responses. All 16 PNGs were decoded and visually inspected. The four client-requested service categories appear on the homepage and booking page. The real hosted asset audit found no published fleet vehicles. The four static marketing category photographs do not represent available inventory; the actual published-fleet gallery remains empty.
 
 ## Homepage — includes the fleet gallery
 
@@ -8,7 +8,7 @@ October 13, 2026. Captured from the running production-style application with ho
 
 ![Mobile homepage](previews/mobile.png)
 
-The red illustrated car has now been removed. Approved real photography is still unavailable; no substitute image or fleet record is fabricated. User-triggered synthesized V8-style audio remains separate from actual vehicle make, engine or availability.
+The hero now shows a licensed real black luxury-sedan marketing photograph. Four licensed category photographs are bundled as static assets and display even without Supabase fleet records. User-triggered synthesized V8-style audio remains separate from actual vehicle make, engine or availability. See [Photo credits](VEHICLE-PHOTOS.md).
 
 ## Desktop and mobile screens
 

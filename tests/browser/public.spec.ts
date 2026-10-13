@@ -190,12 +190,13 @@ test("published fleet gallery and unknown vehicle detail never invent vehicles",
     page.getByRole("heading", { name: "Your journey. The right vehicle." }),
   ).toBeVisible();
   await expect(
-    page.getByText(
-      "Published fleet details and approved vehicle photographs are currently unavailable.",
-      { exact: false },
-    ),
+    page.getByText("No owner-published vehicles are available for booking yet.", { exact: false }),
   ).toBeVisible();
-  await expect(page.locator("img")).toHaveCount(0);
+  await expect(
+    page.getByRole("region", { name: "Vehicle categories" }).getByRole("img"),
+  ).toHaveCount(4);
+  await expect(page.locator('a[href^="/fleet/"]')).toHaveCount(0);
+  await expect(page.getByLabel("Published vehicle gallery")).toHaveCount(0);
   await page.goto("/fleet/a0000000-0000-4000-8000-000000000001");
   await expect(page.getByRole("heading", { name: "Page not found" })).toBeVisible();
 });

@@ -370,15 +370,6 @@ svg {
   .hero-copy h1 {
     font-size: clamp(2.5rem, 11vw, 3.5rem);
   }
-  .car-stage {
-    inset: auto 0 3.5rem auto;
-    width: 90%;
-    height: 170px;
-    opacity: 0.95;
-  }
-  .car-controls {
-    bottom: -0.5rem;
-  }
 }
 .car-stage {
   z-index: 1;
@@ -453,4 +444,43 @@ svg {
 .hero-copy a,
 .hero-copy button {
   pointer-events: auto;
+}
+
+/* Always-visible local photographic showcase, independently of published fleet. */
+.car-stage {
+  position: relative;
+  width: min(100%, 640px);
+  margin: 0 auto;
+  padding: 0 1.5rem 3.5rem;
+  z-index: 10;
+}
+.car-stage .car-interaction {
+  background: radial-gradient(ellipse at center, #334155 0%, #111827 72%);
+}
+.car-stage img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2 / 1;
+  object-fit: contain;
+}
+@media (max-width: 1023px) {
+  .hero-copy {
+    padding-bottom: 2rem;
+  }
+}
+@media (min-width: 1024px) {
+  .car-stage {
+    position: absolute;
+    width: 48%;
+    max-width: 660px;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 1.5rem;
+  }
+  .hero-copy h1,
+  .hero-copy > p,
+  .hero-copy > div {
+    max-width: min(560px, 48vw);
+  }
 }

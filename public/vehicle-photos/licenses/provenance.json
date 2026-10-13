@@ -1,0 +1,62 @@
+[
+  {
+    "slug": "mercedes_s65_amg",
+    "file": "black-luxury-sedan",
+    "key": "luxury",
+    "alt": "Real black luxury sedan — marketing showcase photograph",
+    "credit": "Fadi",
+    "license": "https://creativecommons.org/licenses/by-sa/2.0/de/deed.en",
+    "source": "https://commons.wikimedia.org/wiki/File:S65AMG.JPG",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/a/ad/S65AMG.JPG",
+    "upstream": "https://raw.githubusercontent.com/Tirthraj-Raval/hypercar-colorscripts/e8bd2d5adcb355c74727b094530637445e23c361/assets/images/mercedes_s65_amg.png",
+    "sha256": "b54f8c9709a87dcf81b5b24c1ff54c916080ad250875f787c220121b619935db",
+    "licenceLabel": "CC BY-SA 2.0 de",
+    "changes": "No additional changes. Upstream derivative removes the background and letterboxes the original real photograph.",
+    "upstreamRevision": "e8bd2d5adcb355c74727b094530637445e23c361"
+  },
+  {
+    "slug": "bmw_m3_e90_sedan",
+    "file": "normal-sedan",
+    "key": "sedan",
+    "alt": "Real white sedan — marketing category photograph",
+    "credit": "OSX",
+    "license": "https://commons.wikimedia.org/wiki/Commons:Public_domain",
+    "source": "https://commons.wikimedia.org/wiki/File:2008-2010%20BMW%20M3%20(E90)%20sedan%2002.jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/8/81/2008-2010_BMW_M3_%28E90%29_sedan_02.jpg",
+    "upstream": "https://raw.githubusercontent.com/Tirthraj-Raval/hypercar-colorscripts/e8bd2d5adcb355c74727b094530637445e23c361/assets/images/bmw_m3_e90_sedan.png",
+    "sha256": "5101209b549e25ebbc2621e384bdf3bd7f7658609cc3a5d5d6763ddbe195882a",
+    "licenceLabel": "Public domain",
+    "changes": "No additional changes. Upstream derivative removes the background and letterboxes the original real photograph.",
+    "upstreamRevision": "e8bd2d5adcb355c74727b094530637445e23c361"
+  },
+  {
+    "slug": "bentley_bentayga_mk2",
+    "file": "seven-seater-style",
+    "key": "van",
+    "alt": "Real full-size SUV — illustrative seven-seater service category photograph",
+    "credit": "Alexander Migl",
+    "license": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "source": "https://commons.wikimedia.org/wiki/File:Bentley%20Bentayga%20Speed%20Genf%202019%201Y7A5885.jpg",
+    "original": "https://commons.wikimedia.org/wiki/File:Bentley_Bentayga_Speed_Genf_2019_1Y7A5885.jpg",
+    "upstream": "https://raw.githubusercontent.com/Tirthraj-Raval/hypercar-colorscripts/e8bd2d5adcb355c74727b094530637445e23c361/assets/images/bentley_bentayga_mk2.png",
+    "sha256": "7a22891ab87533f305b148cca008a1c7c3f4c6a3a8d974e6c26bf8645828a60a",
+    "licenceLabel": "CC BY-SA 4.0",
+    "changes": "No additional changes. Upstream derivative removes the background and letterboxes the original real photograph.",
+    "upstreamRevision": "e8bd2d5adcb355c74727b094530637445e23c361"
+  },
+  {
+    "slug": "toyota_gr_corolla",
+    "file": "five-passenger-vehicle",
+    "key": "suv",
+    "alt": "Real silver five-door passenger vehicle — marketing category photograph",
+    "credit": "Tokumeigakarinoaoshima",
+    "license": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "source": "https://commons.wikimedia.org/wiki/File:Osaka%20Auto%20Messe%202025%20(9)%20-%20Toyota%20GR%20COROLLA%20RZ%20GR-DAT%20(4BA-GZEA14H-BHZRZ).jpg",
+    "original": "https://upload.wikimedia.org/wikipedia/commons/6/60/Osaka_Auto_Messe_2025_%289%29_-_Toyota_GR_COROLLA_RZ_GR-DAT_%284BA-GZEA14H-BHZRZ%29.jpg",
+    "upstream": "https://raw.githubusercontent.com/Tirthraj-Raval/hypercar-colorscripts/e8bd2d5adcb355c74727b094530637445e23c361/assets/images/toyota_gr_corolla.png",
+    "sha256": "7564bf91848bb61c481f5d3a5c736f049479169c4d3fc74602db113e67a55577",
+    "licenceLabel": "CC0",
+    "changes": "No additional changes. Upstream derivative removes the background and letterboxes the original real photograph.",
+    "upstreamRevision": "e8bd2d5adcb355c74727b094530637445e23c361"
+  }
+]

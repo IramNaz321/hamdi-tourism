@@ -8,7 +8,7 @@ import { VehiclePhoto } from "./vehicle-photo";
 export function FleetGallery({ fleet }: { fleet: PublicVehicle[] }) {
   return (
     <>
-      <VehicleCategories fleet={fleet} />
+      <VehicleCategories />
       {fleet.length ? (
         <div
           className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-10"
@@ -62,8 +62,8 @@ export function FleetGallery({ fleet }: { fleet: PublicVehicle[] }) {
         <Card className="p-8 sm:p-10 mt-10 text-center">
           <h3 className="font-semibold text-lg">Let’s find the right fit.</h3>
           <p className="text-muted text-sm">
-            Published fleet details and approved vehicle photographs are currently unavailable.
-            Contact our team with your passenger and luggage requirements.
+            No owner-published vehicles are available for booking yet. The photographs above are
+            marketing showcases. Contact our team with your passenger and luggage requirements.
           </p>
           <Link href="/#contact" className="button self-center mt-3">
             Contact our team

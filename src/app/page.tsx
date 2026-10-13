@@ -46,7 +46,6 @@ export default async function Home() {
       <PublicNav name={name} logo={logo_url} />
       <main>
         <section className="relative bg-ink text-white min-h-[570px] lg:min-h-[640px] overflow-hidden">
-          <JourneyArt photo={marketingPhotos.hero} />
           <div className="absolute inset-0 pointer-events-none bg-linear-to-r from-ink via-ink/85 to-ink/10" />
           <div className="hero-copy max-w-7xl mx-auto px-6 lg:px-10 py-22 lg:py-28 relative z-10">
             <p className="eyebrow text-white/75! mb-6">
@@ -73,6 +72,12 @@ export default async function Home() {
                 </a>
               </Button>
             </div>
+            {!fleet.length && (
+              <p className="text-sm text-white/80 mt-5 max-w-lg" role="status">
+                Online booking is currently unavailable. Published vehicles, routes and fares are
+                required before accepting a reservation.
+              </p>
+            )}
             <div className="flex flex-wrap gap-6 mt-10 text-xs text-white/70">
               <span className="flex gap-2 items-center">
                 <Plane size={16} /> Airport transfers
@@ -85,6 +90,7 @@ export default async function Home() {
               </span>
             </div>
           </div>
+          <JourneyArt photo={marketingPhotos.hero} />
         </section>
         <section
           id="transfers"

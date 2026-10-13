@@ -142,10 +142,7 @@ export function JourneyArt({
     setNotice(next ? "Sound muted." : "Sound enabled. Choose Rev engine to listen.");
   }
   return (
-    <div
-      className="car-stage absolute inset-y-10 right-0 w-full lg:w-3/5 opacity-90 lg:opacity-100 pointer-events-none"
-      data-car-revving={revving}
-    >
+    <div className="car-stage pointer-events-none" data-car-revving={revving}>
       {photo ? (
         <div className="space-y-2">
           <button
@@ -174,21 +171,15 @@ export function JourneyArt({
             <a href={photo.license} rel="noopener noreferrer" className="underline">
               Licence
             </a>
-            . Editorial image; ownership and availability are not implied.
+            . Marketing showcase; ownership and availability are not implied.
           </p>
         </div>
-      ) : (
-        <div className="h-full flex items-center justify-center p-8 text-center">
-          <p className="text-sm text-white/70">
-            Approved real vehicle photography is currently unavailable.
-          </p>
-        </div>
-      )}
+      ) : null}
       <p className="sr-only">
         Original synthesized V8-style sound; not an authentic BMW recording or a claim about the
         photographed vehicle’s make or engine.
       </p>
-      <div className="car-controls absolute bottom-0 right-6 flex items-center gap-2 pointer-events-auto text-white text-xs">
+      <div className="car-controls flex justify-center items-center gap-2 mt-4 pointer-events-auto text-white text-xs">
         <button
           type="button"
           onClick={() => void rev()}

@@ -44,7 +44,7 @@ export default async function BookPage({
         <Link href="/passenger">Your account</Link>
         <Link href="/#transfers">Transfer enquiry</Link>
       </nav>
-      <VehicleCategories fleet={content.fleet} />
+      <VehicleCategories />
       {!ready || !content.fleet.length || !content.locations.length ? (
         <section className="panel p-6 space-y-4">
           <h2 className="text-xl font-semibold">Online booking is currently unavailable</h2>

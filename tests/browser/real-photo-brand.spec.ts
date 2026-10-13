@@ -17,7 +17,37 @@ test("no illustrated hero car remains and the two-line gold wordmark is centered
   }
   await page.goto("/");
   await expect(page.locator(".car-stage > svg")).toHaveCount(0);
+  const photo = page.getByRole("img", {
+    name: "Real black luxury sedan — marketing showcase photograph",
+  });
+  await expect(photo).toBeVisible();
+  expect(await photo.evaluate((node) => (node as HTMLImageElement).naturalWidth)).toBeGreaterThan(
+    0,
+  );
   await expect(
     page.getByText("Approved real vehicle photography is currently unavailable."),
+  ).toHaveCount(0);
+});
+
+test("four local showcase photos load without Supabase inventory and keep booking unavailable", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const categories = page.getByRole("region", { name: "Vehicle categories" });
+  await categories.scrollIntoViewIfNeeded();
+  await expect(categories.getByRole("img")).toHaveCount(4);
+  for (const photo of await categories.getByRole("img").all()) {
+    await photo.scrollIntoViewIfNeeded();
+    await expect
+      .poll(() => photo.evaluate((node) => (node as HTMLImageElement).naturalWidth))
+      .toBeGreaterThan(0);
+  }
+  await expect(
+    page.getByText("Online booking is currently unavailable.", { exact: false }),
   ).toBeVisible();
+  await page.goto("/book");
+  await expect(
+    page.getByRole("heading", { name: "Online booking is currently unavailable" }),
+  ).toBeVisible();
+  await expect(page.locator('input[name="vehicle_id"]')).toHaveCount(0);
 });
