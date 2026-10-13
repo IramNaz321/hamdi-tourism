@@ -7,8 +7,10 @@ function argument(name: string) {
 async function main() {
   loadEnvironment();
   const userId = z.uuid().parse(argument("--user-id"));
-  const name = z.string().trim().min(1).max(200).parse(argument("--name"));
   const apply = process.argv.includes("--apply");
+  const suppliedName = argument("--name");
+  const name =
+    !apply && !suppliedName ? null : z.string().trim().min(1).max(200).parse(suppliedName);
   if (apply && argument("--approve") !== `${projectRef}:${userId}`)
     throw new Error("Explicit project/user approval is required.");
   const client = await connect();
@@ -50,7 +52,7 @@ async function main() {
       );
     if (!apply) {
       console.log(
-        `PLAN: confirmed Auth user ${userId}; create one Hamdi Tourism organization and one active owner membership. No operational records. Explicit client authorization and approval required before --apply.`,
+        `PLAN: confirmed Auth user ${userId}; create one Hamdi Tourism organization and one active owner membership. No operational records. Real display name, explicit client authorization and approval required before --apply.`,
       );
       await client.query("rollback");
       return;
