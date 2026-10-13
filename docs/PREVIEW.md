@@ -8,7 +8,7 @@ October 13, 2026. Captured from the running production-style application with ho
 
 ![Mobile homepage](previews/mobile.png)
 
-The red BMW X6-inspired illustration and synthesized V8-style interaction are separate from the bookable fleet. No authentic BMW photograph, recording or bookable vehicle is claimed.
+The red illustrated car has now been removed. Approved real photography is still unavailable; no substitute image or fleet record is fabricated. User-triggered synthesized V8-style audio remains separate from actual vehicle make, engine or availability.
 
 ## Desktop and mobile screens
 

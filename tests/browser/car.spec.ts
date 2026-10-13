@@ -20,7 +20,7 @@ test("car rev is user-triggered, mute persists, and sound stops immediately", as
       () => (window as unknown as { __carAudio: AudioContext[] }).__carAudio.length,
     ),
   ).toBe(0);
-  await page.getByRole("button", { name: "Rev the car engine", exact: true }).click();
+  await page.getByRole("button", { name: "Rev engine", exact: true }).click();
   await expect(page.locator('[data-car-revving="true"]')).toBeVisible();
   await expect
     .poll(() =>
@@ -53,7 +53,7 @@ test("car controls work by keyboard and respect reduced motion", async ({ page }
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
   await page.getByRole("button", { name: "Mute engine sound" }).click();
-  const car = page.getByRole("button", { name: "Rev the car engine", exact: true });
+  const car = page.getByRole("button", { name: "Rev engine", exact: true });
   await car.focus();
   await page.keyboard.press("Enter");
   await expect(page.locator('[data-car-revving="true"]')).toBeVisible();

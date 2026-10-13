@@ -376,9 +376,6 @@ svg {
     height: 170px;
     opacity: 0.95;
   }
-  .car-stage svg {
-    height: 160px;
-  }
   .car-controls {
     bottom: -0.5rem;
   }
@@ -429,4 +426,31 @@ svg {
 }
 .luxury-public .notice.error {
   color: #923523;
+}
+
+/* Centered, readable two-line wordmark across public and authenticated layouts. */
+.brand {
+  align-items: center;
+  text-align: center;
+}
+.brand span {
+  color: var(--brand);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+}
+@media (max-width: 639px) {
+  .brand span {
+    letter-spacing: 0.12em;
+    font-size: 11px;
+  }
+}
+
+/* Transparent copy container lets users tap the real hero photograph beneath it. */
+.hero-copy {
+  pointer-events: none;
+}
+.hero-copy a,
+.hero-copy button {
+  pointer-events: auto;
 }

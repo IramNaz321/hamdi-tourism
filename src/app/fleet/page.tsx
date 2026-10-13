@@ -8,7 +8,7 @@ export default async function Fleet() {
   return (
     <main className="max-w-7xl mx-auto p-5 sm:p-8 py-14 space-y-6">
       <Link className="brand" href="/">
-        HAMDI TOURISM
+        HAMDI<span>TOURISM</span>
       </Link>
       <p className="eyebrow">OUR FLEET</p>
       <h1 className="text-4xl font-semibold">Your journey. The right vehicle.</h1>

@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import { CarFront } from "lucide-react";
 export function VehiclePhoto({
   src,
   name,
@@ -30,7 +29,6 @@ export function VehiclePhoto({
         </picture>
       ) : (
         <div className="absolute inset-0 flex flex-col items-center justify-center text-ink gap-3 p-5 text-center">
-          <CarFront size={large ? 64 : 42} strokeWidth={1} />
           <p className="text-sm">
             {src ? "Photo temporarily unavailable" : "Vehicle photograph not published"}
           </p>

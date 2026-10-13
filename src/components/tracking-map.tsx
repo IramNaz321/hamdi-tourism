@@ -6,7 +6,7 @@ import { type TrackingSnapshot, isStale } from "@/lib/tracking";
 import "leaflet/dist/leaflet.css";
 const car = divIcon({
   className: "live-car-marker",
-  html: '<span aria-hidden="true">🚘</span>',
+  html: '<span aria-hidden="true">●</span>',
   iconSize: [32, 32],
   iconAnchor: [16, 16],
 });

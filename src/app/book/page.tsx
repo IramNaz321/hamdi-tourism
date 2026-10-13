@@ -33,7 +33,7 @@ export default async function BookPage({
   return (
     <main className="max-w-4xl mx-auto p-5 py-10 space-y-7">
       <Link href="/" className="brand">
-        HAMDI TOURISM
+        HAMDI<span>TOURISM</span>
       </Link>
       <h1 className="text-3xl font-semibold">Book your airport transfer</h1>
       <p>

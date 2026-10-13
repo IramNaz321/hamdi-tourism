@@ -39,10 +39,7 @@ export function PublicNav({ name, logo }: { name: string; logo?: string }) {
             </picture>
           ) : (
             <>
-              {name.toUpperCase()}
-              <span className="tracking-[.16em]! text-[8px]!">
-                AIRPORT TRANSFERS & CHAUFFEUR SERVICES
-              </span>
+              HAMDI<span>TOURISM</span>
             </>
           )}
         </Link>

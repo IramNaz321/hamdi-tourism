@@ -24,7 +24,7 @@ export default async function PassengerPage({
       <header className="flex justify-between gap-4 flex-wrap">
         <div>
           <Link href="/" className="brand">
-            HAMDI TOURISM
+            HAMDI<span>TOURISM</span>
           </Link>
           <h1 className="text-3xl font-semibold mt-6">Your journeys</h1>
         </div>

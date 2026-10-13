@@ -1,3 +1,4 @@
+import { marketingPhotos } from "@/lib/marketing-photos";
 import { FleetGallery } from "@/components/fleet-gallery";
 import { TravelConcierge } from "@/components/travel-concierge";
 import type { CSSProperties } from "react";
@@ -27,7 +28,6 @@ export default async function Home() {
   const { settings, locations, fleet, logo_url } = await websiteContent();
   const name = "HAMDI TOURISM";
   const destinations = locations.filter((l) => l.featured_destination);
-  const hero = destinations.find((l) => l.image_url);
   const theme = settings
     ? ({
         "--brand": settings.brand_color,
@@ -46,16 +46,7 @@ export default async function Home() {
       <PublicNav name={name} logo={logo_url} />
       <main>
         <section className="relative bg-ink text-white min-h-[570px] lg:min-h-[640px] overflow-hidden">
-          {hero?.image_url ? (
-            <picture>
-              <img
-                src={hero.image_url}
-                alt={hero.name}
-                className="absolute inset-0 size-full object-cover"
-              />
-            </picture>
-          ) : null}
-          <JourneyArt />
+          <JourneyArt photo={marketingPhotos.hero} />
           <div className="absolute inset-0 pointer-events-none bg-linear-to-r from-ink via-ink/85 to-ink/10" />
           <div className="hero-copy max-w-7xl mx-auto px-6 lg:px-10 py-22 lg:py-28 relative z-10">
             <p className="eyebrow text-white/75! mb-6">

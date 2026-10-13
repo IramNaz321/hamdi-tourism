@@ -24,7 +24,11 @@ function subscribeMute(callback: () => void) {
     window.removeEventListener("hamdi-car-mute", callback);
   };
 }
-export function JourneyArt() {
+export function JourneyArt({
+  photo,
+}: {
+  photo?: { src: string; alt: string; credit: string; source: string; license: string } | null;
+}) {
   const muted = useSyncExternalStore(subscribeMute, muteSnapshot, () => false);
   const [revving, setRevving] = useState(false);
   const [notice, setNotice] = useState("");
@@ -135,79 +139,54 @@ export function JourneyArt() {
       stop();
       setRevving(false);
     }
-    setNotice(next ? "Sound muted." : "Sound enabled. Tap the car to rev.");
+    setNotice(next ? "Sound muted." : "Sound enabled. Choose Rev engine to listen.");
   }
   return (
     <div
       className="car-stage absolute inset-y-10 right-0 w-full lg:w-3/5 opacity-90 lg:opacity-100 pointer-events-none"
       data-car-revving={revving}
     >
-      {" "}
-      <svg
-        viewBox="0 0 600 330"
-        className="w-full relative"
-        role="group"
-        aria-label="Red coupe SUV illustration beside an abstract UAE skyline"
-      >
-        <defs>
-          <linearGradient id="car" x2="0" y2="1">
-            <stop stopColor="#ffaaa2" />
-            <stop offset=".36" stopColor="#e73330" />
-            <stop offset=".48" stopColor="#ff6b60" />
-            <stop offset=".53" stopColor="#a91522" />
-            <stop offset="1" stopColor="#570f1c" />
-          </linearGradient>
-          <linearGradient id="car-glass" x2="1" y2="1">
-            <stop stopColor="#9cb4b2" />
-            <stop offset=".48" stopColor="#355751" />
-            <stop offset="1" stopColor="#102f2b" />
-          </linearGradient>
-          <radialGradient id="car-rim">
-            <stop stopColor="#eef0e8" />
-            <stop offset=".6" stopColor="#89988f" />
-            <stop offset="1" stopColor="#31473f" />
-          </radialGradient>
-        </defs>
-        <g stroke="#79958a" fill="none" opacity=".45" strokeWidth="2">
-          <path d="M40 230V138h38v92m18 0V85h38v145m30 0V125h42v105m27 0V76h36v154m20 0V25h16v205m0-205 8-22 8 22v205m22 0V110h53v120m20 0V143h35v87m22 0V98h51v132" />
-          <path d="M0 231h600" />
-        </g>
-        <ellipse cx="300" cy="283" rx="240" ry="23" fill="#061f1d" />
-        <g
-          role="button"
-          tabIndex={0}
-          aria-label="Rev the car engine"
-          className="car-interaction pointer-events-auto cursor-pointer"
-          onClick={() => void rev()}
-          onKeyDown={(event) => {
-            if (event.key === "Enter" || event.key === " ") {
-              event.preventDefault();
-              void rev();
-            }
-          }}
-        >
-          <path d="m70 231 66-25 59-75h155l82 64 79 25 19 49H62Z" fill="url(#car)" />
-          <path d="m158 207 47-62h82v62Zm143 0v-62h41l67 51 9 11Z" fill="url(#car-glass)" />
-          <path d="M79 236h66v10H76m400-10h35v10h-30" fill="#f0ddac" />
-          <path d="M171 222h238m-133-6h22m39 0h22" stroke="#758f83" strokeWidth="3" />
-          <circle cx="169" cy="267" r="32" fill="#0d2320" />
-          <circle cx="169" cy="267" r="17" fill="url(#car-rim)" />
-          <circle cx="440" cy="267" r="32" fill="#0d2320" />
-          <circle cx="440" cy="267" r="17" fill="url(#car-rim)" />
-          <path d="M70 276h460" stroke="#81958b" />
-          <path d="M153 216h264M305 165v89M146 254h283" stroke="#e7ece0" strokeOpacity=".5" />
-          <path d="m360 192 13 6-5 12-14-3Z" fill="#8da094" stroke="#e2e6d8" />
-          <path
-            d="M154 255l30 24m-30 0 30-24m-15-5v34m256-28 30 24m-30 0 30-24m-15-5v34"
-            stroke="#ccd4c9"
-            strokeWidth="2"
-          />
-          <path d="m507 246 17 3" stroke="#b34d3f" strokeWidth="5" />
-        </g>
-      </svg>
+      {photo ? (
+        <div className="space-y-2">
+          <button
+            type="button"
+            aria-label="Rev the car engine"
+            onClick={() => void rev()}
+            className="car-interaction pointer-events-auto block w-full rounded-2xl overflow-hidden focus-visible:outline-2 focus-visible:outline-white"
+          >
+            <picture>
+              <img
+                src={photo.src}
+                alt={photo.alt}
+                width={1600}
+                height={1000}
+                fetchPriority="high"
+                className="w-full aspect-[16/10] object-contain"
+              />
+            </picture>
+          </button>
+          <p className="text-xs text-white/70 pointer-events-auto">
+            Photo:{" "}
+            <a href={photo.source} rel="noopener noreferrer" className="underline">
+              {photo.credit}
+            </a>{" "}
+            ·{" "}
+            <a href={photo.license} rel="noopener noreferrer" className="underline">
+              Licence
+            </a>
+            . Editorial image; ownership and availability are not implied.
+          </p>
+        </div>
+      ) : (
+        <div className="h-full flex items-center justify-center p-8 text-center">
+          <p className="text-sm text-white/70">
+            Approved real vehicle photography is currently unavailable.
+          </p>
+        </div>
+      )}
       <p className="sr-only">
-        Illustration only. Original synthesized V8-style sound approximation, not an authentic BMW
-        recording or fleet listing.
+        Original synthesized V8-style sound; not an authentic BMW recording or a claim about the
+        photographed vehicle’s make or engine.
       </p>
       <div className="car-controls absolute bottom-0 right-6 flex items-center gap-2 pointer-events-auto text-white text-xs">
         <button

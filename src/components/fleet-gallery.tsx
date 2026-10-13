@@ -1,7 +1,7 @@
 import { VehicleCategories } from "./vehicle-categories";
 import { vehicleCategoryLabel } from "@/lib/vehicle-categories";
 import Link from "next/link";
-import { CarFront, Users, Luggage, ArrowUpRight } from "lucide-react";
+import { Users, Luggage, ArrowUpRight } from "lucide-react";
 import type { PublicVehicle } from "@/lib/website";
 import { Card } from "./ui/card";
 import { VehiclePhoto } from "./vehicle-photo";
@@ -60,7 +60,6 @@ export function FleetGallery({ fleet }: { fleet: PublicVehicle[] }) {
         </div>
       ) : (
         <Card className="p-8 sm:p-10 mt-10 text-center">
-          <CarFront size={40} className="mx-auto text-brand mb-4" />
           <h3 className="font-semibold text-lg">Let’s find the right fit.</h3>
           <p className="text-muted text-sm">
             Published fleet details and approved vehicle photographs are currently unavailable.
@@ -70,7 +69,7 @@ export function FleetGallery({ fleet }: { fleet: PublicVehicle[] }) {
             Contact our team
           </Link>
           <p className="text-xs text-muted">
-            The interactive homepage car is an illustration, not an availability listing.
+            Editorial vehicle photographs and engine sounds are not availability listings.
           </p>
         </Card>
       )}
