@@ -109,3 +109,7 @@ See [Phase 3 verification](docs/PHASE-3-VERIFICATION.md) for exact local tests, 
 ## Hosted verification and launch preparation
 
 Run `npm run check:hosted` with securely supplied project bindings for read-only catalog/history/Auth/Owner discovery. It compares 001–007, 001–008 and 001–009 separately, never treating a missing ledger as an empty database. See [Phase 4 verification](docs/PHASE-4-VERIFICATION.md) for actual access status and the exact approval-gated plan. Hosted readiness remains unverified; no migration, role change, merge or deployment runs automatically.
+
+## Final client delivery
+
+See [Final launch report](docs/FINAL-LAUNCH-REPORT.md) and [Client handover](docs/CLIENT-HANDOVER.md). Midnight Luxury styling and the original synthesized red-SUV interaction preserve runtime branding and all three portals. The latest real API audit confirms the existing user and missing business membership/organization, while PostgreSQL network access still blocks the full catalog audit. Code is ready for design review; operational production readiness remains NO. `npm run test:browser` uses an isolated credential-free `.next-test` build. AI additionally requires explicit `OPENAI_CONCIERGE_ENABLED=true` after configuration/spending/privacy approval.

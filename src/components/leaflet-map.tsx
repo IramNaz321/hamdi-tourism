@@ -19,7 +19,7 @@ export default function LeafletMap({ points }: { points: MapPoint[] }) {
           key={point.id}
           center={[point.latitude, point.longitude]}
           radius={8}
-          pathOptions={{ color: "#946732", fillColor: "#183431", fillOpacity: 0.9 }}
+          pathOptions={{ color: "var(--brand)", fillColor: "var(--ink)", fillOpacity: 0.9 }}
         >
           <Popup>{point.name}</Popup>
         </CircleMarker>

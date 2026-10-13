@@ -66,9 +66,9 @@ export function SettingsForm({
           </label>
         ))}
         {[
-          ["brand_color", "Accent color", "#946732"],
-          ["ink_color", "Text / dark color", "#183431"],
-          ["canvas_color", "Page background", "#f5f6f3"],
+          ["brand_color", "Accent color", "#C5A46D"],
+          ["ink_color", "Text / dark color", "#111827"],
+          ["canvas_color", "Page background", "#F8F6F1"],
         ].map(([name, label, fallback]) => (
           <label className="field" key={name}>
             {label}

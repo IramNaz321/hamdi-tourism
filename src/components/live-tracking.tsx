@@ -163,7 +163,7 @@ export function LiveTracking({
             <p>
               {["completed", "cancelled"].includes(trip.status)
                 ? "Trip ended. Location sharing is unavailable."
-                : "No current shared GPS location. The driver may not have started sharing."}
+                : "No current shared GPS location. Waiting for driver consent and a fresh device update."}
             </p>
           )}
         </div>

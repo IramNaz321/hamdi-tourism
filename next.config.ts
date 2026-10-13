@@ -3,6 +3,7 @@ import { configuredSiteOrigin } from "./src/lib/site-origin";
 const origin = configuredSiteOrigin(process.env);
 const config: NextConfig = {
   poweredByHeader: false,
+  distDir: process.env.HAMDI_BROWSER_TESTS === "true" ? ".next-test" : ".next",
   experimental: {
     serverActions: { bodySizeLimit: "6mb", allowedOrigins: origin ? [new URL(origin).host] : [] },
   },

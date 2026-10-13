@@ -148,3 +148,36 @@ test("Admin redirects retain the trusted origin and private caching", async ({ r
     expect(response.headers()["cache-control"]).toContain("no-store");
   }
 });
+
+test("Midnight Luxury theme and gold booking CTA preserve accessible contrast", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const colors = await page.evaluate(() => {
+    const style = getComputedStyle(document.documentElement);
+    return {
+      ink: style.getPropertyValue("--ink").trim().toLowerCase(),
+      brand: style.getPropertyValue("--brand").trim().toLowerCase(),
+      canvas: style.getPropertyValue("--canvas").trim().toLowerCase(),
+    };
+  });
+  expect(colors).toEqual({ ink: "#111827", brand: "#c5a46d", canvas: "#f8f6f1" });
+  const button = page.getByRole("link", { name: "Book Your Transfer", exact: true });
+  const ratio = await button.evaluate((element) => {
+    const css = getComputedStyle(element);
+    const lum = (color: string) => {
+      const rgb = (color.match(/[\d.]+/g) ?? [])
+        .slice(0, 3)
+        .map(Number)
+        .map((v) => {
+          v /= 255;
+          return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+        });
+      return rgb[0] * 0.2126 + rgb[1] * 0.7152 + rgb[2] * 0.0722;
+    };
+    const a = lum(css.color),
+      b = lum(css.backgroundColor);
+    return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+  });
+  expect(ratio).toBeGreaterThanOrEqual(4.5);
+});

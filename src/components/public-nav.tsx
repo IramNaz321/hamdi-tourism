@@ -23,7 +23,7 @@ const links = [
 export function PublicNav({ name, logo }: { name: string; logo?: string }) {
   const [open, setOpen] = useState(false);
   return (
-    <header className="bg-white border-b border-stone-100">
+    <header className="premium-header">
       <nav
         aria-label="Main navigation"
         className="max-w-[1440px] mx-auto px-5 lg:px-8 py-5 flex items-center justify-between gap-6"

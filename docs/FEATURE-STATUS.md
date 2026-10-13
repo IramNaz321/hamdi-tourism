@@ -23,3 +23,7 @@ Current application work includes the verified-account passenger dashboard/profi
 Driver/GPS migration 008 and passenger migration 009 remain pending hosted review and explicit application approval. The previous driver proposal must not be applied alongside 008. Original migrations and seven/eight reference catalogs remain unchanged.
 
 Hosted Supabase/Auth/membership/provider/device verification is incomplete. Real Owner identity/authority, actual business configuration, approved schema rollout, provider secrets/eligibility, legal/privacy review, hosted acceptance and separate deployment approval remain necessary. Registration, live payments and email delivery have explicit enablement gates. Guest booking remains disabled without a reviewed identity policy. No production readiness claim is made.
+
+## Latest hosted evidence and design
+
+See [Final launch report](FINAL-LAUNCH-REPORT.md). The refreshed environment can read the real Supabase Auth/API through its supported HTTPS proxy; the target user is confirmed but has no membership, and organizations are empty. PostgreSQL is network-blocked, so schema/RLS/history remain unverified. Midnight Luxury, improved red SUV/audio interaction, isolated browser checks and provider enablement gates are implemented. No real operations, provider usage or production deployment was activated.

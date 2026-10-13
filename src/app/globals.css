@@ -8,12 +8,12 @@
   --font-sans: Arial, Helvetica, sans-serif;
 }
 :root {
-  --brand: #946732;
-  --brand-hover: #986a32;
-  --ink: #183431;
-  --muted: #61716e;
-  --canvas: #f5f6f3;
-  --line: #dde4df;
+  --brand: #c5a46d;
+  --brand-hover: #d5b983;
+  --ink: #111827;
+  --muted: #576273;
+  --canvas: #f8f6f1;
+  --line: #e3dfd6;
 }
 * {
   box-sizing: border-box;
@@ -63,7 +63,7 @@ button:disabled {
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.19em;
-  color: var(--brand);
+  color: color-mix(in srgb, var(--brand) 35%, var(--ink));
 }
 .button {
   display: inline-flex;
@@ -80,7 +80,7 @@ button:disabled {
   transition: background 0.2s;
 }
 .button:hover {
-  background: #284b46;
+  background: color-mix(in srgb, var(--ink) 85%, white);
 }
 .button.secondary {
   background: white;
@@ -88,6 +88,7 @@ button:disabled {
   border-color: var(--line);
 }
 .button.gold {
+  color: var(--ink);
   background: var(--brand);
 }
 .button.gold:hover {
@@ -129,8 +130,8 @@ button:disabled {
   outline-offset: 1px;
 }
 .notice {
-  background: #eef5ef;
-  border: 1px solid #c9dbcb;
+  background: #f5f0e5;
+  border: 1px solid var(--line);
   border-radius: 10px;
   padding: 13px 16px;
   font-size: 14px;
@@ -142,7 +143,7 @@ button:disabled {
   color: #923523;
 }
 .auth-background {
-  background: radial-gradient(ellipse at top left, #2b5147, transparent 60%), #102a27;
+  background: radial-gradient(ellipse at top left, #334155, transparent 60%), var(--ink);
 }
 .badge {
   display: inline-flex;
@@ -193,7 +194,7 @@ button:disabled {
 }
 .hero-art {
   position: relative;
-  background: linear-gradient(155deg, #284f46, #102c29 70%);
+  background: linear-gradient(155deg, #334155, var(--ink) 70%);
   overflow: hidden;
 }
 .hero-art::before {
@@ -295,4 +296,93 @@ section[id] {
   .live-car-marker {
     transition: none;
   }
+}
+
+/* Midnight Luxury: owner-managed theme variables still take precedence. */
+body {
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  line-height: 1.6;
+}
+.panel {
+  box-shadow: 0 12px 36px rgb(17 24 39 / 4%);
+}
+.button {
+  min-height: 44px;
+  box-shadow: 0 3px 12px rgb(17 24 39 / 8%);
+}
+.field input,
+.field select,
+.field textarea {
+  font-size: 16px;
+  border-color: var(--line);
+}
+.field {
+  min-width: 0;
+}
+main {
+  min-width: 0;
+}
+img,
+svg {
+  max-width: 100%;
+}
+.brand {
+  letter-spacing: 0.1em;
+}
+.premium-header {
+  background: var(--ink);
+  color: white;
+  border-bottom: 1px solid color-mix(in srgb, var(--brand) 30%, transparent);
+}
+.premium-header nav > div {
+  color: #e5e7eb;
+}
+.premium-header [data-slot="button"] {
+  background: var(--canvas);
+  color: var(--ink);
+  min-width: 44px;
+  min-height: 44px;
+}
+.hero-copy h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+}
+[dir="rtl"] .admin-table th {
+  text-align: right;
+}
+@media (max-width: 639px) {
+  .brand {
+    font-size: 21px;
+  }
+  .brand span {
+    letter-spacing: 0.18em;
+  }
+  .hero-copy {
+    padding-top: 3rem;
+    padding-bottom: 16rem;
+  }
+  .hero-copy h1 {
+    font-size: clamp(2.5rem, 11vw, 3.5rem);
+  }
+  .car-stage {
+    inset: auto 0 3.5rem auto;
+    width: 90%;
+    height: 170px;
+    opacity: 0.95;
+  }
+  .car-stage svg {
+    height: 160px;
+  }
+  .car-controls {
+    bottom: -0.5rem;
+  }
+}
+.car-stage {
+  z-index: 1;
 }

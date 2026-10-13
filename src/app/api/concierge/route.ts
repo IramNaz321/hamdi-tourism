@@ -17,6 +17,7 @@ function result(data: object, status = 200) {
 }
 export async function POST(request: Request) {
   if (
+    process.env.OPENAI_CONCIERGE_ENABLED !== "true" ||
     !process.env.OPENAI_API_KEY ||
     !process.env.OPENAI_MODEL ||
     !process.env.AI_RATE_LIMIT_SECRET ||

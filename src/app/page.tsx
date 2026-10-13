@@ -54,9 +54,8 @@ export default async function Home() {
                 className="absolute inset-0 size-full object-cover"
               />
             </picture>
-          ) : (
-            <JourneyArt />
-          )}
+          ) : null}
+          <JourneyArt />
           <div className="absolute inset-0 pointer-events-none bg-linear-to-r from-ink via-ink/85 to-ink/10" />
           <div className="hero-copy max-w-7xl mx-auto px-6 lg:px-10 py-22 lg:py-28 relative z-10">
             <p className="eyebrow text-white/75! mb-6">

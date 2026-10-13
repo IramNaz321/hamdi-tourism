@@ -270,6 +270,41 @@ async function apiAudit() {
         userExists: !!data?.user,
         confirmed: !!data?.user?.email_confirmed_at,
       });
+      const { data: organizations, error: organizationError } = await service
+        .from("organizations")
+        .select("id")
+        .limit(100);
+      report("organization_api", {
+        status: organizationError ? "not_verified" : "read_succeeded",
+        organizationIds: organizationError
+          ? null
+          : (organizations ?? []).map((row) =>
+              z.uuid().safeParse(row.id).success ? row.id : "invalid_identifier_redacted",
+            ),
+        truncated: organizations?.length === 100,
+      });
+      const schemaResponse = await readOnlyFetch(config.url + "/rest/v1/", {
+        headers: {
+          apikey: process.env.SUPABASE_SERVICE_ROLE_KEY!.trim(),
+          Authorization: "Bearer " + process.env.SUPABASE_SERVICE_ROLE_KEY!.trim(),
+        },
+      });
+      if (schemaResponse.ok) {
+        const schema = await schemaResponse.json();
+        const expectedNames = Object.keys(reference(true, true).catalog)
+          .filter((key) => key.startsWith("table:"))
+          .map((key) => key.slice(6));
+        const exposed = Object.keys(schema.definitions ?? {}).filter((name) =>
+          expectedNames.includes(name),
+        );
+        report("exposed_api_schema", {
+          recognizedPublicTables: exposed,
+          recognizedCount: exposed.length,
+          missingExpectedTables: expectedNames.filter((name) => !exposed.includes(name)),
+          fullPostgresqlCatalog:
+            "not_verified; API definitions cannot prove all SQL constraints, functions, indexes, RLS or migration history",
+        });
+      }
       const { data: member, error: memberError } = await service
         .from("staff_members")
         .select("role,active")

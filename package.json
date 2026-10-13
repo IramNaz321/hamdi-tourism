@@ -3,16 +3,16 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --hostname 0.0.0.0",
+    "dev": "node --use-env-proxy node_modules/next/dist/bin/next dev --hostname 0.0.0.0",
     "build": "next build",
-    "start": "next start --hostname 0.0.0.0",
+    "start": "node --use-env-proxy node_modules/next/dist/bin/next start --hostname 0.0.0.0",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test tests/*.test.ts",
     "test:db": "bash supabase/tests/run.sh",
-    "test:browser": "playwright test",
+    "test:browser": "node scripts/browser-check.mjs",
     "format": "prettier --write src tests *.ts *.mjs *.json *.md docs .github",
-    "check:supabase": "tsx scripts/check-supabase.ts",
+    "check:supabase": "node --use-env-proxy --import tsx scripts/check-supabase.ts",
     "db:reference": "tsx scripts/database/reference.ts",
     "db:audit": "tsx scripts/database/audit.ts",
     "db:owner": "tsx scripts/database/owner.ts",
@@ -20,7 +20,7 @@
     "check:owner": "tsx scripts/check-owner-session.ts",
     "db:driver-migration": "tsx scripts/database/driver-migration.ts",
     "db:passenger-migration": "tsx scripts/database/passenger-migration.ts",
-    "check:hosted": "tsx scripts/verification/hosted.ts"
+    "check:hosted": "node --use-env-proxy --import tsx scripts/verification/hosted.ts"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.3.0",
