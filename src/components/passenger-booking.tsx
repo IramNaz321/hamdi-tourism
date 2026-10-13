@@ -1,4 +1,5 @@
 "use client";
+import { vehicleCategoryLabel, vehicleCategories } from "@/lib/vehicle-categories";
 import { VehiclePhoto } from "./vehicle-photo";
 import { useActionState, useState } from "react";
 import Link from "next/link";
@@ -19,6 +20,7 @@ export function PassengerBookingForm({
     fleet.find((v) => v.id === preferredVehicle)?.id ?? fleet[0]?.id ?? "",
   );
   const vehicle = fleet.find((v) => v.id === vehicleId);
+  const [category, setCategory] = useState("");
   const [kind, setKind] = useState("one_way");
   const [dirty, setDirty] = useState(true);
   const [journey, setJourney] = useState<Record<string, string>>({});
@@ -173,37 +175,62 @@ export function PassengerBookingForm({
           Airport terminal and additional stops must be confirmed with our team. Additional stops
           are not quoted without approved pricing.
         </p>
+        <label className="field">
+          Vehicle category
+          <select
+            value={category}
+            onChange={(event) => {
+              const code = event.target.value;
+              setCategory(code);
+              setVehicle(fleet.find((v) => !code || v.category === code)?.id ?? "");
+            }}
+          >
+            <option value="">All four categories</option>
+            {vehicleCategories.map((c) => (
+              <option key={c.code} value={c.code}>
+                {c.name} · {c.capacity}
+              </option>
+            ))}
+          </select>
+        </label>
+        {category && !fleet.some((v) => v.category === category) && (
+          <p className="notice">
+            No owner-published vehicle in this category is available for selection.
+          </p>
+        )}
         <fieldset className="grid sm:grid-cols-2 gap-4">
           <legend className="font-semibold mb-3">
             Published vehicles · Availability pending dispatch
           </legend>
-          {fleet.map((v) => (
-            <label key={v.id} className="border rounded-xl p-4 space-y-2 cursor-pointer">
-              <VehiclePhoto src={v.image_url} name={v.name} />
-              <span className="flex gap-3 items-center">
-                <input
-                  type="radio"
-                  required
-                  name="vehicle_id"
-                  value={v.id}
-                  checked={vehicleId === v.id}
-                  onChange={() => setVehicle(v.id)}
-                />
-                <strong>{v.name}</strong>
-              </span>
-              <p>
-                {v.category} · {v.capacity} passengers ·{" "}
-                {v.luggage_capacity == null
-                  ? "Luggage capacity not published"
-                  : `${v.luggage_capacity} luggage`}
-              </p>
-              {v.description && (
-                <p dir="auto" className="text-sm">
-                  {v.description}
+          {fleet
+            .filter((v) => !category || v.category === category)
+            .map((v) => (
+              <label key={v.id} className="border rounded-xl p-4 space-y-2 cursor-pointer">
+                <VehiclePhoto src={v.image_url} name={v.name} />
+                <span className="flex gap-3 items-center">
+                  <input
+                    type="radio"
+                    required
+                    name="vehicle_id"
+                    value={v.id}
+                    checked={vehicleId === v.id}
+                    onChange={() => setVehicle(v.id)}
+                  />
+                  <strong>{v.name}</strong>
+                </span>
+                <p>
+                  {vehicleCategoryLabel(v.category)} · {v.capacity} passengers ·{" "}
+                  {v.luggage_capacity == null
+                    ? "Luggage capacity not published"
+                    : `${v.luggage_capacity} luggage`}
                 </p>
-              )}
-            </label>
-          ))}
+                {v.description && (
+                  <p dir="auto" className="text-sm">
+                    {v.description}
+                  </p>
+                )}
+              </label>
+            ))}
         </fieldset>
         <input type="hidden" name="category" value={vehicle?.category ?? ""} />
         {quoteState.quote?.pricing.extras?.length ? (
@@ -235,7 +262,7 @@ export function PassengerBookingForm({
             {quoteState.error}
           </p>
         )}
-        <button className="button" disabled={quoting || submitting}>
+        <button className="button" disabled={quoting || submitting || !vehicle}>
           {quoting ? "Calculating…" : "Calculate fare"}
         </button>
       </form>

@@ -1,5 +1,6 @@
 "use client";
 import { useActionState, useState, useRef, useEffect } from "react";
+import { vehicleCategories } from "@/lib/vehicle-categories";
 import Script from "next/script";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -152,10 +153,11 @@ export function TransferEnquiry({
         <label className="field">
           Vehicle category
           <select name="category">
-            <option value="sedan">Sedan</option>
-            <option value="suv">SUV</option>
-            <option value="van">Van</option>
-            <option value="luxury">Luxury</option>
+            {vehicleCategories.map((category) => (
+              <option key={category.code} value={category.code}>
+                {category.name} · {category.capacity}
+              </option>
+            ))}
           </select>
         </label>
         {transfer === "return" && (

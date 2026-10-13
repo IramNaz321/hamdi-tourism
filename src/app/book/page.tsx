@@ -1,3 +1,4 @@
+import { VehicleCategories } from "@/components/vehicle-categories";
 import { z } from "zod";
 import Link from "next/link";
 import { websiteContent, publicBusinessId } from "@/lib/website";
@@ -43,6 +44,7 @@ export default async function BookPage({
         <Link href="/passenger">Your account</Link>
         <Link href="/#transfers">Transfer enquiry</Link>
       </nav>
+      <VehicleCategories fleet={content.fleet} />
       {!ready || !content.fleet.length || !content.locations.length ? (
         <section className="panel p-6 space-y-4">
           <h2 className="text-xl font-semibold">Online booking is currently unavailable</h2>

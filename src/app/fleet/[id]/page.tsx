@@ -1,3 +1,4 @@
+import { vehicleCategoryLabel } from "@/lib/vehicle-categories";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { z } from "zod";
@@ -16,7 +17,7 @@ export default async function Vehicle({ params }: { params: Promise<{ id: string
       <div className="grid lg:grid-cols-2 gap-8 items-start">
         <VehiclePhoto src={vehicle.image_url} name={vehicle.name} large />
         <section className="panel p-6 space-y-5">
-          <p className="eyebrow capitalize">{vehicle.category}</p>
+          <p className="eyebrow capitalize">{vehicleCategoryLabel(vehicle.category)}</p>
           <h1 className="text-3xl font-semibold" dir="auto">
             {vehicle.name}
           </h1>

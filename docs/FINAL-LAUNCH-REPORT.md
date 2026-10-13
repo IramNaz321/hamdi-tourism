@@ -43,12 +43,12 @@ No deployment token or approved hosting destination is available. No public/priv
 ## Actual test results
 
 - ESLint and TypeScript: passed after excluding generated `.next-test` output.
-- Unit tests: **54 passed**.
+- Unit tests: **55 passed**.
 - Disposable PostgreSQL/RLS: **195 assertions passed**. Includes tenant isolation, financial evidence/idempotency/refunds, assigned-driver lifecycle, passenger access, GPS consent/revocation/retention and outbox controls.
 - Production build: passed with the current environment.
 - Isolated production-style browser build: passed.
-- Desktop/mobile Chromium: **38 passed**, including new theme/CTA contrast tests, forms, public/protected routes, car audio lifecycle, reduced motion, RTL concierge fallback, genuine GPS-controller permission tests and isolated booking-component interactions.
-- PNG decode/open checks: desktop 1280×4058 and mobile 1082×17110 physical pixels (mobile device scale); valid PNGs. No fake fleet/location was introduced to make screenshots attractive.
+- Desktop/mobile Chromium: **44 passed**, including new theme/CTA contrast tests, forms, public/protected routes, car audio lifecycle, reduced motion, RTL concierge fallback, genuine GPS-controller permission tests and isolated booking-component interactions.
+- PNG decode/open checks: desktop 1280×4388 and mobile 1082×21228 physical pixels (mobile device scale); valid PNGs. No fake fleet/location was introduced to make screenshots attractive.
 
 Browser GPS is explicitly emulated test-device data; local booking/provider fixtures stay local. These passes do not certify real hosted bookings, physical sensors, broker authorization or provider payments/messages/model output. No real charge, booking, driver, GPS fix, customer email or OpenAI request was created.
 
@@ -59,7 +59,7 @@ The safest next action is **publish the saved pooler network update**, then the 
 After actual catalog verification:
 
 1. If 001–007 fully match and the ledger is absent, present the ledger-only baseline plan for explicit approval; never replay 001–007. If 008/009 already fully match, baseline only matching history and skip their SQL. Partial/unknown schema requires a reviewed additive repair.
-2. Present the concrete Owner plan for the existing confirmed Auth UUID. Obtain the real display name, client authority and explicit permission-change approval. Current API evidence suggests one new genuine organization/membership is needed; the guarded tool rechecks inside a transaction and refuses duplicates. No account is recreated.
+2. Present the concrete Owner plan for the existing confirmed Auth UUID. The client identifies the business owner as **Hamid Shah**. Verify the account-to-person relationship and obtain explicit client authority and permission-change approval. Current API evidence suggests one new genuine organization/membership is needed; the guarded tool rechecks inside a transaction and refuses duplicates. No account is recreated.
 3. Separately approve migration 008 and its exact hash, GPS visibility/consent/retention defaults and verified retention worker. Audit after applying once.
 4. Separately approve migration 009 and its exact hash. Audit the nine-migration catalog/history. See [Phase 4](PHASE-4-VERIFICATION.md) for guarded commands/current approval identifiers.
 5. Publish genuine contact/policies, actual fleet/capacity/licences, served locations/coordinates, route durations/fares/extras and minimum notice through authorized Owner/Admin UI. Set the actual resulting organization UUID. A missing business does not get sample records.
@@ -97,4 +97,27 @@ The multilingual concierge system instruction now limits answers to 1–3 senten
 
 All **12** homepage/gallery/fleet/booking/tracking/concierge PNGs were regenerated from the actual running isolated production-style application, decoded with Sharp and visually inspected as a contact sheet. Both homepage screenshots include the genuine empty fleet gallery. Browser tests used no hosted credentials; these are honest missing-configuration screens, not successful booking/tracking/chatbot demonstrations. Production server startup was also verified and the homepage returned HTTP 200. No externally forwarded URL or deployment capability is available in this environment; a loopback address is not a usable client preview link. [Preview and all screenshots](PREVIEW.md) gives the existing Codespaces private browser-preview path.
 
-Current checks: clean ESLint, TypeScript, production build, 54 unit tests, 195 disposable PostgreSQL assertions and 38 desktop/mobile browser tests. These do not make the hosted business production-ready. Hosted API access succeeds, but PostgreSQL transport remains blocked; there is still no organization or Owner membership. Migrations, permissions and deployment were not changed.
+Current checks: clean ESLint, TypeScript, production build, 55 unit tests, 195 disposable PostgreSQL assertions and 44 desktop/mobile browser tests. These do not make the hosted business production-ready. Hosted API access succeeds, but PostgreSQL transport remains blocked; there is still no organization or Owner membership. Migrations, permissions and deployment were not changed.
+
+## Final client requirements and corrections
+
+**Brand: HAMDI TOURISM. Client/business owner name supplied: Hamid Shah.** This identity statement is not an authorization to change the confirmed Auth account's permissions. No Owner assignment has been performed.
+
+The homepage fleet, `/fleet`, `/book`, passenger vehicle selector, transfer enquiry and Admin category selectors now share exactly four client-approved category labels:
+
+| Category            | Client service description | Existing database code |
+| ------------------- | -------------------------- | ---------------------- |
+| Normal Sedan        | 3 passengers               | `sedan`                |
+| Luxury Sedan        | 3 passengers               | `luxury`               |
+| 7-Seater            | 7 seats                    | `van`                  |
+| 5-Passenger Vehicle | 5 passengers               | `suv`                  |
+
+The internal codes remain compatible with existing database constraints and pricing/booking RPCs; no migration or record relabel was executed. Category cards are service descriptions, not fleet records. Individual vehicles retain their actual published names, capacity, luggage and UUIDs. Passenger filtering never creates a selectable vehicle for an empty category; quoting is disabled without a selected real vehicle. The owner must confirm classification/capacity/photograph rights before publishing real records. No make/model, registration, availability or price is fabricated. Matching approved published photographs fill each category; currently all slots honestly show missing photographs. Four professionally licensed category photos are still needed. No stock photo licensing was presumed.
+
+**Text and voice concierge:** English, Arabic, Urdu and Hindi use the existing grounded, authenticated-booking-scoped OpenAI path. Voice input uses browser speech recognition, only after a microphone click, with native permission handling, explicit browser-provider audio processing disclosure, transcript review before submission, denial/unavailable states and a stop control. Spoken responses use only device-local synthesis voices, start muted, require unmute plus a separate Read answer aloud click, and stop on mute, Stop voice, language change, close or hidden tab. Missing device voices produce an explicit text fallback. There is no automatic voice submission/playback or microphone capture on page load. Browser/OS speech recognition availability, external speech-provider privacy and physical device/language quality require client acceptance; no audio is stored by the application. OpenAI is still not configured/enabled, so real AI answers are not claimed tested.
+
+**Admin and GPS:** existing authenticated dashboard/navigation, reports, assignments, settings, logout, Driver portal, scoped consent-based Leaflet/OpenStreetMap/Realtime tracking and real endpoint coordinates are preserved. The confirmed account still lacks Owner/staff membership. Desktop/mobile Admin captures show the genuine secure login redirect; an authenticated dashboard screenshot is blocked by missing authorized access, and was not fabricated. No actual trip, coordinates, moving marker or ETA was created.
+
+**Current verification:** ESLint, TypeScript and production build pass. **55 unit tests**, **195 disposable PostgreSQL assertions** and **44 desktop/mobile browser checks** pass, including category consistency, microphone click/review/mute/cleanup, permission denial and genuine login/Admin protection. Speech APIs in browser tests are explicitly mocked device responses; hosted Auth/physical microphone/model/GPS acceptance remains unverified. Read-only hosted audit was rerun with the same results: API accessible, account confirmed, no membership/organizations, 17 API-exposed tables, PostgreSQL network blocked. No SQL/migration/record/permission/message/payment/deployment mutations were performed.
+
+All 16 desktop/mobile PNGs show actual running UI, including four categories, homepage, chatbot with voice controls, booking, tracking, login and protected Admin access. They were decoded and visually checked. There is no external browser-forwarding capability or approved hosting destination here; the Codespaces private Ports → 3000 → Open in Browser procedure remains the real preview route. No publicly accessible website URL is claimed.

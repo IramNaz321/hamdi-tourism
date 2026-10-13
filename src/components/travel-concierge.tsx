@@ -1,5 +1,6 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
+import { ConciergeVoice } from "./concierge-voice";
 import Link from "next/link";
 import Script from "next/script";
 type Turnstile = {
@@ -10,6 +11,7 @@ type Turnstile = {
 export function TravelConcierge({ bookingId }: { bookingId?: string } = {}) {
   const [open, setOpen] = useState(false);
   const [language, setLanguage] = useState("en");
+  const [message, setMessage] = useState("");
   const [answer, setAnswer] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -94,11 +96,19 @@ export function TravelConcierge({ bookingId }: { bookingId?: string } = {}) {
               Your question
               <textarea
                 name="message"
+                value={message}
+                onChange={(event) => setMessage(event.target.value)}
                 required
                 maxLength={1500}
                 dir={["ar", "ur"].includes(language) ? "rtl" : "ltr"}
               />
             </label>
+            <ConciergeVoice
+              key={language}
+              language={language}
+              answer={answer}
+              onTranscript={setMessage}
+            />
             {process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && (
               <>
                 <Script

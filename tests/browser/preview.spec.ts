@@ -13,6 +13,14 @@ test("capture genuine fleet, booking, unavailable tracking and concierge screens
     page.getByRole("heading", { name: "Online booking is currently unavailable" }),
   ).toBeVisible();
   await page.screenshot({ path: `docs/previews/${info.project.name}-booking.png`, fullPage: true });
+  await page.goto("/login");
+  await page.screenshot({ path: `docs/previews/${info.project.name}-login.png`, fullPage: true });
+  await page.goto("/admin");
+  await expect(page).toHaveURL(/\/login/);
+  await page.screenshot({
+    path: `docs/previews/${info.project.name}-admin-access.png`,
+    fullPage: true,
+  });
   await page.goto("/track/a0000000-0000-4000-8000-000000000001");
   await expect(page.getByRole("heading", { name: "Tracking unavailable" })).toBeVisible();
   await page.screenshot({

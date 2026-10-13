@@ -1,4 +1,5 @@
 "use client";
+import { vehicleCategoryLabel } from "@/lib/vehicle-categories";
 import { useActionState } from "react";
 import Link from "next/link";
 import { entities, toUaeInput } from "@/lib/entities";
@@ -74,7 +75,9 @@ export function RecordForm({
                     )
                     .map((option) => (
                       <option key={option} value={option}>
-                        {option.replaceAll("_", " ")}
+                        {["category", "vehicle_category"].includes(field.name)
+                          ? vehicleCategoryLabel(option)
+                          : option.replaceAll("_", " ")}
                       </option>
                     ))}
                 </select>

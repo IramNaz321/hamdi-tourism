@@ -25,7 +25,7 @@ import { Card } from "@/components/ui/card";
 export const dynamic = "force-dynamic";
 export default async function Home() {
   const { settings, locations, fleet, logo_url } = await websiteContent();
-  const name = settings?.display_name ?? "Hamdi Tourism";
+  const name = "HAMDI TOURISM";
   const destinations = locations.filter((l) => l.featured_destination);
   const hero = destinations.find((l) => l.image_url);
   const theme = settings

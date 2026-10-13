@@ -2,7 +2,7 @@
 
 Reviewed on October 13, 2026, starting from `e48fbe6` on `feat/hamdi-tourism-application`.
 
-**Production readiness: NO. Hosted database readiness is not verified.** The missing connection is `SUPABASE_DB_URL` in this active Codex environment. Public/server application bindings are present only as unusable configuration; there is no authorized Supabase connector available here. This run attempted no hosted database/API requests after validation failed. The blocker is configuration, not a proven network or password failure.
+**Current status: production readiness NO.** Secure bindings are now available and read-only Supabase HTTPS API verification succeeds. The confirmed Auth account has no staff membership, and organizations are empty. Direct PostgreSQL catalog access still fails at network transport before authentication. See the current [Final launch report](FINAL-LAUNCH-REPORT.md). The sections below retain historical missing-configuration findings and must not be interpreted as the current blocker.
 
 ## What is known and what is reported
 
