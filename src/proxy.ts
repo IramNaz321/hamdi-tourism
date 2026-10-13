@@ -1,6 +1,5 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
-import { localRedirect } from "@/lib/local-redirect";
 import { publicSupabaseConfig } from "@/lib/supabase/config";
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
@@ -26,7 +25,7 @@ export async function proxy(request: NextRequest) {
       request.nextUrl.pathname === "/driver-account") &&
     !user
   ) {
-    const redirect = localRedirect("/login");
+    const redirect = NextResponse.redirect(new URL("/login", request.url), 303);
     response.cookies.getAll().forEach((cookie) => redirect.cookies.set(cookie));
     return redirect;
   }
