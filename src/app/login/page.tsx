@@ -1,6 +1,8 @@
 import { AuthShell } from "@/components/auth-shell";
 import { AuthForm } from "@/components/auth-form";
-import { isConfigured } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
+import { accountRoute } from "@/lib/account-route";
+import { createClient, isConfigured } from "@/lib/supabase/server";
 export const dynamic = "force-dynamic";
 export default async function Login({
   searchParams,
@@ -8,6 +10,22 @@ export default async function Login({
   searchParams: Promise<{ notice?: string }>;
 }) {
   const { notice } = await searchParams;
+  if (isConfigured() && notice !== "invalid-link") {
+    const client = await createClient();
+    const {
+      data: { user },
+      error,
+    } = await client.auth.getUser();
+    if (!error && user) {
+      const membership = await client
+        .from("staff_members")
+        .select("role,active")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (membership.error) throw new Error("Unable to verify account access.");
+      redirect(accountRoute(membership.data));
+    }
+  }
   return (
     <AuthShell title="Welcome back" description="Sign in to manage your journeys, team and fleet.">
       {notice === "invalid-link" && (

@@ -19,7 +19,7 @@ export async function login(_: AuthState, form: FormData): Promise<AuthState> {
 export async function logout() {
   if (isConfigured()) {
     const supabase = await createClient();
-    const { error } = await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut({ scope: "local" });
     if (error) throw new Error("Unable to sign out. Please try again.");
   }
   redirect("/login");

@@ -2,6 +2,7 @@ import "server-only";
 import { z } from "zod";
 import { createClient, isConfigured } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/admin";
+import { enquiryConfigurationIssues } from "./enquiry-readiness";
 export type PublicSettings = {
   display_name: string;
   contact_email: string | null;
@@ -41,17 +42,11 @@ export type PublicVehicle = {
   image_url?: string;
 };
 export function publicBusinessId() {
-  const id = process.env.HAMDI_ORGANIZATION_ID;
+  const id = process.env.HAMDI_ORGANIZATION_ID?.trim();
   return z.uuid().safeParse(id).success ? id! : null;
 }
 export function enquiriesConfigured() {
-  return (
-    isConfigured() &&
-    !!publicBusinessId() &&
-    !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY &&
-    !!process.env.TURNSTILE_SECRET_KEY &&
-    !!process.env.SUPABASE_SERVICE_ROLE_KEY
-  );
+  return enquiryConfigurationIssues(process.env).length === 0;
 }
 export async function websiteContent(): Promise<{
   settings: PublicSettings | null;

@@ -1,5 +1,7 @@
 /** Safe to import in the browser: only public configuration belongs here. */
 export function publicSupabaseConfig(url: string | undefined, key: string | undefined) {
+  url = url?.trim();
+  key = key?.trim();
   if (!url || !key || url.includes("your-project") || key.includes("your-publishable-key"))
     return null;
   try {

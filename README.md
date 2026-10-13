@@ -87,6 +87,8 @@ With preinstalled Chromium, use `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/ch
 
 See [guarded database operations and acceptance](docs/SUPABASE-OPERATIONS.md) for catalog audits, manual-migration baselining, owner planning, secure access, and approval gates.
 
+See [Admin readiness and configuration verification](docs/ADMIN-VERIFICATION.md) for Next.js 16 proxy/Codespaces routing fixes, owner-only enquiry diagnostics, and hosted acceptance gates.
+
 ## Review and deployment
 
 Review the migrations and sensitive server actions, run CI and the staging acceptance checklist, then merge the pull request into `main`. Merging code does not apply migrations or configure secrets. Use HTTPS, protect project/hosting administrator accounts, configure monitoring, backups, retention and tested restores. Privacy and applicable UAE business requirements need client review before launch.

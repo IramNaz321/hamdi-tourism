@@ -121,3 +121,25 @@ test("public security headers and discovery restrictions are present", async ({ 
   const robots = await request.get("/robots.txt");
   expect(await robots.text()).toContain("Disallow: /admin");
 });
+
+test("Admin redirects retain the trusted origin and private caching", async ({ request }) => {
+  for (const path of [
+    "/admin",
+    "/admin/drivers",
+    "/admin/customers/new",
+    "/admin/route_pricing",
+    "/admin/locations",
+    "/admin/bookings/new",
+    "/admin/settings",
+  ]) {
+    const response = await request.get(path, {
+      maxRedirects: 0,
+      headers: { "x-forwarded-host": "attacker.example", "x-forwarded-proto": "https" },
+    });
+    expect(response.status()).toBe(303);
+    const destination = new URL(response.headers().location, "http://127.0.0.1:3000");
+    expect(destination.pathname).toBe("/login");
+    expect(destination.origin).toBe("http://127.0.0.1:3000");
+    expect(response.headers()["cache-control"]).toContain("no-store");
+  }
+});

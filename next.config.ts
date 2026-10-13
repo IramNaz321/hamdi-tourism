@@ -1,7 +1,11 @@
 import type { NextConfig } from "next";
+import { configuredSiteOrigin } from "./src/lib/site-origin";
+const origin = configuredSiteOrigin(process.env);
 const config: NextConfig = {
   poweredByHeader: false,
-  experimental: { serverActions: { bodySizeLimit: "6mb" } },
+  experimental: {
+    serverActions: { bodySizeLimit: "6mb", allowedOrigins: origin ? [new URL(origin).host] : [] },
+  },
   async headers() {
     return [
       {
