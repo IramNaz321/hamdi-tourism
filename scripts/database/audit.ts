@@ -1,3 +1,4 @@
+import { readMigrationHistory } from "./migration-history";
 import { audit, connect, loadEnvironment, reportError } from "./common";
 async function main() {
   loadEnvironment();
@@ -5,20 +6,12 @@ async function main() {
   try {
     await client.query("begin read only");
     await audit(client);
-    const ledger = await client.query(
-      "select to_regclass('supabase_migrations.schema_migrations') is not null as exists",
+    const history = await readMigrationHistory(client);
+    console.log(
+      history.present
+        ? `Migration ledger has ${history.versions.length} entries. Manual SQL application may require an approved baseline; do not rerun migrations.`
+        : "No CLI migration ledger: manual SQL application requires an approved baseline, not replay.",
     );
-    if (ledger.rows[0].exists) {
-      const versions = await client.query(
-        "select version from supabase_migrations.schema_migrations order by version",
-      );
-      console.log(
-        `Migration ledger has ${versions.rowCount} entries. Manual SQL application may require an approved baseline; do not rerun migrations.`,
-      );
-    } else
-      console.log(
-        "No CLI migration ledger: manual SQL application requires an approved baseline, not replay.",
-      );
     await client.query("rollback");
   } finally {
     await client.end();
