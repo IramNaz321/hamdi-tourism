@@ -25,7 +25,7 @@ test.beforeAll(async () => {
             namespace: "fixture",
           }));
           b.onLoad({ filter: /.*/, namespace: "fixture" }, () => ({
-            contents: `export async function quotePassenger(previous,form){await new Promise(r=>setTimeout(r,100));return {quote:{id:'a9000000-0000-4000-8000-000000000001',expires_at:'2099-01-01T00:00:00Z',pricing:{total_aed:115,outbound_aed:115,return_aed:null,base_fare:100,additional_charges:5,extras:[{id:'a5000000-0000-4000-8000-000000000001',name:'Test extra',price_aed:10,charge_basis:'per_leg'}]},terms:{terms:'Test terms',privacy:'Test privacy',booking_policy:'Test-only booking policy',cancellation_policy:'Test-only cancellation policy'}}};}export async function createPassengerBooking(previous,form){if(!form.get('request_id')||form.get('acknowledged')!=='on')return {error:'Invalid request'};return {bookings:[{id:'a8000000-0000-4000-8000-000000000001',reference:'TEST-ONLY',status:'pending'}]};}`,
+            contents: `export async function quotePassenger(previous,form){await new Promise(r=>setTimeout(r,100));return {quote:{id:'a9000000-0000-4000-8000-000000000001',expires_at:'2099-01-01T00:00:00Z',pricing:{total_aed:115,outbound_aed:115,return_aed:null,base_fare:100,additional_charges:5,extras:[{id:'a5000000-0000-4000-8000-000000000001',name:'Test extra',price_aed:10,charge_basis:'per_leg'}]},terms:{terms:'Test terms',privacy:'Test privacy',booking_policy:'Test-only booking policy',cancellation_policy:'Test-only cancellation policy'}}};}export async function createPassengerBooking(previous,form){if(!form.get('request_id')||form.get('acknowledged')!=='on')return {error:'Invalid request'};return {bookings:[{id:'a8000000-0000-4000-8000-000000000001',reference:'TEST-ONLY',status:globalThis.testBookingStatus??'pending'}]};}`,
             loader: "js",
           }));
           b.onResolve({ filter: /^next\/link$/ }, () => ({
@@ -100,4 +100,27 @@ test("booking component retains journey through quotes, invalidates edited quote
     page.getByText("Your reservation is pending review", { exact: false }),
   ).toBeVisible();
   await expect(page.getByRole("link", { name: "View TEST-ONLY · pending" })).toBeVisible();
+});
+
+test("idempotent booking receipts show the recorded confirmed status without claiming pending review", async ({
+  page,
+}) => {
+  await page.route("**/__booking-status-test", (route) =>
+    route.fulfill({ status: 200, contentType: "text/html", body: '<div id="root"></div>' }),
+  );
+  await page.goto("/__booking-status-test");
+  await page.evaluate(() => Object.assign(window, { testBookingStatus: "confirmed" }));
+  await page.addScriptTag({ content: bundle });
+  await page.getByLabel("Pickup location").selectOption("a0000000-0000-4000-8000-000000000001");
+  await page.getByLabel("Drop-off location").selectOption("a0000000-0000-4000-8000-000000000002");
+  await page.getByLabel("Pickup date (UAE)").fill("2099-01-01");
+  await page.getByLabel("Pickup time (UAE)").fill("10:00");
+  await page.getByRole("button", { name: "Calculate fare" }).click();
+  await page.getByLabel(/I agree to the terms/).check();
+  await page.getByRole("button", { name: "Request booking", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Your saved booking" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "View TEST-ONLY · confirmed" })).toBeVisible();
+  await expect(page.getByText("Your reservation is pending review", { exact: false })).toHaveCount(
+    0,
+  );
 });

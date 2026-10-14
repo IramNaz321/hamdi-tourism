@@ -35,7 +35,9 @@ network retry was made. No Owner role/account or organization is created.**
 ### 000 — next action: read-only prerequisite query
 
 Run only [000-inspect-prerequisites.sql](../supabase/proposals/hosted-repair/000-inspect-prerequisites.sql)
-in the SQL Editor of project `hzcupgjphowrzvrdffrf`, then return its single JSON cell.
+through an authorized operator/execution channel for project `hzcupgjphowrzvrdffrf`.
+This is not a request for the client to repeatedly copy SQL or JSON; no additional
+manual inspection was requested in the final delivery run.
 No mutation, function creation or temporary objects occur. The query reads schema
 metadata and organization/settings flags, not Auth users/customer records/secrets.
 Function fingerprints are compared with the local reference. A mismatch requires
@@ -227,3 +229,14 @@ claimed. Existing 001–009 disposable RLS tests remain separate evidence.
 - `public.payment_failed(event_key text, attempt uuid, session text)`
 - `public.payment_record(event_key text, event_kind text, attempt uuid, session text, intent text, charge text, total_minor bigint, currency_code text, refund_total bigint)`
 - `public.payment_reserve(trip uuid, passenger uuid)`
+
+## Delivery-run rehearsal update
+
+`npm run test:repair` now provides a repeatable Docker-only validation path and runs
+in CI. It confirms missing-organization refusal, unpublished settings idempotency,
+production Driver refusal when pg_cron is unavailable, Passenger refusal before
+Driver dependencies, successful guarded Passenger installation after original 008,
+replay refusal and 32 RLS-enabled tables. The installed candidate passes all 195
+local RLS/workflow assertions. The original Driver body is tested with the local
+extension shim behavior; no live cron worker or successful hosted Driver installation
+is claimed. No production connection is used by this command.

@@ -4,9 +4,12 @@ A production-oriented UAE airport transfer and chauffeur website and business ma
 
 The application contains no seeded customers, drivers, bookings, vehicles, reviews, business achievements, flight alerts or GPS positions. Supabase must be connected and verified before operational use.
 
-See the current [client handover and release blockers](docs/CLIENT-HANDOVER.md).
+See the current [delivery status and release blockers](docs/FINAL-DELIVERY-STATUS.md).
 `npm run check:handover` prints a read-only configuration/migration-integrity report
 without secret values; it intentionally fails when core bindings are missing.
+
+See the [Owner operating guide](docs/OWNER-OPERATING-GUIDE.md) and
+[deployment, backup and acceptance checklist](docs/DEPLOYMENT-HANDOVER-CHECKLIST.md).
 
 ## Run
 
@@ -30,7 +33,7 @@ See [project-specific secure connection instructions](docs/SUPABASE-CONNECTION.m
 1. Select the real client's Supabase project. Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` from its API settings. **Never** substitute a service-role key for the publishable key.
 2. For a fresh database, original migrations 001–007 form the Admin baseline. For this client’s existing database, audit the hosted catalog first and never replay already applied SQL. Migration 008 is pending separately approved driver/GPS rollout; use the guarded workflow in [Phase 2 verification](docs/PHASE-2-VERIFICATION.md), not an unrestricted `supabase db push`. Never run `supabase/tests/*` against hosted databases.
 3. Verify the existing real owner Auth account and actual membership first using the read-only owner plan in [Supabase operations](docs/SUPABASE-OPERATIONS.md). The client has reported an existing confirmed user; do not create a duplicate. Obtain the real name, client authority and explicit approval of the concrete permission change before invoking the guarded owner bootstrap. No open Admin signup or default account exists.
-4. Set `HAMDI_ORGANIZATION_ID` to the actual organization UUID created by the bootstrap script (`public.organizations.id`). This selects the website's business. It is not accepted from public visitors. The UUID is an identifier, not an authentication credential.
+4. Set `HAMDI_ORGANIZATION_ID` to the actual existing organization UUID verified before Owner bootstrap (`public.organizations.id`). This selects the website's business. It is not accepted from public visitors. The UUID is an identifier, not an authentication credential.
 5. Set Supabase Auth **Site URL** and `NEXT_PUBLIC_SITE_URL` to the exact application origin. Use HTTPS in production. For development use `http://localhost:3000`. Allow the corresponding `/auth/confirm` and `/auth/callback` redirect URLs, without wildcard production origins.
 6. Configure real custom SMTP and these Auth templates:
    - **Invite user** link: `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=invite`

@@ -48,10 +48,15 @@ export function PassengerBookingForm({
   if (bookingState.bookings)
     return (
       <section className="panel p-6 space-y-4">
-        <h2 className="text-2xl font-semibold">Booking request received</h2>
+        <h2 className="text-2xl font-semibold">
+          {bookingState.bookings.every((b) => b.status === "pending")
+            ? "Booking request received"
+            : "Your saved booking"}
+        </h2>
         <p>
-          Your reservation is pending review and availability confirmation. No driver is assigned
-          automatically.
+          {bookingState.bookings.every((b) => b.status === "pending")
+            ? "Your reservation is pending review and availability confirmation. No driver is assigned automatically."
+            : "The current recorded status is shown below. Open your journey to view assignment and trip details."}
         </p>
         {bookingState.bookings.map((b) => (
           <Link key={b.id} className="button" href={`/passenger/bookings/${b.id}`}>
@@ -332,6 +337,11 @@ export function PassengerBookingForm({
           </label>
           <input type="hidden" name="quote_id" value={quote.id} />
           <input type="hidden" name="request_id" value={requestId} />
+          {bookingState.uncertain && (
+            <Link className="underline block" href="/passenger">
+              Check Your journeys before retrying
+            </Link>
+          )}
           {bookingState.error && (
             <p role="alert" className="notice error">
               {bookingState.error}

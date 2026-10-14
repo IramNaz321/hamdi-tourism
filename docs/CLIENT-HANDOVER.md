@@ -82,34 +82,26 @@ personal profile/bookings/notifications/detail RPCs. Empty results and query err
 are distinct. Admin uses actual operational queries and summary RPCs. No dashboard
 was simulated for client access, and no operational seed data was created.
 
-## Owner bootstrap: concrete plan, NOT executed
+## Owner bootstrap: existing organization, NOT executed
 
-1. Client verifies that the existing UUID belongs to Hamid Shah and explicitly
-   authorizes the Owner role. An email or supplied display name alone is insufficient.
-2. Restore PostgreSQL protocol connectivity from a trusted authorized execution
-   environment to the existing guarded `SUPABASE_DB_URL`. The current Codex network
-   transport is the blocker; the secret already exists. Do not copy SQL manually.
-3. Run the existing read-only catalog audit and `db:owner` dry-run. Confirm actual
-   tables, existing users, memberships and organizations again immediately before
-   any proposed mutation. Preserve existing data; never replay 001–007 blindly.
-4. Present the result for explicit approval. Only if the live organization count is
-   still zero and the verified user has no membership, the existing bootstrap script
-   would create **one** HAMDI TOURISM organization and **one** active Owner membership
-   attached to that existing Auth UUID, in a guarded transaction with rollback.
-   It does not create an Auth account, password, customer, driver, vehicle or booking.
-   Existing business/membership conflicts cause refusal, not a duplicate or promotion.
-5. After that approved execution, securely set the returned organization UUID and
-   explicitly approved Owner UUID in the website runtime. Never place server secrets
-   in public environment bindings or client code.
-6. Compare the catalog with reviewed migration references before proposing 008,
-   then 009. Existing migration scripts require explicit project/hash approval and
-   verify expected schema state; they are not run automatically by the app.
+The real organization already exists. The updated `db:owner` tool must use that
+organization and the existing confirmed Auth account. It never creates another
+organization or Auth user. Read-only planning is the default; no apply invocation
+was made. Human proof that the selected account belongs to Hamid Shah and explicit
+Owner authority remain unconfirmed.
 
-The Admin application gate is restricted to the approved client identity. Existing
-SQL retains a delegated-staff model. Direct API/RLS exclusivity to a single client
-must also be reviewed/hardened through separately approved SQL after catalog access
-is restored. `supabase/proposals/client-owner-lock.sql` is review-only and unapplied;
-it addresses role changes and is not by itself a full single-client RLS policy.
+Apply requires matching configured organization/approved Owner UUID, confirmed real
+display name and exact project/organization/user approval. It rechecks a reviewed
+007/008/009 catalog, locks the target and memberships, refuses another Owner or
+non-Owner/inactive/cross-organization membership, and inserts at most one approved
+active Owner membership. Existing matching active Owner is a no-op. No automatic
+promotion or reactivation occurs. See [current onboarding, deployment and recovery
+instructions](DEPLOYMENT-HANDOVER-CHECKLIST.md).
+
+No SQL/data/permission change is approved by passing local tests. The application
+identity binding does not itself harden direct API delegated-role permissions.
+That hosted policy/Owner-lock review remains a release gate. Do not replay 001–007
+or merge/deploy to get around missing access.
 
 ## Client checklist after approved setup
 

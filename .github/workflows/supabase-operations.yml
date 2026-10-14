@@ -20,6 +20,12 @@ on:
             driver-apply,
             passenger-plan,
             passenger-apply,
+            repair-settings-plan,
+            repair-settings-apply,
+            repair-driver-plan,
+            repair-driver-apply,
+            repair-passenger-plan,
+            repair-passenger-apply,
           ]
       owner_user_id:
         description: Confirmed real Auth UUID, required for owner operations
@@ -51,6 +57,7 @@ jobs:
       NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL }}
       PASSENGER_AUTH_ENABLED: ${{ vars.PASSENGER_AUTH_ENABLED }}
       HAMDI_ORGANIZATION_ID: ${{ vars.HAMDI_ORGANIZATION_ID }}
+      HAMDI_OWNER_USER_ID: ${{ vars.HAMDI_OWNER_USER_ID }}
       OPERATION: ${{ inputs.operation }}
       OWNER_USER_ID: ${{ inputs.owner_user_id }}
       OWNER_NAME: ${{ inputs.owner_name }}
@@ -68,13 +75,19 @@ jobs:
           set -euo pipefail
           case "$OPERATION" in
             verify-read-only) npm run check:hosted ;;
+            repair-settings-plan) npm run db:repair -- --step settings ;;
+            repair-settings-apply) npm run db:repair -- --step settings --apply --approve "$APPROVAL" ;;
+            repair-driver-plan) npm run db:repair -- --step driver ;;
+            repair-driver-apply) npm run db:repair -- --step driver --apply --approve "$APPROVAL" ;;
+            repair-passenger-plan) npm run db:repair -- --step passenger ;;
+            repair-passenger-apply) npm run db:repair -- --step passenger --apply --approve "$APPROVAL" ;;
             audit) npm run db:audit ;;
             audit-driver) npm run db:audit -- --with-driver ;;
             audit-passenger) npm run db:audit -- --with-passenger ;;
             baseline-plan) npm run db:baseline ;;
             baseline-apply) npm run db:baseline -- --apply --approve "$APPROVAL" ;;
-            owner-plan) npm run db:owner -- --user-id "$OWNER_USER_ID" --name "$OWNER_NAME" ;;
-            owner-apply) npm run db:owner -- --user-id "$OWNER_USER_ID" --name "$OWNER_NAME" --apply --approve "$APPROVAL" ;;
+            owner-plan) npm run db:owner -- --organization-id "$HAMDI_ORGANIZATION_ID" --user-id "$OWNER_USER_ID" --name "$OWNER_NAME" ;;
+            owner-apply) npm run db:owner -- --organization-id "$HAMDI_ORGANIZATION_ID" --user-id "$OWNER_USER_ID" --name "$OWNER_NAME" --apply --approve "$APPROVAL" ;;
             passenger-plan) npm run db:passenger-migration ;;
             passenger-apply) npm run db:passenger-migration -- --apply --approve "$APPROVAL" ;;
             driver-plan) npm run db:driver-migration ;;

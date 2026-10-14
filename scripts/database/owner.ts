@@ -1,80 +1,95 @@
-import { z } from "zod";
-import { audit, connect, loadEnvironment, projectRef, reportError } from "./common";
-function argument(name: string) {
-  const index = process.argv.indexOf(name);
-  return index === -1 ? undefined : process.argv[index + 1];
-}
+import { verifyRepairPrerequisites } from "./repair-prerequisites";
+/** Guarded existing-organization Owner planning; applies only after verified identity and exact approval. */
+import {
+  audit,
+  catalog,
+  compareCatalog,
+  connect,
+  loadEnvironment,
+  reference,
+  reportError,
+} from "./common";
+import { ownerBootstrapInput, ownerMembershipDecision } from "./owner-approval";
 async function main() {
   loadEnvironment();
-  const userId = z.uuid().parse(argument("--user-id"));
-  const apply = process.argv.includes("--apply");
-  const suppliedName = argument("--name");
-  const name =
-    !apply && !suppliedName ? null : z.string().trim().min(1).max(200).parse(suppliedName);
-  if (apply && argument("--approve") !== `${projectRef}:${userId}`)
-    throw new Error("Explicit project/user approval is required.");
+  // Reject missing identity/approval before opening any database connection.
+  const target = ownerBootstrapInput(process.argv.slice(2), process.env);
   const client = await connect();
   try {
-    await client.query(apply ? "begin" : "begin read only");
-    if (apply) {
+    await client.query(target.apply ? "begin" : "begin read only");
+    if (target.apply) {
       await client.query(
         "select pg_advisory_xact_lock(hashtextextended('hamdi-owner-bootstrap',0))",
       );
-      await client.query("lock table public.organizations in share row exclusive mode");
     }
-    await audit(client);
+    const org = await client.query(
+      "select id from public.organizations where id=$1" + (target.apply ? " for update" : ""),
+      [target.organizationId],
+    );
+    if (org.rowCount !== 1)
+      throw new Error("Existing organization is required. No organization will be created.");
+    if (target.apply)
+      await client.query("lock table public.staff_members in share row exclusive mode");
+    const actual = await catalog(client);
+    const stages = [
+      { driver: false, passenger: false },
+      { driver: true, passenger: false },
+      { driver: true, passenger: true },
+    ].filter(
+      (stage) =>
+        compareCatalog(reference(stage.driver, stage.passenger).catalog, actual).length === 0,
+    );
+    if (stages.length !== 1)
+      throw new Error("Schema drift requires review before Owner planning or assignment.");
+    await audit(client, stages[0].driver, stages[0].passenger);
+    await verifyRepairPrerequisites(client, stages[0].passenger ? 9 : stages[0].driver ? 8 : 7);
     const user = await client.query(
-      "select id,email_confirmed_at is not null as confirmed, deleted_at is not null as deleted,(banned_until is not null and banned_until>now()) as banned from auth.users where id=$1" +
-        (apply ? " for update" : ""),
-      [userId],
+      "select id,email_confirmed_at is not null as confirmed, email is not null as has_email, deleted_at is not null as deleted,(banned_until is not null and banned_until>now()) as banned from auth.users where id=$1" +
+        (target.apply ? " for update" : ""),
+      [target.userId],
     );
     if (
       user.rowCount !== 1 ||
       !user.rows[0].confirmed ||
+      !user.rows[0].has_email ||
       user.rows[0].deleted ||
       user.rows[0].banned
     )
-      throw new Error("Real user must exist, be confirmed, not deleted and not currently banned.");
+      throw new Error(
+        "Existing real user must have confirmed email and be neither deleted nor banned.",
+      );
     const member = await client.query(
       "select organization_id,role,active from public.staff_members where user_id=$1",
-      [userId],
+      [target.userId],
     );
-    if (member.rowCount) {
-      if (member.rows[0].role !== "owner" || !member.rows[0].active)
-        throw new Error("Existing membership must be reviewed; no automatic promotion.");
+    // This client project permits one verified Owner, including inactive historical memberships.
+    const owners = await client.query(
+      "select user_id from public.staff_members where role='owner'",
+    );
+    const decision = ownerMembershipDecision(target, member.rows[0], owners.rows);
+    if (decision === "already_configured") {
       console.log(
-        `ALREADY CONFIGURED: active owner; organization ${member.rows[0].organization_id}. No changes made.`,
+        "Existing active Owner membership matches the target organization; no changes made. Human identity approval is a separate prerequisite.",
       );
       await client.query("rollback");
       return;
     }
-    const businesses = await client.query(
-      "select count(*)::int as count from public.organizations",
-    );
-    if (businesses.rows[0].count !== 0)
-      throw new Error(
-        "Existing business requires review. Do not create a duplicate organization or silently attach a new owner.",
-      );
-    if (!apply) {
+    if (!target.apply) {
       console.log(
-        `PLAN: confirmed Auth user ${userId}; create one Hamdi Tourism organization and one active owner membership. No operational records. Real display name, explicit client authorization and approval required before --apply.`,
+        "PLAN: one active Owner membership for the selected existing Auth user in the configured existing organization. No new organization, user or operational records. Client identity and exact approval remain required; no changes made.",
       );
       await client.query("rollback");
       return;
     }
-    const organization = await client.query(
-      "insert into public.organizations(name) values('Hamdi Tourism') returning id",
-    );
-    const org = organization.rows[0].id;
     const inserted = await client.query(
-      "insert into public.staff_members(user_id,organization_id,email,display_name,role) select id,$2,email,$3,'owner' from auth.users where id=$1 and email_confirmed_at is not null and deleted_at is null and (banned_until is null or banned_until<=now())",
-      [userId, org, name],
+      "insert into public.staff_members(user_id,organization_id,email,display_name,role,active) select id,$2,email,$3,'owner',true from auth.users where id=$1 and email_confirmed_at is not null and deleted_at is null and (banned_until is null or banned_until<=now())",
+      [target.userId, target.organizationId, target.name],
     );
     if (inserted.rowCount !== 1)
-      throw new Error("Owner membership was not created; transaction rolled back.");
+      throw new Error("Owner membership was not created; transaction will roll back.");
     await client.query("commit");
     console.log(
-      `Owner bootstrap committed. Set HAMDI_ORGANIZATION_ID securely to ${org}. No customers, drivers, vehicles, prices or bookings created.`,
+      "Approved Owner membership committed for the existing organization/user. No other accounts or operational records created.",
     );
   } catch (error) {
     await client.query("rollback");

@@ -27,6 +27,14 @@ SELECT jsonb_build_object(
     FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace
     WHERE n.nspname IN ('public','private') AND p.prokind='f'
   ),
+  'constraints', (
+    SELECT coalesce(jsonb_object_agg(c.relname, (
+      SELECT coalesce(jsonb_agg(pg_get_constraintdef(k.oid) ORDER BY pg_get_constraintdef(k.oid)), '[]'::jsonb)
+      FROM pg_constraint k WHERE k.conrelid=c.oid
+    )), '{}'::jsonb)
+    FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
+    WHERE n.nspname='public' AND c.relkind IN ('r','p')
+  ),
   'indexes', (
     SELECT coalesce(jsonb_agg(jsonb_build_object('table',tablename,'name',indexname,
       'definition',indexdef) ORDER BY tablename,indexname),'[]'::jsonb)
@@ -44,7 +52,7 @@ SELECT jsonb_build_object(
   ),
   'storage_realtime_policies', (
     SELECT coalesce(jsonb_agg(jsonb_build_object('schema',schemaname,'table',tablename,
-      'name',policyname,'command',cmd,'roles',roles,'using',qual,'with_check',with_check)
+      'name',policyname,'command',cmd,'roles',roles,'using',qual,'with_check',with_check,'mode',permissive)
       ORDER BY schemaname,tablename,policyname),'[]'::jsonb)
     FROM pg_policies WHERE (schemaname='storage' AND tablename='objects')
       OR (schemaname='realtime' AND tablename='messages')
@@ -67,12 +75,33 @@ SELECT jsonb_build_object(
       'mode',permissive) ORDER BY tablename,policyname),'[]'::jsonb)
     FROM pg_policies WHERE schemaname='public'
   ),
+  'api_role_security', (
+    SELECT jsonb_agg(jsonb_build_object('role',rolname,'superuser',rolsuper,'bypass_rls',rolbypassrls) ORDER BY rolname)
+    FROM pg_roles WHERE rolname IN ('anon','authenticated')
+  ),
+  'effective_table_grants', (
+    SELECT coalesce(jsonb_agg(jsonb_build_object('table',c.relname,'role',r.name,
+      'privilege',v.name,'allowed',has_table_privilege(r.name,c.oid,v.name))
+      ORDER BY c.relname,r.name,v.name),'[]'::jsonb)
+    FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
+    CROSS JOIN (VALUES ('anon'::text),('authenticated'::text)) r(name)
+    CROSS JOIN (VALUES ('SELECT'::text),('INSERT'),('UPDATE'),('DELETE'),('TRUNCATE'),('REFERENCES'),('TRIGGER')) v(name)
+    WHERE n.nspname='public' AND c.relkind IN ('r','p')
+  ),
+  'provider_security', jsonb_build_object(
+    'storage_rls',coalesce((SELECT relrowsecurity FROM pg_class WHERE oid=to_regclass('storage.objects')),false),
+    'realtime_rls',coalesce((SELECT relrowsecurity FROM pg_class WHERE oid=to_regclass('realtime.messages')),false),
+    'storage_select',coalesce(has_table_privilege('authenticated',to_regclass('storage.objects'),'SELECT'),false),
+    'storage_insert',coalesce(has_table_privilege('authenticated',to_regclass('storage.objects'),'INSERT'),false),
+    'storage_delete',coalesce(has_table_privilege('authenticated',to_regclass('storage.objects'),'DELETE'),false),
+    'realtime_select',coalesce(has_table_privilege('authenticated',to_regclass('realtime.messages'),'SELECT'),false)
+  ),
   'schema_access', (
     SELECT jsonb_agg(jsonb_build_object('schema',n.nspname,
       'anon_usage',has_schema_privilege('anon',n.oid,'USAGE'),
       'authenticated_usage',has_schema_privilege('authenticated',n.oid,'USAGE'))
       ORDER BY n.nspname)
-    FROM pg_namespace n WHERE n.nspname IN ('public','private')
+    FROM pg_namespace n WHERE n.nspname IN ('public','private','storage','realtime')
   ),
   'media_bucket', (
     SELECT jsonb_build_object('public',public,'file_size_limit',file_size_limit,

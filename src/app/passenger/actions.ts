@@ -9,6 +9,7 @@ import { createClient, isConfigured } from "@/lib/supabase/server";
 import { siteOrigin } from "@/lib/auth";
 import { requirePassenger } from "@/lib/passenger";
 import {
+  bookingReceiptSchema,
   passengerContactSchema,
   passengerReturnPath,
   bookingSubmissionSchema,
@@ -162,6 +163,7 @@ export type PassengerQuote = {
 export type BookingState = PassengerState & {
   quote?: PassengerQuote;
   bookings?: { id: string; reference: string; status: string }[];
+  uncertain?: boolean;
 };
 export async function quotePassenger(_: BookingState, form: FormData): Promise<BookingState> {
   const { supabase, organizationId } = await requirePassenger();
@@ -216,16 +218,32 @@ export async function createPassengerBooking(
   });
   if (!parsed.success)
     return { error: "Review and acknowledge policies before requesting your booking." };
-  const { data, error } = await supabase.rpc("passenger_create_booking", {
-    quote_id: parsed.data.quote_id,
-    request_id: parsed.data.request_id,
-    customer_notes: parsed.data.notes,
-    acknowledged: true,
-  });
-  if (error) return { error: passengerError(error.message) };
-  revalidatePath("/passenger");
-  revalidatePath("/admin");
-  return { bookings: data };
+  try {
+    const { data, error } = await supabase.rpc("passenger_create_booking", {
+      quote_id: parsed.data.quote_id,
+      request_id: parsed.data.request_id,
+      customer_notes: parsed.data.notes,
+      acknowledged: true,
+    });
+    if (error)
+      return { error: passengerError(error.message), uncertain: !allowed.includes(error.message) };
+    const receipt = bookingReceiptSchema.safeParse(data);
+    if (!receipt.success)
+      return {
+        uncertain: true,
+        error:
+          "The booking response could not be confirmed. Check Your journeys or contact our team before retrying.",
+      };
+    revalidatePath("/passenger");
+    revalidatePath("/admin");
+    return { bookings: receipt.data };
+  } catch {
+    return {
+      uncertain: true,
+      error:
+        "The booking result could not be confirmed. Check Your journeys or contact our team before retrying.",
+    };
+  }
 }
 export async function requestCancellation(
   _: PassengerState,

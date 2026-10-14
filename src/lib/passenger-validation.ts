@@ -34,3 +34,16 @@ export function bookingPaymentState(paid: number, refunded: number, price: numbe
   if (refunded > 0) return "Partially refunded";
   return paid >= price ? "Payment verified" : "Partially paid";
 }
+
+/** Validate server evidence before displaying a booking confirmation. */
+export const bookingReceiptSchema = z
+  .array(
+    z.object({
+      id: z.uuid(),
+      reference: z.string().trim().min(1).max(128),
+      status: z.enum(["pending", "confirmed", "in_progress", "completed", "cancelled"]),
+    }),
+  )
+  .min(1)
+  .max(2)
+  .refine((rows) => new Set(rows.map((row) => row.id)).size === rows.length);
