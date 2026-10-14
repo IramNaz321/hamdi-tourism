@@ -1,11 +1,12 @@
 # Hamid Shah — pending Owner activation
 
+**Owner activation is now verified complete. Do not replay the activation transaction.**
 Client identity, authority and execution of the exact transaction at commit `184de64`
-were explicitly approved in this conversation. That approval is retained; do not ask
-for duplicate Owner approval merely because access is blocked. The approved transaction
-was attempted once and denied. Read-only verification afterward confirmed zero target
-memberships and zero associated audit insert events. No hosted data, account or
-permissions were changed.
+were explicitly approved. The agent's earlier write attempt was denied; the client
+subsequently reported executing it successfully in the correct Supabase SQL Editor.
+Fresh read-only database verification now confirms exactly one matching active Owner
+membership and one matching INSERT audit event, with no other Owner and RLS retained.
+No database writes were performed by the agent during this verification run.
 
 ## Live read-only verification
 
@@ -15,7 +16,9 @@ Through the Supabase Management HTTPS API for `hzcupgjphowrzvrdffrf`:
   `hamidshah3211@outlook.com` case-insensitively; confirmed, previously signed in,
   neither deleted nor banned.
 - Organization `9f53250d-5e05-409d-9182-3d45448aa399` exists and is named HAMDI TOURISM.
-- The account has no staff membership; no other Owner exists.
+- The account has exactly one active Owner membership in the specified organization,
+  with display name Hamid Shah and matching email. Exactly one associated staff INSERT
+  audit event exists; no other Owner exists. Staff RLS remains enabled.
 - The catalog matches the reviewed migrations 001–007. Staff RLS is enabled,
   authenticated has SELECT-only staff access, and the enabled audit trigger and
   audit function fingerprint match the reviewed reference.
@@ -65,7 +68,7 @@ query execution channel (`database:write` where scoped access is supported), sup
 securely. Merely re-entering the same read-only token does not establish that access.
 Project-details GET denial is distinct from the successfully verified SQL reads.
 
-Current readiness reads confirm the organization exists, Owner membership is absent,
+Current readiness reads confirm the organization and active Owner membership exist,
 business_settings has no organization row, Driver and Passenger modules and the
 booking-configuration RPC are absent, and pg_cron is not installed. Existing ordered
 010/020/030 candidates remain separately unapproved. Do not replay 001–007, enable
@@ -75,15 +78,38 @@ No Vercel token/project/organization binding or callable hosting integration is
 available; GitHub reports no deployments for this repository. Hosting and genuine
 Owner/browser-session acceptance remain external gates, not successful deployments.
 
-After authorized write access is confirmed: retain the existing exact approval, re-run read-only preflight, verify this exact file hash,
-execute only this transaction on the verified project, then read back the target
-membership and audit event. Set server-only HAMDI_OWNER_USER_ID to the verified
-UUID in the actual serving environment; HAMDI_ORGANIZATION_ID must match. No public
-client-side Owner binding is added. The current strict PostgreSQL helper must not
-be bypassed or portrayed as having passed its full metadata check; an HTTPS
-execution must explicitly retain the same identity, conflict and schema safeguards.
+## Server binding and login acceptance
 
-Real client browser sign-in/session/logout and Admin RLS acceptance remain unverified
-until exercised with an authorized genuine session. No password was requested,
-used or reset. Booking repairs/configuration and Vercel deployment remain separate
-approval gates. No new features or design changes were made for this proposal.
+After live membership verification, the approved HAMDI_OWNER_USER_ID was configured
+only in ignored `.env.local`, preserving other values and restricting file mode to
+0600. The existing organization binding matches. The application Owner-binding gate
+accepts the approved identity; `check:handover` reports no missing core configuration.
+A reusable environment-variable requirement/suggestion was also saved in the Codex
+draft; publishing or activation on other machines is not verified. No client bundle
+or tracked source contains the configured Owner identity as a runtime fallback.
+
+The local Next.js server was restarted and `/login` returned 200; anonymous `/admin`
+returned 303. Live HTTPS preflight now confirms active Owner membership and public
+Auth-key acceptance. It still flags hosted signup enabled versus application
+registration disabled; no Auth settings were changed. These checks do not prove a
+real password login, authenticated dashboard render, session refresh or logout.
+No genuine Owner session token is available and no client password was requested,
+used or reset. No fabricated or service-key-impersonated login was attempted.
+
+Codespaces and Vercel have separate server settings. This task cannot propagate the
+ignored local environment file to those machines; their Owner binding and exact Auth
+callback origin must be configured and verified before client acceptance there.
+Use the client's own existing sign-in; do not repeat Owner activation.
+
+## Next database and deployment gates
+
+Owner activation no longer needs execution access. Missing settings and 008/009
+booking/Driver/Passenger repairs still require their own approval and authorized
+write execution. Existing ordered proposals remain unchanged; never replay 001–007
+or fabricate published inventory/fares/policies. Missing business settings does not
+itself block baseline Admin authentication; the Admin layout has an appearance
+fallback when no row exists.
+
+Vercel access/project configuration and an authorized genuine browser session are
+unavailable. No production deployment or public URL is verified. Prioritize approved
+booking repairs and real host configuration next, without adding features or redesign.

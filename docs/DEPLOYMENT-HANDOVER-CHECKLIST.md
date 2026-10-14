@@ -12,8 +12,9 @@ in this environment, and no deployment is claimed.
    Deploy or merge before approval and the live gates below are satisfied.
 2. Configure the host's secure environment settings using `.env.example`. Required
    app bindings: Supabase public URL/publishable key, server-only service key, actual
-   existing organization UUID and exact HTTPS origin. The approved Owner UUID remains
-   unset while the approved database activation is blocked by read-only access. See
+   existing organization UUID and exact HTTPS origin. Owner activation is now verified and the approved UUID is configured in the local
+   server environment. Configure the same server-only binding on the actual host;
+   Codex settings do not transfer automatically. See
    [the current activation record](OWNER-ACTIVATION-PLAN.md). Keep the database admin URI out
    of the deployed application; it is only for trusted approved operations tooling.
 3. Configure the real domain/HTTPS and exact Supabase Auth Site URL/callback allowlist,
