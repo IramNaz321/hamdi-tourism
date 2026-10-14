@@ -254,14 +254,27 @@ section[id] {
   outline-offset: 6px;
 }
 [data-car-revving="true"] .car-interaction {
-  animation: car-rev 120ms ease-in-out infinite alternate;
+  animation: car-rev 3200ms cubic-bezier(0.42, 0, 0.25, 1) both;
 }
 @keyframes car-rev {
-  from {
-    transform: translateY(0);
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
   }
-  to {
-    transform: translateY(-2px) rotate(-0.15deg);
+  8% {
+    transform: translate3d(0, -1px, 0) rotate(-0.08deg);
+  }
+  18% {
+    transform: translate3d(0, 0, 0);
+  }
+  30% {
+    transform: translate3d(1px, -1px, 0);
+  }
+  65% {
+    transform: translate3d(16px, -2px, 0);
+  }
+  78% {
+    transform: translate3d(22px, -2px, 0);
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -993,5 +1006,42 @@ svg {
   .brand .brand-subtitle {
     font-size: 9px;
     margin-top: 5px;
+  }
+}
+
+/* The approved car is baked into a flat scene: move that exact photograph,
+   never fake isolated wheels or replace it with a different vehicle. */
+@media (prefers-reduced-motion: no-preference) {
+  .cinematic-hero:has(.cinematic-engine[data-car-revving="true"]) .cinematic-backdrop img {
+    transform-origin: center;
+    animation: hamdi-scene-drive 3200ms cubic-bezier(0.42, 0, 0.25, 1) both;
+    will-change: transform;
+  }
+}
+@keyframes hamdi-scene-drive {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  8% {
+    transform: translate3d(0, -0.3px, 0) scale(1.001);
+  }
+  18% {
+    transform: translate3d(0, 0.2px, 0) scale(1.002);
+  }
+  30% {
+    transform: translate3d(-0.1%, -0.03%, 0) scale(1.004);
+  }
+  55% {
+    transform: translate3d(-0.8%, -0.3%, 0) scale(1.025);
+  }
+  70% {
+    transform: translate3d(-1.6%, -0.55%, 0) scale(1.04);
+  }
+  78% {
+    transform: translate3d(-2%, -0.7%, 0) scale(1.045);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
   }
 }

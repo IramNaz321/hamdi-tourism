@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Volume2, VolumeX } from "lucide-react";
+import { CAR_DRIVE_DURATION_MS, playEngineStartup } from "@/lib/car-engine-audio";
 
 let memoryMuted = false;
 let muteWritten = false;
@@ -37,14 +38,20 @@ export function JourneyArt({
   const context = useRef<AudioContext | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const active = useRef(false);
-  const stop = useCallback(() => {
-    if (timer.current) clearTimeout(timer.current);
-    timer.current = null;
-    active.current = false;
+  const stopAudio = useCallback(() => {
     const previous = context.current;
     context.current = null;
     if (previous && previous.state !== "closed") void previous.close().catch(() => {});
   }, []);
+  const stop = useCallback(() => {
+    if (timer.current) clearTimeout(timer.current);
+    timer.current = null;
+    active.current = false;
+    stopAudio();
+  }, [stopAudio]);
+  useEffect(() => {
+    if (muted) stopAudio();
+  }, [muted, stopAudio]);
   useEffect(() => {
     const onVisibility = () => {
       if (document.hidden) {
@@ -62,11 +69,15 @@ export function JourneyArt({
     if (active.current) return;
     active.current = true;
     setRevving(true);
-    setNotice(muted ? "Engine animation. Sound muted." : "Synthesized V8-style engine revving.");
+    setNotice(
+      muted
+        ? "Cinematic drive effect. Sound muted."
+        : "Synthesized engine startup and acceleration.",
+    );
     timer.current = setTimeout(() => {
       stop();
       setRevving(false);
-    }, 1600);
+    }, CAR_DRIVE_DURATION_MS);
     if (muted) return;
     try {
       const Audio =
@@ -77,56 +88,10 @@ export function JourneyArt({
       context.current = audio;
       await audio.resume();
       if (context.current !== audio || !active.current) return;
-      const start = audio.currentTime;
-      const output = audio.createGain();
-      const filter = audio.createBiquadFilter();
-      const compressor = audio.createDynamicsCompressor();
-      filter.type = "lowpass";
-      filter.frequency.setValueAtTime(280, start);
-      filter.frequency.exponentialRampToValueAtTime(1500, start + 0.45);
-      filter.frequency.exponentialRampToValueAtTime(280, start + 1.3);
-      output.gain.setValueAtTime(0, start);
-      output.gain.linearRampToValueAtTime(0.09, start + 0.08);
-      output.gain.linearRampToValueAtTime(0.14, start + 0.45);
-      output.gain.exponentialRampToValueAtTime(0.001, start + 1.35);
-      output.connect(filter);
-      filter.connect(compressor);
-      compressor.connect(audio.destination);
-      // Original V8-style firing approximation: 4 firing pulses/revolution.
-      // Not a licensed BMW recording, actual fleet claim or microphone capture.
-      const texture = audio.createBuffer(1, Math.ceil(audio.sampleRate * 1.4), audio.sampleRate);
-      const samples = texture.getChannelData(0);
-      let smooth = 0;
-      for (let i = 0; i < samples.length; i++) {
-        smooth = (smooth + 0.12 * (Math.random() * 2 - 1)) / 1.12;
-        samples[i] = smooth;
-      }
-      const exhaust = audio.createBufferSource();
-      exhaust.buffer = texture;
-      const exhaustLevel = audio.createGain();
-      exhaustLevel.gain.value = 0.4;
-      exhaust.connect(exhaustLevel);
-      exhaustLevel.connect(output);
-      exhaust.start(start);
-      exhaust.stop(start + 1.4);
-      // Original synthesized combustion harmonics; no recording or microphone access.
-      for (let harmonic = 1; harmonic <= 6; harmonic++) {
-        const oscillator = audio.createOscillator();
-        const level = audio.createGain();
-        oscillator.type = harmonic === 1 ? "sawtooth" : "triangle";
-        oscillator.frequency.setValueAtTime(48 * harmonic, start);
-        oscillator.frequency.exponentialRampToValueAtTime(205 * harmonic, start + 0.45);
-        oscillator.frequency.exponentialRampToValueAtTime(50 * harmonic, start + 1.3);
-        level.gain.value = 1 / (harmonic * harmonic * 2.5);
-        oscillator.connect(level);
-        level.connect(output);
-        oscillator.start(start);
-        oscillator.stop(start + 1.4);
-      }
+      playEngineStartup(audio);
     } catch {
-      stop();
-      setRevving(false);
-      setNotice("Sound is unavailable in this browser.");
+      stopAudio();
+      setNotice("Sound is unavailable in this browser. The visual effect can still play.");
     }
   }
   function toggleMute() {
@@ -137,22 +102,21 @@ export function JourneyArt({
       localStorage.setItem("hamdi-car-muted", String(next));
     } catch {}
     window.dispatchEvent(new Event("hamdi-car-mute"));
-    if (next) {
-      stop();
-      setRevving(false);
-    }
+    if (next) stopAudio();
     setNotice(next ? "Sound muted." : "Sound enabled. Choose Rev engine to listen.");
   }
   return (
     <div
       className={scene ? "cinematic-engine" : "car-stage pointer-events-none"}
       data-car-revving={revving}
+      data-car-motion={scene ? "flat-scene" : "photo"}
     >
       {scene ? (
         <button
           type="button"
           aria-label="Rev the car engine"
           className="cinematic-car-hotspot"
+          title="Start and rev the engine"
           onClick={() => void rev()}
         />
       ) : photo ? (
