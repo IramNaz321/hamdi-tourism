@@ -67,7 +67,7 @@ test("real login action dispatches roles, blocks unconfirmed accounts and preser
       }),
     });
     for (const [member, path] of [
-      [null, "/passenger"],
+      [null, "/access-pending"],
       [{ role: "driver", active: true }, "/driver-account"],
       [{ role: "owner", active: true }, "/admin"],
       [{ role: "driver", active: false }, "/access-pending"],

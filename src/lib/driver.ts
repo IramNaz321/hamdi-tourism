@@ -1,3 +1,4 @@
+import { reportAccessFailure } from "@/lib/access-diagnostics";
 import "server-only";
 import { redirect } from "next/navigation";
 import { createClient, isConfigured } from "@/lib/supabase/server";
@@ -15,7 +16,10 @@ export async function requireDriver() {
     .select("role,active,display_name")
     .eq("user_id", user.id)
     .maybeSingle();
-  if (membershipError) throw new Error("Unable to verify driver access.");
+  if (membershipError) {
+    reportAccessFailure("driver", membershipError);
+    redirect("/access-pending?notice=permissions-unavailable");
+  }
   if (!member?.active) redirect("/access-pending");
   if (member.role !== "driver") redirect("/admin");
   return { supabase, member };

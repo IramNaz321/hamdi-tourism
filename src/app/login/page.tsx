@@ -1,3 +1,4 @@
+import { reportAccessFailure } from "@/lib/access-diagnostics";
 import { trackingPath } from "@/lib/tracking";
 import { AuthShell } from "@/components/auth-shell";
 import { AuthForm } from "@/components/auth-form";
@@ -25,8 +26,11 @@ export default async function Login({
         .select("role,active")
         .eq("user_id", user.id)
         .maybeSingle();
-      if (membership.error) throw new Error("Unable to verify account access.");
-      redirect(membership.data ? accountRoute(membership.data) : "/passenger");
+      if (membership.error) {
+        reportAccessFailure("staff-login", membership.error);
+        redirect("/access-pending?notice=permissions-unavailable");
+      }
+      redirect(membership.data ? accountRoute(membership.data) : "/access-pending");
     }
   }
   return (

@@ -1,4 +1,5 @@
-import Link from "next/link";
+import { reportAccessFailure } from "@/lib/access-diagnostics";
+import { BrandLogo } from "@/components/brand-logo";
 import { PassengerAuthForm } from "@/components/passenger-forms";
 import { redirect } from "next/navigation";
 import { accountRoute } from "@/lib/account-route";
@@ -23,15 +24,16 @@ export default async function PassengerLogin({
         .select("role,active")
         .eq("user_id", user.id)
         .maybeSingle();
-      if (membershipError) throw new Error("Unable to verify account access.");
+      if (membershipError) {
+        reportAccessFailure("passenger-login", membershipError);
+        redirect("/access-pending?notice=permissions-unavailable");
+      }
       redirect(member ? accountRoute(member) : passengerReturnPath(params.next));
     }
   }
   return (
     <main className="max-w-lg mx-auto p-6 py-16 space-y-6">
-      <Link className="brand" href="/">
-        HAMDI<span>TOURISM</span>
-      </Link>
+      <BrandLogo />
       <h1 className="text-3xl font-semibold">
         {params.mode === "recovery" ? "Recover your account" : "Passenger sign in"}
       </h1>

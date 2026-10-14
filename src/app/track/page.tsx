@@ -1,3 +1,4 @@
+import { BrandLogo } from "@/components/brand-logo";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { z } from "zod";
@@ -10,9 +11,7 @@ export default async function TrackRide({
   if (trip && z.uuid().safeParse(trip).success) redirect(`/track/${trip}`);
   return (
     <main className="max-w-xl mx-auto px-5 py-16 space-y-6">
-      <Link className="brand" href="/">
-        HAMDI<span>TOURISM</span>
-      </Link>
+      <BrandLogo />
       <h1 className="text-3xl font-semibold">Track Your Ride</h1>
       <p>
         Open tracking from your verified booking. Driver location is private and available only

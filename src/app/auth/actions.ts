@@ -1,4 +1,5 @@
 "use server";
+import { reportAccessFailure } from "@/lib/access-diagnostics";
 import { authCaptcha } from "@/lib/auth-captcha";
 import { authErrorMessage } from "@/lib/auth-errors";
 import { accountRoute } from "@/lib/account-route";
@@ -32,13 +33,15 @@ export async function login(_: AuthState, form: FormData): Promise<AuthState> {
       .select("role,active")
       .eq("user_id", data.user.id)
       .maybeSingle();
-    if (membershipError)
+    if (membershipError) {
+      reportAccessFailure("staff-login", membershipError);
       return {
         error:
           "Signed in, but account permissions could not be verified. Please contact the business owner.",
       };
+    }
     destination =
-      trackingPath(form.get("returnTo")) ?? (member ? accountRoute(member) : "/passenger");
+      trackingPath(form.get("returnTo")) ?? (member ? accountRoute(member) : "/access-pending");
   } catch {
     return { error: "The sign-in service could not be reached. Please try again later." };
   }

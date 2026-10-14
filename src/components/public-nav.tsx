@@ -1,4 +1,5 @@
 "use client";
+import { BrandLogo } from "./brand-logo";
 import { homeCopy, type HomeLanguage } from "@/lib/home-language";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -32,21 +33,7 @@ export function PublicNav({
         aria-label="Main navigation"
         className="max-w-[1440px] mx-auto px-5 lg:px-8 py-5 flex items-center justify-between gap-6"
       >
-        <Link
-          href="/"
-          aria-label={`${name} home`}
-          className="brand max-w-[210px] sm:max-w-none text-[20px]! sm:text-[25px]!"
-        >
-          {logo ? (
-            <picture>
-              <img src={logo} alt={name} className="max-h-14 w-auto max-w-48" />
-            </picture>
-          ) : (
-            <>
-              HAMDI<span>TOURISM</span>
-            </>
-          )}
-        </Link>
+        <BrandLogo name={name} imageUrl={logo} />
         <div className="hidden xl:flex gap-6 text-xs text-muted">
           {links.map(([label, href]) => (
             <Link key={label} href={href}>

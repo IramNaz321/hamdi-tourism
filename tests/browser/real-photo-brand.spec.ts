@@ -2,7 +2,15 @@ import { test, expect } from "@playwright/test";
 test("no illustrated hero car remains and the two-line gold wordmark is centered", async ({
   page,
 }) => {
-  for (const path of ["/", "/login"]) {
+  for (const path of [
+    "/",
+    "/login",
+    "/passenger/login",
+    "/passenger/register",
+    "/fleet",
+    "/book",
+    "/track",
+  ]) {
     await page.goto(path);
     const brand = page.locator(".brand").first();
     await expect(brand).toContainText("HAMDI");

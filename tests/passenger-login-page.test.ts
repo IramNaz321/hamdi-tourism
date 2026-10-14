@@ -91,7 +91,9 @@ test("Passenger login restores confirmed sessions by role, denies membership err
         }),
       }),
     };
-    await assert.rejects(page(props), { message: "Unable to verify account access." });
+    await assert.rejects(page(props), {
+      message: "REDIRECT:/access-pending?notice=permissions-unavailable",
+    });
     boundary.client = {
       auth: {
         getUser: async () => {

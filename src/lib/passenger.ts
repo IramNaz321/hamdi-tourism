@@ -1,3 +1,4 @@
+import { reportAccessFailure } from "@/lib/access-diagnostics";
 import "server-only";
 import { accountRoute } from "./account-route";
 import { redirect } from "next/navigation";
@@ -17,7 +18,10 @@ export const requirePassenger = cache(async () => {
     .select("role,active")
     .eq("user_id", user.id)
     .maybeSingle();
-  if (membershipError) throw new Error("Account access could not be checked.");
+  if (membershipError) {
+    reportAccessFailure("passenger", membershipError);
+    redirect("/access-pending?notice=permissions-unavailable");
+  }
   if (staff) redirect(accountRoute(staff));
   return { supabase, user, organizationId: publicBusinessId() };
 });

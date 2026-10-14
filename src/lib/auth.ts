@@ -1,3 +1,4 @@
+import { reportAccessFailure } from "@/lib/access-diagnostics";
 import "server-only";
 import { isVerifiedOwner } from "./verified-owner";
 import { redirect } from "next/navigation";
@@ -19,7 +20,10 @@ export const requireStaff = cache(async function requireStaff() {
     .select("user_id, organization_id, role, display_name, active")
     .eq("user_id", user.id)
     .maybeSingle();
-  if (error) throw new Error("Unable to verify account access. Please contact the account owner.");
+  if (error) {
+    reportAccessFailure("admin", error);
+    redirect("/access-pending?notice=permissions-unavailable");
+  }
   if (!member?.active) redirect("/access-pending");
   if (member.role === "driver") redirect("/driver-account");
   if (!["owner", "manager", "dispatcher", "viewer"].includes(member.role))

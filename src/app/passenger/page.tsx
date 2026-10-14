@@ -1,3 +1,4 @@
+import { BrandLogo } from "@/components/brand-logo";
 import Link from "next/link";
 import { requirePassenger, type PassengerBooking } from "@/lib/passenger";
 import { PassengerProfileForm } from "@/components/passenger-forms";
@@ -12,9 +13,7 @@ export default async function PassengerPage({
   if (!organizationId)
     return (
       <main className="max-w-3xl mx-auto p-5 py-12 space-y-6">
-        <Link href="/" className="brand">
-          HAMDI<span>TOURISM</span>
-        </Link>
+        <BrandLogo />
         <h1 className="text-3xl font-semibold">Your journeys</h1>
         <p role="status" className="notice">
           You are signed in. Journey and booking services are currently unavailable. Please contact
@@ -45,9 +44,7 @@ export default async function PassengerPage({
     <main className="max-w-5xl mx-auto p-5 py-10 space-y-8" dir="auto">
       <header className="flex justify-between gap-4 flex-wrap">
         <div>
-          <Link href="/" className="brand">
-            HAMDI<span>TOURISM</span>
-          </Link>
+          <BrandLogo />
           <h1 className="text-3xl font-semibold mt-6">Your journeys</h1>
         </div>
         <form action={passengerLogout}>

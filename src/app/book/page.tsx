@@ -1,3 +1,4 @@
+import { BrandLogo } from "@/components/brand-logo";
 import { VehicleCategories } from "@/components/vehicle-categories";
 import { z } from "zod";
 import Link from "next/link";
@@ -32,9 +33,7 @@ export default async function BookPage({
   }
   return (
     <main className="max-w-4xl mx-auto p-5 py-10 space-y-7">
-      <Link href="/" className="brand">
-        HAMDI<span>TOURISM</span>
-      </Link>
+      <BrandLogo />
       <h1 className="text-3xl font-semibold">Book your airport transfer</h1>
       <p>
         Choose a published journey and vehicle, review your fare and request your transfer.

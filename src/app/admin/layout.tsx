@@ -1,3 +1,4 @@
+import { BrandLogo } from "@/components/brand-logo";
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import { LogOut, ArrowUpRight } from "lucide-react";
@@ -28,9 +29,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     <div className="lg:flex min-h-screen bg-canvas" style={theme}>
       <aside className="lg:w-64 lg:shrink-0 bg-white border-b lg:border-r border-stone-200 lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto p-5 lg:p-6 flex flex-col">
         <div className="flex lg:block items-center justify-between">
-          <Link className="brand lg:mb-10" href="/">
-            HAMDI<span>TOURISM</span>
-          </Link>
+          <BrandLogo className="lg:mb-10" />
           <p className="eyebrow lg:mb-3 lg:mt-2">BUSINESS PORTAL</p>
         </div>
         <AdminNav owner={member.role === "owner"} />

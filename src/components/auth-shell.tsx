@@ -1,3 +1,4 @@
+import { BrandLogo } from "@/components/brand-logo";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 export function AuthShell({
@@ -11,9 +12,7 @@ export function AuthShell({
 }) {
   return (
     <main className="auth-background min-h-screen px-5 py-10 flex flex-col items-center justify-center">
-      <Link href="/" className="brand mb-10 text-white">
-        HAMDI<span>TOURISM</span>
-      </Link>
+      <BrandLogo className="mb-10 text-white" />
       <section className="w-full max-w-md rounded-3xl bg-white p-8 shadow-xl">
         <p className="eyebrow mb-3">STAFF PORTAL</p>
         <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>

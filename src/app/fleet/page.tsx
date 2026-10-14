@@ -1,3 +1,4 @@
+import { BrandLogo } from "@/components/brand-logo";
 import Link from "next/link";
 import { websiteContent } from "@/lib/website";
 import { FleetGallery } from "@/components/fleet-gallery";
@@ -7,9 +8,7 @@ export default async function Fleet() {
   const { fleet } = await websiteContent();
   return (
     <main className="max-w-7xl mx-auto p-5 sm:p-8 py-14 space-y-6">
-      <Link className="brand" href="/">
-        HAMDI<span>TOURISM</span>
-      </Link>
+      <BrandLogo />
       <p className="eyebrow">OUR FLEET</p>
       <h1 className="text-4xl font-semibold">Travel in Comfort. Arrive in Style.</h1>
       <p className="text-muted max-w-2xl">

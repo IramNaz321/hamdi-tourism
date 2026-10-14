@@ -45,20 +45,6 @@ button:disabled {
   cursor: not-allowed;
   opacity: 0.5;
 }
-.brand {
-  display: inline-flex;
-  flex-direction: column;
-  font-size: 25px;
-  line-height: 1.1;
-  letter-spacing: 0.14em;
-  font-weight: 800;
-}
-.brand span {
-  font-size: 10px;
-  letter-spacing: 0.4em;
-  margin-top: 6px;
-  font-weight: 500;
-}
 .eyebrow {
   font-size: 11px;
   font-weight: 700;
@@ -332,9 +318,6 @@ img,
 svg {
   max-width: 100%;
 }
-.brand {
-  letter-spacing: 0.1em;
-}
 .premium-header {
   background: var(--ink);
   color: white;
@@ -357,12 +340,6 @@ svg {
   text-align: right;
 }
 @media (max-width: 639px) {
-  .brand {
-    font-size: 21px;
-  }
-  .brand span {
-    letter-spacing: 0.18em;
-  }
   .hero-copy {
     padding-top: 3rem;
     padding-bottom: 16rem;
@@ -417,24 +394,6 @@ svg {
 }
 .luxury-public .notice.error {
   color: #923523;
-}
-
-/* Centered, readable two-line wordmark across public and authenticated layouts. */
-.brand {
-  align-items: center;
-  text-align: center;
-}
-.brand span {
-  color: var(--brand);
-  font-size: 12px;
-  letter-spacing: 0.12em;
-  font-weight: 600;
-}
-@media (max-width: 639px) {
-  .brand span {
-    letter-spacing: 0.12em;
-    font-size: 11px;
-  }
 }
 
 /* Transparent copy container lets users tap the real hero photograph beneath it. */
@@ -990,4 +949,49 @@ svg {
 }
 .luxury-public .fleet-gallery-link {
   color: #c5a46d;
+}
+
+/* Shared wordmark: fixed typography, intrinsic width and independent centered lines. */
+.brand {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: max-content;
+  max-width: 100%;
+  line-height: 1;
+  text-align: center;
+  text-decoration: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+}
+.brand-title {
+  display: block;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.105em;
+  padding-left: 0.105em;
+}
+.brand .brand-subtitle {
+  display: block;
+  margin-top: 6px;
+  padding-left: 0.16em;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.16em;
+  color: #c5a46d;
+}
+@media (max-width: 639px) {
+  .brand-title {
+    font-size: 25px;
+  }
+  .brand .brand-subtitle {
+    font-size: 9px;
+    margin-top: 5px;
+  }
 }

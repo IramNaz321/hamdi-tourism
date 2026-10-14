@@ -18,3 +18,25 @@ test("provider CAPTCHA failures request a fresh challenge without exposing provi
   const { authErrorMessage } = await import("../src/lib/auth-errors");
   assert.match(authErrorMessage({ code: "captcha_failed", status: 400 }), /fresh check/);
 });
+
+test("permission diagnostics never log raw errors or untrusted provider codes", async () => {
+  const { reportAccessFailure } = await import("../src/lib/access-diagnostics");
+  const entries: unknown[][] = [];
+  const original = console.error;
+  console.error = (...args: unknown[]) => {
+    entries.push(args);
+  };
+  try {
+    reportAccessFailure("admin", { code: "42501", message: "private diagnostic payload" });
+    reportAccessFailure("staff-login", {
+      code: "untrusted / credential payload",
+      details: "private payload",
+    });
+    assert.deepEqual(entries, [
+      ["Account permission check failed", { stage: "admin", code: "42501" }],
+      ["Account permission check failed", { stage: "staff-login", code: "unavailable" }],
+    ]);
+  } finally {
+    console.error = original;
+  }
+});

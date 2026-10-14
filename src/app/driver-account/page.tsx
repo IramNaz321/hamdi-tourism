@@ -1,3 +1,4 @@
+import { BrandLogo } from "@/components/brand-logo";
 import Link from "next/link";
 import { driverText } from "@/lib/driver-copy";
 import { uaeDay } from "@/lib/tracking";
@@ -39,9 +40,7 @@ export default async function DriverAccount({
     <main className="max-w-3xl mx-auto px-5 py-10" dir="auto">
       <div className="flex flex-wrap justify-between gap-4 mb-8">
         <div>
-          <p className="brand">
-            HAMDI<span>TOURISM</span>
-          </p>
+          <BrandLogo />
           <h1 className="text-3xl font-semibold mt-3">{driverText.title}</h1>
           <p className="text-muted mt-2">{member.display_name}</p>
         </div>

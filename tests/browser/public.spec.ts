@@ -202,3 +202,23 @@ test("published fleet gallery and unknown vehicle detail never invent vehicles",
   await page.goto("/fleet/a0000000-0000-4000-8000-000000000001");
   await expect(page.getByRole("heading", { name: "Page not found" })).toBeVisible();
 });
+
+test("permission-check failures show a locked access page with retry and logout", async ({
+  page,
+}) => {
+  await page.goto("/access-pending?notice=permissions-unavailable");
+  await expect(page.getByRole("heading", { name: "Account access" })).toBeVisible();
+  await expect(
+    page.getByText("Your account permissions could not be checked.", { exact: false }),
+  ).toBeVisible();
+  await expect(page.getByRole("link", { name: "Check access again" })).toHaveAttribute(
+    "href",
+    "/login",
+  );
+  await expect(page.getByRole("button", { name: "Sign out" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Something went wrong" })).toHaveCount(0);
+  await page.goto("/access-pending");
+  await expect(
+    page.getByText("Staff portal access has not been activated", { exact: false }),
+  ).toBeVisible();
+});
