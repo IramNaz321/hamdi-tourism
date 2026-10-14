@@ -20,7 +20,8 @@
     "check:owner": "tsx scripts/check-owner-session.ts",
     "db:driver-migration": "tsx scripts/database/driver-migration.ts",
     "db:passenger-migration": "tsx scripts/database/passenger-migration.ts",
-    "check:hosted": "node --use-env-proxy --import tsx scripts/verification/hosted.ts"
+    "check:hosted": "node --use-env-proxy --import tsx scripts/verification/hosted.ts",
+    "check:handover": "node --import tsx scripts/check-handover.ts"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.3.0",

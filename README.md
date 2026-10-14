@@ -4,6 +4,10 @@ A production-oriented UAE airport transfer and chauffeur website and business ma
 
 The application contains no seeded customers, drivers, bookings, vehicles, reviews, business achievements, flight alerts or GPS positions. Supabase must be connected and verified before operational use.
 
+See the current [client handover and release blockers](docs/CLIENT-HANDOVER.md).
+`npm run check:handover` prints a read-only configuration/migration-integrity report
+without secret values; it intentionally fails when core bindings are missing.
+
 ## Run
 
 Use Node.js 24 and npm, from the repository root:

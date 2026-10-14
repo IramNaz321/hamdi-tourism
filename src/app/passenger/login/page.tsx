@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { PassengerAuthForm } from "@/components/passenger-forms";
-import { isConfigured } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
+import { accountRoute } from "@/lib/account-route";
+import { createClient, isConfigured } from "@/lib/supabase/server";
 import { passengerReturnPath } from "@/lib/passenger-validation";
 export default async function PassengerLogin({
   searchParams,
@@ -8,6 +10,23 @@ export default async function PassengerLogin({
   searchParams: Promise<{ next?: string; mode?: string; notice?: string }>;
 }) {
   const params = await searchParams;
+  // Recovery must stay reachable even when the browser already has a session.
+  if (isConfigured() && params.mode !== "recovery") {
+    const client = await createClient();
+    const {
+      data: { user },
+      error,
+    } = await client.auth.getUser();
+    if (!error && user?.email_confirmed_at) {
+      const { data: member, error: membershipError } = await client
+        .from("staff_members")
+        .select("role,active")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (membershipError) throw new Error("Unable to verify account access.");
+      redirect(member ? accountRoute(member) : passengerReturnPath(params.next));
+    }
+  }
   return (
     <main className="max-w-lg mx-auto p-6 py-16 space-y-6">
       <Link className="brand" href="/">

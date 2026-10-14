@@ -1,4 +1,5 @@
 /** Read-only acceptance of a genuine existing owner session; never writes records. */
+import { isVerifiedOwner } from "../src/lib/verified-owner";
 import { createClient } from "@supabase/supabase-js";
 import { publicSupabaseConfig } from "../src/lib/supabase/config";
 import { loadEnvironment, projectRef, reportError } from "./database/common";
@@ -16,7 +17,7 @@ async function main() {
     auth: { persistSession: false, autoRefreshToken: false },
   });
   const identity = await client.auth.getUser(token);
-  if (identity.error || !identity.data.user)
+  if (identity.error || !identity.data.user?.email_confirmed_at)
     throw new Error("Invalid or expired real owner session.");
   const membership = await client
     .from("staff_members")
@@ -27,7 +28,11 @@ async function main() {
     throw new Error("Active owner membership required.");
   if (process.env.HAMDI_ORGANIZATION_ID !== membership.data.organization_id)
     throw new Error("Website organization does not match owner membership.");
-  console.log("PASS: genuine authenticated owner and website organization verified.");
+  if (!isVerifiedOwner(identity.data.user.id, membership.data, process.env))
+    throw new Error("Session does not match the explicitly verified client Owner configuration.");
+  console.log(
+    "PASS: confirmed session matches the configured client Owner and organization; human identity approval remains an external prerequisite.",
+  );
   for (const table of [
     "drivers",
     "vehicles",

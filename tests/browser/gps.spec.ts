@@ -85,6 +85,8 @@ test("driver-only geolocation header and unavailable passenger tracking preserve
   expect(driver.headers()["permissions-policy"]).toContain("geolocation=(self)");
   const home = await request.get("/");
   expect(home.headers()["permissions-policy"]).toContain("geolocation=()");
+  expect(home.headers()["permissions-policy"]).toContain("microphone=(self)");
+  expect(home.headers()["permissions-policy"]).toContain("camera=()");
   await page.goto("/track/10000000-0000-4000-8000-000000000001");
   await expect(
     page.getByRole("heading", { name: "Tracking unavailable", exact: true }),
