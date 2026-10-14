@@ -13,7 +13,8 @@ in this environment, and no deployment is claimed.
 2. Configure the host's secure environment settings using `.env.example`. Required
    app bindings: Supabase public URL/publishable key, server-only service key, actual
    existing organization UUID and exact HTTPS origin. The approved Owner UUID remains
-   unset until identity/authorization confirmation. Keep the database admin URI out
+   unset while the approved database activation is blocked by read-only access. See
+   [the current activation record](OWNER-ACTIVATION-PLAN.md). Keep the database admin URI out
    of the deployed application; it is only for trusted approved operations tooling.
 3. Configure the real domain/HTTPS and exact Supabase Auth Site URL/callback allowlist,
    SMTP and matching CAPTCHA provider/site key. Verify confirmation, recovery and

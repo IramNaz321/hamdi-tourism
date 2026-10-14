@@ -1,7 +1,11 @@
 # Hamid Shah — pending Owner activation
 
-Client identity and authority were explicitly confirmed in this conversation. Execution
-is separately **unapproved**. No hosted data, account or permissions have changed.
+Client identity, authority and execution of the exact transaction at commit `184de64`
+were explicitly approved in this conversation. That approval is retained; do not ask
+for duplicate Owner approval merely because access is blocked. The approved transaction
+was attempted once and denied. Read-only verification afterward confirmed zero target
+memberships and zero associated audit insert events. No hosted data, account or
+permissions were changed.
 
 ## Live read-only verification
 
@@ -45,16 +49,33 @@ container. No fixture was sent to Supabase.
 
 ## Execution access and acceptance
 
-The configured access token successfully ran read-only SQL through both Management
-API query endpoints. The general endpoint was explicitly invoked with
-`read_only: true` and `BEGIN READ ONLY`. This does not establish permission to write;
-no write probe was attempted. Project-details GET returned 403, which does not
-prevent the independently verified SQL reads. The general query endpoint documents
-`database:write` for mutations; if approved execution is denied, the minimum extra
-access is project-authorized database write/query access, not Auth user creation
-or broader account-management access. No secret needs to be sent in chat.
+The network-secret requirement is saved with a bound value and destination
+`api.supabase.com`; the value is delivered in the current runtime. A fresh additive
+draft save succeeded against the latest settings without changing unrelated fields.
+The draft requires publication; available controls cannot publish or discard stale
+unsaved browser-form edits. Saved/runtime delivery is verified, publication is not.
 
-After separate approval: re-run read-only preflight, verify this exact file hash,
+The approved write request was denied (HTTP 400, write-permission error). A subsequent
+SELECT-only capability check, even with `read_only: false`, ran as
+`supabase_read_only_user` with `transaction_read_only=on`, no staff INSERT/UPDATE and
+no organization/Auth-identity lock privileges. This is an execution-access blocker,
+not a missing network-secret binding. Do not retry writes or escalate privileges.
+The minimum external prerequisite is a legitimate project-authorized database-write
+query execution channel (`database:write` where scoped access is supported), supplied
+securely. Merely re-entering the same read-only token does not establish that access.
+Project-details GET denial is distinct from the successfully verified SQL reads.
+
+Current readiness reads confirm the organization exists, Owner membership is absent,
+business_settings has no organization row, Driver and Passenger modules and the
+booking-configuration RPC are absent, and pg_cron is not installed. Existing ordered
+010/020/030 candidates remain separately unapproved. Do not replay 001–007, enable
+booking without real published configuration, or mix those repairs into Owner activation.
+
+No Vercel token/project/organization binding or callable hosting integration is
+available; GitHub reports no deployments for this repository. Hosting and genuine
+Owner/browser-session acceptance remain external gates, not successful deployments.
+
+After authorized write access is confirmed: retain the existing exact approval, re-run read-only preflight, verify this exact file hash,
 execute only this transaction on the verified project, then read back the target
 membership and audit event. Set server-only HAMDI_OWNER_USER_ID to the verified
 UUID in the actual serving environment; HAMDI_ORGANIZATION_ID must match. No public
