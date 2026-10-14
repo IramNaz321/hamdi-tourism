@@ -6,7 +6,7 @@ export type MarketingPhoto = {
   source: string;
   license: string;
 };
-/** Approved editorial photographs only. Never operational fleet inventory or availability. */
+/** Original marketing visualizations only. Never operational fleet inventory or availability. */
 export const marketingPhotos = manifest as Record<
   "hero" | "sedan" | "luxury" | "van" | "suv",
   MarketingPhoto | null

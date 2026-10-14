@@ -26,7 +26,7 @@ export default async function Login({
         .eq("user_id", user.id)
         .maybeSingle();
       if (membership.error) throw new Error("Unable to verify account access.");
-      redirect(accountRoute(membership.data));
+      redirect(membership.data ? accountRoute(membership.data) : "/passenger");
     }
   }
   return (

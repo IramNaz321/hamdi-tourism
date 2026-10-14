@@ -6,8 +6,8 @@ export function homeLanguage(value?: string): HomeLanguage {
 export const homeCopy = {
   en: {
     eyebrow: "PREMIUM AIRPORT TRANSFERS IN UAE",
-    first: "Your Journey,",
-    second: "Beautifully Connected",
+    first: "Luxury in",
+    second: "Every Journey",
     description: "Luxury transfers across Dubai and the UAE with comfort, reliability and style.",
     book: "Book Your Transfer",
     video: "Discover our service",

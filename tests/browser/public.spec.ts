@@ -4,7 +4,7 @@ test("public website renders the required sections without fictional fleet or fa
 }, testInfo) => {
   await page.goto("/");
   await expect(
-    page.getByRole("heading", { name: "Your Journey, Beautifully Connected" }),
+    page.getByRole("heading", { name: "Luxury in Every Journey" }),
   ).toBeVisible();
   await expect(page.getByRole("heading", { name: "Our Fleet", exact: true })).toHaveCount(0);
   const contrast = await page

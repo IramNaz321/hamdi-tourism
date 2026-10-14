@@ -4,7 +4,7 @@ test("cinematic showcase is labelled decorative, track navigation works and lang
 }) => {
   await page.goto("/");
   await expect(
-    page.getByRole("heading", { name: "Your Journey, Beautifully Connected" }),
+    page.getByRole("heading", { name: "Luxury in Every Journey" }),
   ).toBeVisible();
   await expect(page.getByRole("complementary", { name: "Journey visual preview" })).toContainText(
     "No active trip shown",

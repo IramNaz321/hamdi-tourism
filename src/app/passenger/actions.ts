@@ -1,4 +1,6 @@
 "use server";
+import { authErrorMessage } from "@/lib/auth-errors";
+import { accountRoute } from "@/lib/account-route";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -19,10 +21,26 @@ export async function passengerLogin(_: PassengerState, form: FormData): Promise
     .object({ email: z.email().max(254), password: z.string().min(1).max(256) })
     .safeParse({ email: String(form.get("email") ?? "").trim(), password: form.get("password") });
   if (!parsed.success) return { error: "Enter a valid email address and password." };
-  const client = await createClient();
-  const { error } = await client.auth.signInWithPassword(parsed.data);
-  if (error) return { error: "Unable to sign in. Check your credentials and email verification." };
-  redirect(passengerReturnPath(form.get("next")));
+  let destination: string;
+  try {
+    const client = await createClient();
+    const { data, error } = await client.auth.signInWithPassword(parsed.data);
+    if (error) return { error: authErrorMessage(error) };
+    if (!data.user?.email_confirmed_at) return { error: "Confirm your email before signing in." };
+    const { data: member, error: membershipError } = await client
+      .from("staff_members")
+      .select("role,active")
+      .eq("user_id", data.user.id)
+      .maybeSingle();
+    if (membershipError)
+      return {
+        error: "Signed in, but account permissions could not be verified. Contact support.",
+      };
+    destination = member ? accountRoute(member) : passengerReturnPath(form.get("next"));
+  } catch {
+    return { error: "The sign-in service could not be reached. Please try again later." };
+  }
+  redirect(destination);
 }
 export async function passengerRegister(
   _: PassengerState,

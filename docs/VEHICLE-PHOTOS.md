@@ -1,3 +1,11 @@
+# Current category visuals
+
+The four category cards now use original AI-assisted photorealistic studio visuals,
+not the older cutout photographs described below. See
+[studio provenance](../public/vehicle-photos/STUDIO-PROVENANCE.md). Real inventory
+photos continue to come from published Supabase fleet records. The cinematic hero
+is unchanged. Earlier photograph licenses below remain applicable to retained assets.
+
 # Licensed static vehicle showcase photographs
 
 The four category cards use local licensed real photographic assets independently of Supabase fleet publication. The current hero uses a separately created original photorealistic marketing visualization; see `public/marketing/PROVENANCE.md`. These are marketing examples, not company-owned or bookable inventory. The black hero is a luxury-sedan photograph, paired with original synthesized V8-style audio; the sound is not a recording of the photographed car or a BMW make/engine claim.

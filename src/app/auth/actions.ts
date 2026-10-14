@@ -30,7 +30,8 @@ export async function login(_: AuthState, form: FormData): Promise<AuthState> {
         error:
           "Signed in, but account permissions could not be verified. Please contact the business owner.",
       };
-    destination = trackingPath(form.get("returnTo")) ?? accountRoute(member);
+    destination =
+      trackingPath(form.get("returnTo")) ?? (member ? accountRoute(member) : "/passenger");
   } catch {
     return { error: "The sign-in service could not be reached. Please try again later." };
   }

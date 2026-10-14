@@ -51,3 +51,22 @@ test("four local showcase photos load without Supabase inventory and keep bookin
   ).toBeVisible();
   await expect(page.locator('input[name="vehicle_id"]')).toHaveCount(0);
 });
+
+test("all three dashboards reject anonymous sessions without displaying operational records", async ({
+  page,
+}) => {
+  for (const [path, login] of [
+    ["/admin", "/login"],
+    ["/driver-account", "/login"],
+    ["/passenger", "/passenger/login"],
+  ]) {
+    await page.goto(path);
+    expect(new URL(page.url()).pathname).toBe(login);
+    await expect(
+      page.getByRole("button", {
+        name: login === "/login" ? "Sign in securely" : "Sign in",
+        exact: true,
+      }),
+    ).toBeDisabled();
+  }
+});

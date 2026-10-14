@@ -1,37 +1,37 @@
 {
   "luxury": {
-    "src": "/vehicle-photos/black-luxury-sedan.png",
-    "alt": "Real black luxury sedan — marketing showcase photograph",
-    "credit": "Fadi",
-    "source": "https://commons.wikimedia.org/wiki/File:S65AMG.JPG",
-    "license": "https://creativecommons.org/licenses/by-sa/2.0/de/deed.en"
+    "src": "/vehicle-photos/studio-luxury.webp",
+    "alt": "Original photorealistic luxury sedan marketing visualization",
+    "credit": "Original AI-assisted marketing visual",
+    "source": "/vehicle-photos/STUDIO-PROVENANCE.md",
+    "license": "/vehicle-photos/STUDIO-PROVENANCE.md"
   },
   "sedan": {
-    "src": "/vehicle-photos/normal-sedan.png",
-    "alt": "Real white sedan — marketing category photograph",
-    "credit": "OSX",
-    "source": "https://commons.wikimedia.org/wiki/File:2008-2010%20BMW%20M3%20(E90)%20sedan%2002.jpg",
-    "license": "https://commons.wikimedia.org/wiki/Commons:Public_domain"
+    "src": "/vehicle-photos/studio-sedan.webp",
+    "alt": "Original photorealistic sedan sedan marketing visualization",
+    "credit": "Original AI-assisted marketing visual",
+    "source": "/vehicle-photos/STUDIO-PROVENANCE.md",
+    "license": "/vehicle-photos/STUDIO-PROVENANCE.md"
   },
   "van": {
-    "src": "/vehicle-photos/seven-seater-style.png",
-    "alt": "Real full-size SUV — illustrative seven-seater service category photograph",
-    "credit": "Alexander Migl",
-    "source": "https://commons.wikimedia.org/wiki/File:Bentley%20Bentayga%20Speed%20Genf%202019%201Y7A5885.jpg",
-    "license": "https://creativecommons.org/licenses/by-sa/4.0/"
+    "src": "/vehicle-photos/studio-van.webp",
+    "alt": "Original photorealistic seven-seat MPV marketing visualization",
+    "credit": "Original AI-assisted marketing visual",
+    "source": "/vehicle-photos/STUDIO-PROVENANCE.md",
+    "license": "/vehicle-photos/STUDIO-PROVENANCE.md"
   },
   "suv": {
-    "src": "/vehicle-photos/five-passenger-vehicle.png",
-    "alt": "Real silver five-door passenger vehicle — marketing category photograph",
-    "credit": "Tokumeigakarinoaoshima",
-    "source": "https://commons.wikimedia.org/wiki/File:Osaka%20Auto%20Messe%202025%20(9)%20-%20Toyota%20GR%20COROLLA%20RZ%20GR-DAT%20(4BA-GZEA14H-BHZRZ).jpg",
-    "license": "https://creativecommons.org/publicdomain/zero/1.0/deed.en"
+    "src": "/vehicle-photos/studio-suv.webp",
+    "alt": "Original photorealistic five-passenger crossover marketing visualization",
+    "credit": "Original AI-assisted marketing visual",
+    "source": "/vehicle-photos/STUDIO-PROVENANCE.md",
+    "license": "/vehicle-photos/STUDIO-PROVENANCE.md"
   },
   "hero": {
-    "src": "/vehicle-photos/black-luxury-sedan.png",
-    "alt": "Real black luxury sedan — marketing showcase photograph",
-    "credit": "Fadi",
-    "source": "https://commons.wikimedia.org/wiki/File:S65AMG.JPG",
-    "license": "https://creativecommons.org/licenses/by-sa/2.0/de/deed.en"
+    "src": "/vehicle-photos/studio-luxury.webp",
+    "alt": "Original photorealistic luxury sedan marketing visualization",
+    "credit": "Original AI-assisted marketing visual",
+    "source": "/vehicle-photos/STUDIO-PROVENANCE.md",
+    "license": "/vehicle-photos/STUDIO-PROVENANCE.md"
   }
 }

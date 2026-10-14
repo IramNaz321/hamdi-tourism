@@ -1,4 +1,5 @@
 import "server-only";
+import { isVerifiedOwner } from "./verified-owner";
 import { redirect } from "next/navigation";
 import { createClient, isConfigured } from "@/lib/supabase/server";
 import { cache } from "react";
@@ -23,6 +24,7 @@ export const requireStaff = cache(async function requireStaff() {
   if (member.role === "driver") redirect("/driver-account");
   if (!["owner", "manager", "dispatcher", "viewer"].includes(member.role))
     redirect("/access-pending");
+  if (!isVerifiedOwner(user.id, member, process.env)) redirect("/access-pending");
   return {
     supabase,
     user,

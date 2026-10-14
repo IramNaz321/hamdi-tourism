@@ -1,4 +1,5 @@
 import "server-only";
+import { accountRoute } from "./account-route";
 import { redirect } from "next/navigation";
 import { cache } from "react";
 import { createClient, isConfigured } from "./supabase/server";
@@ -13,11 +14,11 @@ export const requirePassenger = cache(async () => {
   if (error || !user || !user.email_confirmed_at) redirect("/passenger/login");
   const { data: staff, error: membershipError } = await supabase
     .from("staff_members")
-    .select("role")
+    .select("role,active")
     .eq("user_id", user.id)
     .maybeSingle();
   if (membershipError) throw new Error("Account access could not be checked.");
-  if (staff) redirect(staff.role === "driver" ? "/driver-account" : "/admin");
+  if (staff) redirect(accountRoute(staff));
   return { supabase, user, organizationId: publicBusinessId()! };
 });
 export type PassengerBooking = {

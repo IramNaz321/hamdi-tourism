@@ -9,6 +9,7 @@ export async function requireDriver() {
     error,
   } = await supabase.auth.getUser();
   if (error || !user) redirect("/login");
+  if (!user.email_confirmed_at) redirect("/login?notice=unconfirmed");
   const { data: member, error: membershipError } = await supabase
     .from("staff_members")
     .select("role,active,display_name")
