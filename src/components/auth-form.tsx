@@ -1,6 +1,7 @@
 "use client";
 import { PasswordInput } from "@/components/password-input";
-import { useActionState } from "react";
+import { TurnstileChallenge } from "./turnstile-challenge";
+import { useActionState, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, LockKeyhole } from "lucide-react";
 import { login, resetPassword, updatePassword } from "@/app/auth/actions";
@@ -13,8 +14,18 @@ export function AuthForm({
   configured?: boolean;
   returnTo?: string;
 }) {
+  const [captcha, setCaptcha] = useState("");
+  const [captchaKey, setCaptchaKey] = useState(0);
+  const needsCaptcha = mode !== "update" && !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
   const [state, action, pending] = useActionState(
-    mode === "login" ? login : mode === "reset" ? resetPassword : updatePassword,
+    async (previous: import("@/app/auth/actions").AuthState, form: FormData) => {
+      const result = await (
+        mode === "login" ? login : mode === "reset" ? resetPassword : updatePassword
+      )(previous, form);
+      setCaptcha("");
+      setCaptchaKey((key) => key + 1);
+      return result;
+    },
     {},
   );
   return (
@@ -67,7 +78,20 @@ export function AuthForm({
           <p className="text-sm text-muted">Use at least 12 characters and a unique password.</p>
         </>
       )}
-      <button className="button w-full" disabled={pending || !configured}>
+      {needsCaptcha && configured && (
+        <>
+          <TurnstileChallenge
+            key={captchaKey}
+            action={mode === "login" ? "sign_in" : "recovery"}
+            onToken={setCaptcha}
+          />
+          <input type="hidden" name="captcha_token" value={captcha} />
+        </>
+      )}
+      <button
+        className="button w-full"
+        disabled={pending || !configured || (needsCaptcha && !captcha)}
+      >
         {pending
           ? "Please wait…"
           : mode === "login"

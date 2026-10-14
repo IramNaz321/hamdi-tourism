@@ -1,4 +1,5 @@
 "use server";
+import { deliverReservedInvitation } from "@/lib/invitation-delivery";
 import { staffAccessChangeAllowed } from "@/lib/staff-access-policy";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
@@ -50,18 +51,20 @@ export async function inviteStaff(_: StaffState, form: FormData): Promise<StaffS
       };
     return { error: "Unable to reserve this invitation. Try again or review account access." };
   }
-  const { error } = await invitationClient.auth.admin.inviteUserByEmail(parsed.data.email, {
-    redirectTo: `${origin}/auth/confirm`,
-  });
-  if (error) {
-    const { error: cleanupError } = await supabase.rpc("cancel_staff_invitation", {
-      invitation_id: invitationId,
-    });
+  const delivery = await deliverReservedInvitation(
+    () =>
+      invitationClient.auth.admin.inviteUserByEmail(parsed.data.email, {
+        redirectTo: `${origin}/auth/confirm`,
+      }),
+    () => supabase.rpc("cancel_staff_invitation", { invitation_id: invitationId }),
+  );
+  if (delivery !== "sent") {
     revalidatePath("/admin/staff");
     return {
-      error: cleanupError
-        ? "Invitation delivery failed and access cleanup could not be confirmed. Review the staff list before retrying."
-        : "Invitation delivery failed. Any provisioned access was disabled. Review the staff list and email delivery settings before retrying.",
+      error:
+        delivery === "cleanup_unconfirmed"
+          ? "Invitation delivery failed and access cleanup could not be confirmed. Review the staff list before retrying."
+          : "Invitation delivery failed. Any provisioned access was disabled. Review the staff list and email delivery settings before retrying.",
     };
   }
   revalidatePath("/admin/staff");

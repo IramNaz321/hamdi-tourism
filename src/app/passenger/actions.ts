@@ -1,4 +1,5 @@
 "use server";
+import { authCaptcha } from "@/lib/auth-captcha";
 import { authErrorMessage } from "@/lib/auth-errors";
 import { accountRoute } from "@/lib/account-route";
 import { redirect } from "next/navigation";
@@ -21,10 +22,15 @@ export async function passengerLogin(_: PassengerState, form: FormData): Promise
     .object({ email: z.email().max(254), password: z.string().min(1).max(256) })
     .safeParse({ email: String(form.get("email") ?? "").trim(), password: form.get("password") });
   if (!parsed.success) return { error: "Enter a valid email address and password." };
+  const captcha = authCaptcha(form, process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
+  if (captcha.error) return { error: captcha.error };
   let destination: string;
   try {
     const client = await createClient();
-    const { data, error } = await client.auth.signInWithPassword(parsed.data);
+    const { data, error } = await client.auth.signInWithPassword({
+      ...parsed.data,
+      options: captcha.options,
+    });
     if (error) return { error: authErrorMessage(error) };
     if (!data.user?.email_confirmed_at) return { error: "Confirm your email before signing in." };
     const { data: member, error: membershipError } = await client
@@ -98,12 +104,16 @@ export async function passengerRecovery(
   _: PassengerState,
   form: FormData,
 ): Promise<PassengerState> {
-  if (!isConfigured() || !z.email().safeParse(form.get("email")).success)
+  const email = String(form.get("email") ?? "").trim();
+  if (!isConfigured() || !z.email().safeParse(email).success)
     return { error: "Enter your email. Account recovery must be configured." };
+  const captcha = authCaptcha(form, process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
+  if (captcha.error) return { error: captcha.error };
   try {
     const client = await createClient();
-    const { error } = await client.auth.resetPasswordForEmail(String(form.get("email")), {
+    const { error } = await client.auth.resetPasswordForEmail(email, {
       redirectTo: `${siteOrigin()}/auth/callback`,
+      ...captcha.options,
     });
     if (error) return { error: "Recovery is currently unavailable. Try again later." };
     return {
@@ -118,6 +128,8 @@ export async function savePassengerProfile(
   form: FormData,
 ): Promise<PassengerState> {
   const { supabase, organizationId } = await requirePassenger();
+  if (!organizationId)
+    return { error: "Journey services are currently unavailable. Contact our team." };
   const parsed = passengerContactSchema.safeParse({
     name: form.get("name"),
     phone: form.get("phone"),
@@ -153,6 +165,8 @@ export type BookingState = PassengerState & {
 };
 export async function quotePassenger(_: BookingState, form: FormData): Promise<BookingState> {
   const { supabase, organizationId } = await requirePassenger();
+  if (!organizationId)
+    return { error: "Journey services are currently unavailable. Contact our team." };
   try {
     const journey = passengerJourneySchema.parse({
       ...journeyData(form),

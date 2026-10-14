@@ -5,7 +5,7 @@ import { cache } from "react";
 import { createClient, isConfigured } from "./supabase/server";
 import { publicBusinessId } from "./website";
 export const requirePassenger = cache(async () => {
-  if (!isConfigured() || !publicBusinessId()) redirect("/passenger/login?notice=unavailable");
+  if (!isConfigured()) redirect("/passenger/login?notice=unavailable");
   const supabase = await createClient();
   const {
     data: { user },
@@ -19,7 +19,7 @@ export const requirePassenger = cache(async () => {
     .maybeSingle();
   if (membershipError) throw new Error("Account access could not be checked.");
   if (staff) redirect(accountRoute(staff));
-  return { supabase, user, organizationId: publicBusinessId()! };
+  return { supabase, user, organizationId: publicBusinessId() };
 });
 export type PassengerBooking = {
   id: string;

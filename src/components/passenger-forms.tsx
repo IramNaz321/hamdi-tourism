@@ -88,11 +88,17 @@ export function PassengerAuthForm({
           <p className="text-sm text-muted">No payment or reservation is created by registering.</p>
         </>
       )}
-      {mode === "register" && configured && (
+      {configured && !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && (
         <>
           <TurnstileChallenge
             key={captchaKey}
-            action="passenger_registration"
+            action={
+              mode === "register"
+                ? "passenger_registration"
+                : mode === "login"
+                  ? "sign_in"
+                  : "recovery"
+            }
             onToken={setCaptcha}
           />
           <input type="hidden" name="captcha_token" value={captcha} />
@@ -100,7 +106,9 @@ export function PassengerAuthForm({
       )}
       <button
         className="button w-full"
-        disabled={pending || !configured || (mode === "register" && !captcha)}
+        disabled={
+          pending || !configured || (!!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && !captcha)
+        }
       >
         {pending
           ? "Please wait…"

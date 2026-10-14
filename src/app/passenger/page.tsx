@@ -9,6 +9,28 @@ export default async function PassengerPage({
   searchParams: Promise<{ page?: string }>;
 }) {
   const { supabase, organizationId } = await requirePassenger();
+  if (!organizationId)
+    return (
+      <main className="max-w-3xl mx-auto p-5 py-12 space-y-6">
+        <Link href="/" className="brand">
+          HAMDI<span>TOURISM</span>
+        </Link>
+        <h1 className="text-3xl font-semibold">Your journeys</h1>
+        <p role="status" className="notice">
+          You are signed in. Journey and booking services are currently unavailable. Please contact
+          our team for assistance.
+        </p>
+        <p>
+          Your booking history could not be loaded. This page has not submitted a new reservation.
+        </p>
+        <Link href="/#contact" className="button secondary">
+          Contact our team
+        </Link>
+        <form action={passengerLogout}>
+          <button className="button secondary">Sign out</button>
+        </form>
+      </main>
+    );
   const params = await searchParams;
   const page = Math.max(1, Math.min(10000, Number(params.page) || 1));
   const [profileResult, bookingResult, notices] = await Promise.all([

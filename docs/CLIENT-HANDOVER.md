@@ -2,6 +2,10 @@
 
 Last reviewed: 14 October 2026. Client: Hamid Shah.
 
+Latest independent Passenger/Driver/auth/booking fixes and current-run evidence:
+[workflow follow-up](INDEPENDENT-WORKFLOW-VERIFICATION.md). Owner activation remains blocked;
+other authorized code work has continued.
+
 **Release decision: NOT ready for operational client handover or production launch.**
 The website can be demonstrated privately. No successful real Owner, Driver or
 Passenger password login was verified. No production deployment was performed.

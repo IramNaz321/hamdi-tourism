@@ -1,4 +1,5 @@
 "use server";
+import { authCaptcha } from "@/lib/auth-captcha";
 import { authErrorMessage } from "@/lib/auth-errors";
 import { accountRoute } from "@/lib/account-route";
 import { trackingPath } from "@/lib/tracking";
@@ -14,10 +15,16 @@ export async function login(_: AuthState, form: FormData): Promise<AuthState> {
   const password = String(form.get("password") ?? "");
   if (!z.email().safeParse(email).success || !password || password.length > 256)
     return { error: "Enter your email and password." };
+  const captcha = authCaptcha(form, process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
+  if (captcha.error) return { error: captcha.error };
   const supabase = await createClient();
   let destination: string;
   try {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+      options: captcha.options,
+    });
     if (error) return { error: authErrorMessage(error) };
     if (!data.user?.email_confirmed_at) return { error: "Confirm your email before signing in." };
     const { data: member, error: membershipError } = await supabase
@@ -50,6 +57,8 @@ export async function resetPassword(_: AuthState, form: FormData): Promise<AuthS
     return { error: "Password reset is not available yet. Please contact the business owner." };
   const email = String(form.get("email") ?? "").trim();
   if (!z.email().safeParse(email).success) return { error: "Enter a valid email address." };
+  const captcha = authCaptcha(form, process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
+  if (captcha.error) return { error: captcha.error };
   let origin: string;
   try {
     origin = siteOrigin();
@@ -60,6 +69,7 @@ export async function resetPassword(_: AuthState, form: FormData): Promise<AuthS
   try {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${origin}/auth/callback`,
+      ...captcha.options,
     });
     if (error)
       return {

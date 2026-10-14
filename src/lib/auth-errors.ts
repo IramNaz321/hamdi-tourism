@@ -2,6 +2,8 @@
 export function authErrorMessage(error: { code?: string; status?: number } | null | undefined) {
   if (error?.code === "invalid_credentials")
     return "Email or password was not accepted. Check both, or use Forgot your password.";
+  if (error?.code === "captcha_failed")
+    return "The security check was not accepted. Complete a fresh check and try again.";
   if (error?.code === "email_not_confirmed")
     return "Confirm your email using the invitation or confirmation link before signing in.";
   if (
