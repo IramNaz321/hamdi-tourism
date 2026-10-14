@@ -15,6 +15,17 @@ export const languageSchema = z.enum(["en", "ar", "ur", "hi"]);
 export const conciergeInput = z
   .object({
     message: z.string().trim().min(1).max(1500),
+    history: z
+      .array(
+        z
+          .object({
+            role: z.enum(["user", "assistant"]),
+            content: z.string().trim().min(1).max(1000),
+          })
+          .strict(),
+      )
+      .max(6)
+      .optional(),
     language: languageSchema,
     bookingId: z.uuid().optional(),
     token: z.string().max(2048).optional(),

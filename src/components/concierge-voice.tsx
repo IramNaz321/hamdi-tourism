@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { conciergeLocale } from "@/lib/concierge-languages";
 type Recognition = {
   lang: string;
   continuous: boolean;
@@ -14,50 +15,74 @@ type SpeechWindow = Window & {
   SpeechRecognition?: new () => Recognition;
   webkitSpeechRecognition?: new () => Recognition;
 };
-const locales: Record<string, string> = { en: "en-AE", ar: "ar-AE", ur: "ur-PK", hi: "hi-IN" };
 export function ConciergeVoice({
   language,
   answer,
   onTranscript,
+  disabled = false,
 }: {
   language: string;
   answer: string;
   onTranscript: (text: string) => void;
+  disabled?: boolean;
 }) {
   const recognition = useRef<Recognition | null>(null);
+  const utterance = useRef<SpeechSynthesisUtterance | null>(null);
   const [listening, setListening] = useState(false);
   const [muted, setMuted] = useState(true);
   const [notice, setNotice] = useState(
-    "Voice requires a supported browser and microphone permission. Your browser's speech provider may process audio.",
+    "Voice requires a supported browser and microphone permission. Your browser's speech provider may process audio or response text. This website does not record or store microphone audio.",
   );
-  function stop() {
-    recognition.current?.abort();
+  function cancelSpeech() {
+    utterance.current = null;
+    try {
+      window.speechSynthesis?.cancel();
+    } catch {
+      /* Optional browser service. */
+    }
+  }
+  function abortRecognition() {
+    const session = recognition.current;
     recognition.current = null;
-    window.speechSynthesis?.cancel();
+    if (session) {
+      session.onresult = null;
+      session.onerror = null;
+      session.onend = null;
+      try {
+        session.abort();
+      } catch {
+        /* An already-ended browser session can throw. */
+      }
+    }
+  }
+  function stop() {
+    abortRecognition();
+    cancelSpeech();
     setListening(false);
+    setNotice("Voice stopped. You can continue by typing.");
   }
   useEffect(() => {
     const stopHidden = () => {
       if (document.hidden) {
-        recognition.current?.abort();
-        window.speechSynthesis?.cancel();
+        abortRecognition();
+        cancelSpeech();
+        setListening(false);
       }
     };
     document.addEventListener("visibilitychange", stopHidden);
     return () => {
       document.removeEventListener("visibilitychange", stopHidden);
-      recognition.current?.abort();
-      recognition.current = null;
-      window.speechSynthesis?.cancel();
+      abortRecognition();
+      cancelSpeech();
     };
   }, [language]);
   return (
-    <div className="space-y-2 border rounded-xl p-3">
-      <div className="flex flex-wrap gap-2">
+    <div data-concierge-voice className="space-y-2 border border-stone-300 rounded-xl p-3">
+      <div className="grid grid-cols-2 gap-2">
         <button
           type="button"
           className="button secondary"
-          disabled={listening}
+          disabled={listening || disabled}
           onClick={() => {
             const browser = window as SpeechWindow;
             const Constructor = browser.SpeechRecognition ?? browser.webkitSpeechRecognition;
@@ -65,38 +90,46 @@ export function ConciergeVoice({
               setNotice("Voice input is unavailable in this browser. Please type your question.");
               return;
             }
-            window.speechSynthesis?.cancel();
-            const session = new Constructor();
-            recognition.current = session;
-            session.lang = locales[language];
-            session.continuous = false;
-            session.interimResults = false;
-            session.onresult = (event) => {
-              const transcript = event.results[0]?.[0]?.transcript;
-              if (transcript) {
-                onTranscript(transcript.slice(0, 1500));
-                setNotice(
-                  "Review your question, then choose Ask concierge. Nothing is sent automatically.",
-                );
-              }
-            };
-            session.onerror = (event) =>
-              setNotice(
-                event.error === "not-allowed"
-                  ? "Microphone permission was denied. Please type your question."
-                  : "Voice input is unavailable. Please type your question.",
-              );
-            session.onend = () => {
-              setListening(false);
-              recognition.current = null;
-            };
+            cancelSpeech();
+            abortRecognition();
             try {
+              const session = new Constructor();
+              recognition.current = session;
+              session.lang = conciergeLocale(language).locale;
+              session.continuous = false;
+              session.interimResults = false;
+              session.onresult = (event) => {
+                if (recognition.current !== session) return;
+                const text = event.results[0]?.[0]?.transcript?.trim();
+                if (text) {
+                  onTranscript(text.slice(0, 1500));
+                  setNotice(
+                    "Review your question, then choose Ask concierge. Nothing is sent automatically.",
+                  );
+                }
+              };
+              session.onerror = (event) => {
+                if (recognition.current !== session) return;
+                abortRecognition();
+                setListening(false);
+                setNotice(
+                  event.error === "not-allowed" || event.error === "service-not-allowed"
+                    ? "Microphone permission was denied. Please type your question."
+                    : "Voice input is unavailable. Please type your question.",
+                );
+              };
+              session.onend = () => {
+                if (recognition.current === session) {
+                  recognition.current = null;
+                  setListening(false);
+                }
+              };
               setListening(true);
               setNotice("Listening… Use Stop voice to end microphone input.");
               session.start();
             } catch {
+              abortRecognition();
               setListening(false);
-              recognition.current = null;
               setNotice("Voice input is unavailable. Please type your question.");
             }
           }}
@@ -112,7 +145,7 @@ export function ConciergeVoice({
           aria-pressed={muted}
           onClick={() => {
             setMuted(!muted);
-            window.speechSynthesis?.cancel();
+            cancelSpeech();
           }}
         >
           {muted ? "Unmute voice replies" : "Mute voice replies"}
@@ -120,31 +153,57 @@ export function ConciergeVoice({
         <button
           type="button"
           className="button secondary"
-          disabled={!answer || muted}
+          disabled={!answer || muted || disabled}
           onClick={() => {
-            const synthesis = window.speechSynthesis;
-            const voice = synthesis
-              ?.getVoices()
-              .find((v) => v.localService && v.lang.startsWith(language));
-            if (!voice) {
-              setNotice(
-                "Spoken replies are unavailable in this language on this device. Please read the text answer.",
-              );
-              return;
-            }
-            synthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(answer);
-            utterance.lang = locales[language];
-            utterance.voice = voice;
-            utterance.onerror = () =>
+            try {
+              const synthesis = window.speechSynthesis;
+              if (!synthesis || typeof window.SpeechSynthesisUtterance !== "function") {
+                setNotice(
+                  "Spoken replies are unavailable on this device. Please read the text answer.",
+                );
+                return;
+              }
+              const voices = synthesis
+                .getVoices()
+                .filter((voice) => voice.lang.toLowerCase().split(/[-_]/)[0] === language);
+              const voice = voices.find((voice) => voice.localService) ?? voices[0];
+              if (!voice) {
+                setNotice(
+                  "Spoken replies are unavailable in this language on this device. Please read the text answer.",
+                );
+                return;
+              }
+              abortRecognition();
+              setListening(false);
+              cancelSpeech();
+              const speech = new SpeechSynthesisUtterance(answer);
+              utterance.current = speech;
+              speech.lang = conciergeLocale(language).locale;
+              speech.voice = voice;
+              speech.onend = () => {
+                if (utterance.current === speech) {
+                  utterance.current = null;
+                  setNotice("Spoken reply finished.");
+                }
+              };
+              speech.onerror = () => {
+                if (utterance.current === speech) {
+                  utterance.current = null;
+                  setNotice("Spoken reply is unavailable. Please read the text answer.");
+                }
+              };
+              setNotice("Speaking… Use Stop voice or Mute voice replies to stop playback.");
+              synthesis.speak(speech);
+            } catch {
+              cancelSpeech();
               setNotice("Spoken reply is unavailable. Please read the text answer.");
-            synthesis.speak(utterance);
+            }
           }}
         >
           Read answer aloud
         </button>
       </div>
-      <p className="text-xs text-muted" role="status">
+      <p className="text-xs text-[#59606b]" role="status">
         {notice}
       </p>
     </div>

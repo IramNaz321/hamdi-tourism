@@ -25,16 +25,19 @@ export async function POST(request: Request) {
     !publicBusinessId()
   )
     return result(
-      { error: "Travel concierge is currently unavailable. Please contact our team." },
+      {
+        error: "Travel concierge is currently unavailable. Please contact our team.",
+        code: "configuration_required",
+      },
       503,
     );
   if (!sameOrigin(request)) return result({ error: "Request unavailable" }, 403);
-  if (Number(request.headers.get("content-length") ?? 0) > 8192)
+  if (Number(request.headers.get("content-length") ?? 0) > 32768)
     return result({ error: "Message too long" }, 413);
   let input;
   try {
-    const raw = await readLimitedBody(request, 8192);
-    if (raw.length > 8192) return result({ error: "Message too long" }, 413);
+    const raw = await readLimitedBody(request, 32768);
+    if (raw.length > 32768) return result({ error: "Message too long" }, 413);
     input = conciergeInput.parse(JSON.parse(raw));
   } catch {
     return result({ error: "Check your message and language" }, 400);
@@ -65,7 +68,12 @@ export async function POST(request: Request) {
       subject,
       business_id: publicBusinessId(),
     });
-    if (rateError || !allowed)
+    if (rateError)
+      return result(
+        { error: "Travel concierge is currently unavailable. Please contact our team." },
+        503,
+      );
+    if (!allowed)
       return result({ error: "Concierge limit reached. Please contact our team." }, 429);
     const { data: context, error } = await client.rpc("concierge_context", {
       business_id: publicBusinessId(),
@@ -107,6 +115,7 @@ export async function POST(request: Request) {
             content: JSON.stringify({
               language: input.language,
               question: input.message,
+              conversation: input.history ?? [],
               records: grounded,
               authorized_booking: booking,
             }),

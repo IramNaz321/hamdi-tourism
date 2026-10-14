@@ -1,147 +1,287 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useId } from "react";
+import { MessageCircle, ArrowUpRight, Send, X } from "lucide-react";
 import { ConciergeVoice } from "./concierge-voice";
+import { TurnstileChallenge } from "./turnstile-challenge";
+import {
+  conciergeLanguages,
+  conciergeLocale,
+  preferredConciergeLanguage,
+} from "@/lib/concierge-languages";
 import Link from "next/link";
-import Script from "next/script";
-type Turnstile = {
-  render: (element: HTMLElement, options: Record<string, unknown>) => string;
-  remove: (id: string) => void;
-  reset: (id: string) => void;
-};
+import styles from "./travel-concierge.module.css";
+type Turn = { id: number; role: "user" | "assistant"; content: string; language: string };
 export function TravelConcierge({ bookingId }: { bookingId?: string } = {}) {
   const [open, setOpen] = useState(false);
   const [language, setLanguage] = useState("en");
   const [message, setMessage] = useState("");
   const [answer, setAnswer] = useState("");
+  const [history, setHistory] = useState<Turn[]>([]);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [token, setToken] = useState("");
-  const [loaded, setLoaded] = useState(false);
-  const element = useRef<HTMLDivElement>(null);
-  const widget = useRef<string | undefined>(undefined);
+  const [challengeKey, setChallengeKey] = useState(0);
+  const initialized = useRef(false);
+  const sequence = useRef(0);
+  const turnId = useRef(0);
+  const request = useRef<AbortController | null>(null);
+  const textarea = useRef<HTMLTextAreaElement>(null);
+  const launch = useRef<HTMLButtonElement>(null);
+  const transcript = useRef<HTMLDivElement>(null);
+  const id = useId();
   useEffect(() => {
-    const ts = (window as unknown as { turnstile?: Turnstile }).turnstile;
-    if (!open || !loaded || !element.current || !ts) return;
-    widget.current = ts.render(element.current, {
-      sitekey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY,
-      action: "travel_concierge",
-      callback: (value: string) => setToken(value),
-      "expired-callback": () => setToken(""),
-    });
-    return () => {
-      if (widget.current) ts.remove(widget.current);
-      widget.current = undefined;
-    };
-  }, [open, loaded]);
+    if (open) textarea.current?.focus();
+  }, [open]);
+  useEffect(() => {
+    transcript.current?.scrollTo({ top: transcript.current.scrollHeight });
+  }, [history, busy]);
+  useEffect(
+    () => () => {
+      sequence.current++;
+      request.current?.abort();
+    },
+    [],
+  );
+  function close() {
+    sequence.current++;
+    request.current?.abort();
+    request.current = null;
+    if (busy) setError("Response stopped. You can ask your question again.");
+    setBusy(false);
+    setToken("");
+    setOpen(false);
+    launch.current?.focus();
+  }
   return (
-    <aside
-      className="fixed bottom-5 end-5 z-40 max-w-[calc(100vw-2rem)]"
-      aria-label="Travel concierge"
-    >
+    <aside className={styles.concierge} aria-label="Travel concierge">
       {open && (
-        <section className="panel p-5 mb-3 w-96 max-w-full max-h-[75vh] overflow-y-auto space-y-4">
-          <header className="sticky top-0 z-10 bg-white py-2 flex justify-between">
-            <h2 className="font-semibold">Travel concierge</h2>
-            <button aria-label="Close travel concierge" onClick={() => setOpen(false)}>
-              ✕
+        <section
+          id={id}
+          aria-labelledby={`${id}-title`}
+          className={styles.window}
+          dir={conciergeLocale(language).direction}
+          onKeyDown={(event) => {
+            if (event.key === "Escape") {
+              event.stopPropagation();
+              close();
+            }
+          }}
+        >
+          <header className={styles.header}>
+            <div>
+              <p>HAMDI TOURISM</p>
+              <h2 id={`${id}-title`}>Travel concierge</h2>
+            </div>
+            <button type="button" aria-label="Close travel concierge" onClick={close}>
+              <X size={19} />
             </button>
           </header>
-          <p className="text-xs text-muted">
-            AI assistance uses published business information. Please avoid private or payment
-            details. Reservations and fares require confirmation.
-          </p>
-          <form
-            className="space-y-3"
-            onSubmit={async (e) => {
-              e.preventDefault();
-              setBusy(true);
-              setError("");
-              setAnswer("");
-              const form = new FormData(e.currentTarget);
-              try {
-                const response = await fetch("/api/concierge", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({
-                    message: form.get("message"),
-                    language,
-                    token,
-                    bookingId,
-                  }),
-                  signal: AbortSignal.timeout(30000),
-                });
-                const data = await response.json();
-                if (!response.ok) setError(data.error ?? "Concierge unavailable.");
-                else setAnswer(data.answer);
-              } catch {
-                setError("Concierge unavailable. Please contact our team.");
-              } finally {
-                setBusy(false);
-                const ts = (window as unknown as { turnstile?: Turnstile }).turnstile;
-                if (widget.current) ts?.reset(widget.current);
-                setToken("");
-              }
-            }}
-          >
-            <label className="field">
+          <div className={styles.body}>
+            <p className={styles.hint}>
+              Ask about your transfer. AI uses published information; never send payment details.
+              Chats stay in this page’s memory and clear when you leave.
+            </p>
+            <label className={styles.language}>
               Language
-              <select value={language} onChange={(e) => setLanguage(e.target.value)}>
-                <option value="en">English</option>
-                <option value="ar">العربية</option>
-                <option value="ur">اردو</option>
-                <option value="hi">हिन्दी</option>
+              <select
+                aria-label="Language"
+                value={language}
+                onChange={(event) => {
+                  setLanguage(event.target.value);
+                  setAnswer("");
+                }}
+              >
+                {conciergeLanguages.map((item) => (
+                  <option key={item.code} value={item.code}>
+                    {item.label}
+                  </option>
+                ))}
               </select>
             </label>
-            <label className="field">
-              Your question
-              <textarea
-                name="message"
-                value={message}
-                onChange={(event) => setMessage(event.target.value)}
-                required
-                maxLength={1500}
-                dir={["ar", "ur"].includes(language) ? "rtl" : "ltr"}
-              />
-            </label>
-            <ConciergeVoice
-              key={language}
-              language={language}
-              answer={answer}
-              onTranscript={setMessage}
-            />
-            {process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && (
-              <>
-                <Script
-                  src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
-                  onReady={() => setLoaded(true)}
-                />
-                <div ref={element} />
-              </>
-            )}
-            <button className="button" disabled={busy}>
-              {busy ? "Checking…" : "Ask concierge"}
-            </button>
-          </form>
-          {error && (
-            <p className="notice error" role="alert">
-              {error}
-            </p>
-          )}
-          {answer && (
-            <p
-              dir={["ar", "ur"].includes(language) ? "rtl" : "ltr"}
-              className="whitespace-pre-wrap text-sm"
-              role="status"
+            <div
+              ref={transcript}
+              className={styles.history}
+              role="log"
+              aria-label="Conversation history"
+              aria-live="polite"
+              aria-relevant="additions"
+              aria-busy={busy}
             >
-              {answer}
-            </p>
-          )}
-          <Link className="text-sm underline" href="/#contact">
-            Contact our team
-          </Link>
+              {!history.length && (
+                <p className={styles.welcome}>How can we help with your journey?</p>
+              )}
+              {history.map((turn) => (
+                <div
+                  key={turn.id}
+                  className={turn.role === "user" ? styles.question : styles.reply}
+                  lang={turn.language}
+                  dir="auto"
+                >
+                  <span>{turn.role === "user" ? "You" : "HAMDI TOURISM"}</span>
+                  <p>{turn.content}</p>
+                </div>
+              ))}
+              {busy && (
+                <p role="status" className={styles.loading}>
+                  Checking published information…
+                </p>
+              )}
+            </div>
+            {error && (
+              <p className={styles.error} role="alert">
+                {error}
+              </p>
+            )}
+            <form
+              onSubmit={async (event) => {
+                event.preventDefault();
+                const question = message.trim();
+                if (busy || !question) return;
+                const run = ++sequence.current;
+                const controller = new AbortController();
+                request.current = controller;
+                const timeout = setTimeout(() => controller.abort(), 30000);
+                setBusy(true);
+                setError("");
+                setAnswer("");
+                const entry: Turn = {
+                  id: ++turnId.current,
+                  role: "user",
+                  content: question,
+                  language,
+                };
+                setHistory((previous) => [...previous, entry].slice(-12));
+                try {
+                  const response = await fetch("/api/concierge", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      message: question,
+                      language,
+                      token,
+                      bookingId,
+                      history: history
+                        .slice(-6)
+                        .map(({ role, content }) => ({ role, content: content.slice(0, 1000) })),
+                    }),
+                    signal: controller.signal,
+                  });
+                  const data = await response.json();
+                  if (sequence.current !== run) return;
+                  if (!response.ok) {
+                    setError(
+                      data.code === "configuration_required"
+                        ? "Travel concierge is currently unavailable. AI assistance has not been enabled yet. Please contact our team or plan a transfer."
+                        : response.status === 429
+                          ? "Concierge limit reached. Please wait or contact our team."
+                          : response.status === 403
+                            ? "Complete the security check or sign in to continue."
+                            : "Travel concierge is currently unavailable. Please contact our team.",
+                    );
+                  } else if (
+                    typeof data.answer !== "string" ||
+                    !data.answer.trim() ||
+                    data.answer.length > 8000
+                  ) {
+                    setError("A response could not be verified. Please contact our team.");
+                  } else {
+                    setAnswer(data.answer);
+                    setMessage("");
+                    setHistory((previous) =>
+                      [
+                        ...previous,
+                        {
+                          id: ++turnId.current,
+                          role: "assistant",
+                          content: data.answer,
+                          language,
+                        } as Turn,
+                      ].slice(-12),
+                    );
+                  }
+                } catch {
+                  if (sequence.current === run)
+                    setError(
+                      "Travel concierge is currently unavailable. Please try again or contact our team.",
+                    );
+                } finally {
+                  clearTimeout(timeout);
+                  if (sequence.current === run) {
+                    request.current = null;
+                    setBusy(false);
+                    setToken("");
+                    setChallengeKey((key) => key + 1);
+                  }
+                }
+              }}
+            >
+              <label className={styles.composer}>
+                Your question
+                <textarea
+                  ref={textarea}
+                  name="message"
+                  value={message}
+                  onChange={(event) => setMessage(event.target.value)}
+                  required
+                  maxLength={1500}
+                  rows={2}
+                  lang={language}
+                  dir={conciergeLocale(language).direction}
+                  disabled={busy}
+                />
+              </label>
+              <ConciergeVoice
+                key={language}
+                language={language}
+                answer={answer}
+                onTranscript={setMessage}
+                disabled={busy}
+              />
+              {process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && (
+                <TurnstileChallenge
+                  key={challengeKey}
+                  action="travel_concierge"
+                  onToken={setToken}
+                />
+              )}
+              <button type="submit" className={styles.send} disabled={busy || !message.trim()}>
+                <Send size={15} aria-hidden="true" />
+                {busy ? "Checking…" : "Ask concierge"}
+              </button>
+            </form>
+            <div className={styles.links}>
+              <Link href="/book">
+                Plan a transfer <ArrowUpRight size={14} />
+              </Link>
+              <Link href="/#contact">Contact our team</Link>
+            </div>
+          </div>
         </section>
       )}
-      <button className="button shadow-lg" onClick={() => setOpen(!open)} aria-expanded={open}>
+      <button
+        ref={launch}
+        className={styles.launch}
+        onClick={() => {
+          if (open) {
+            close();
+            return;
+          }
+          if (!initialized.current) {
+            setLanguage(
+              preferredConciergeLanguage(
+                navigator.languages?.length
+                  ? navigator.languages
+                  : [navigator.language, document.documentElement.lang],
+              ),
+            );
+            initialized.current = true;
+          }
+          setOpen(true);
+        }}
+        aria-expanded={open}
+        aria-controls={id}
+      >
+        <MessageCircle size={19} aria-hidden="true" />
         Travel concierge
       </button>
     </aside>
