@@ -4,9 +4,14 @@ test("capture genuine fleet, booking, unavailable tracking and concierge screens
   page,
 }, info) => {
   await page.goto("/");
-  await expect(
-    page.getByRole("heading", { name: "Luxury in Every Journey" }),
-  ).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Luxury in Every Journey" })).toBeVisible();
+  await page.locator("#fleet").scrollIntoViewIfNeeded();
+  for (const image of await page.locator("#fleet .fleet-category-image img").all()) {
+    await image.scrollIntoViewIfNeeded();
+    await expect
+      .poll(() => image.evaluate((node) => (node as HTMLImageElement).naturalWidth))
+      .toBeGreaterThan(0);
+  }
   await page.locator("#fleet").screenshot({ path: `docs/previews/${info.project.name}-fleet.png` });
   await page.goto("/fleet");
   await page.screenshot({ path: `docs/previews/${info.project.name}-gallery.png`, fullPage: true });

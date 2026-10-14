@@ -59,19 +59,12 @@ export function FleetGallery({ fleet }: { fleet: PublicVehicle[] }) {
           ))}
         </div>
       ) : (
-        <Card className="p-8 sm:p-10 mt-10 text-center">
-          <h3 className="font-semibold text-lg">Let’s find the right fit.</h3>
-          <p className="text-muted text-sm">
-            No owner-published vehicles are available for booking yet. The visuals above are
-            marketing showcases. Contact our team with your passenger and luggage requirements.
-          </p>
-          <Link href="/#contact" className="button self-center mt-3">
-            Contact our team
+        <div className="fleet-booking-notice">
+          <p>Online booking is currently unavailable. Contact our team to discuss your transfer.</p>
+          <Link href="/#contact">
+            Contact our team <ArrowUpRight size={16} aria-hidden="true" />
           </Link>
-          <p className="text-xs text-muted">
-            Marketing vehicle visuals and engine sounds are not availability listings.
-          </p>
-        </Card>
+        </div>
       )}
     </>
   );

@@ -803,3 +803,191 @@ svg {
     bottom: 18px;
   }
 }
+
+/* Fleet marketing cards are independent of operational vehicle listings. */
+.fleet-section-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+}
+.fleet-section-heading h2 {
+  font:
+    400 clamp(2.15rem, 3.8vw, 3.5rem)/1.15 Georgia,
+    "Times New Roman",
+    serif;
+  letter-spacing: -0.035em;
+  max-width: 750px;
+  color: #f5efdf;
+}
+.fleet-section-heading h2 span {
+  color: #c5a46d;
+}
+.fleet-intro {
+  color: #c2bcb0;
+  font-size: 0.95rem;
+  line-height: 1.8;
+  max-width: 520px;
+  margin-top: 1.2rem;
+}
+.fleet-booking-cta {
+  flex-shrink: 0;
+  gap: 0.7rem;
+}
+.fleet-category-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.15rem;
+}
+.fleet-category-card {
+  overflow: hidden;
+  border: 1px solid #c5a46d35;
+  border-radius: 16px;
+  background: #171716;
+  color: #f5efdf;
+  box-shadow: 0 12px 28px #00000018;
+}
+.fleet-category-image {
+  position: relative;
+  aspect-ratio: 3/2;
+  overflow: hidden;
+  background: #292723;
+}
+.fleet-category-image img {
+  object-position: center;
+}
+.fleet-category-copy {
+  padding: 1.4rem 1.2rem 1.5rem;
+  border-top: 1px solid #c5a46d25;
+}
+.fleet-category-number {
+  display: block;
+  color: #c5a46d;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  margin-bottom: 0.7rem;
+}
+.fleet-category-copy h3 {
+  font:
+    400 1.22rem/1.3 Georgia,
+    "Times New Roman",
+    serif;
+  letter-spacing: -0.015em;
+}
+.fleet-category-copy p {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+  color: #c9beab;
+  font-size: 0.8rem;
+}
+.fleet-image-notes {
+  margin-top: 1.1rem;
+  font-size: 0.75rem;
+  line-height: 1.8;
+  color: #6f604a;
+}
+.fleet-image-notes summary {
+  width: fit-content;
+  padding: 0.4rem 0;
+  min-height: 32px;
+  cursor: pointer;
+  text-underline-offset: 3px;
+}
+.fleet-image-notes summary:hover {
+  color: #c5a46d;
+}
+.fleet-image-notes > div {
+  margin-top: 0.6rem;
+  padding: 1rem;
+  background: #191918;
+  color: #d5cebf;
+  border: 1px solid #c5a46d35;
+  border-radius: 10px;
+}
+.fleet-image-notes ul {
+  margin-top: 0.6rem;
+}
+.fleet-image-notes a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.fleet-booking-notice {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1.3rem;
+  border-top: 1px solid #c5a46d35;
+  font-size: 0.85rem;
+  line-height: 1.7;
+}
+.fleet-booking-notice p {
+  color: inherit;
+  opacity: 0.8;
+}
+.fleet-booking-notice a,
+.fleet-gallery-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 44px;
+  font-weight: 600;
+  text-underline-offset: 4px;
+}
+.fleet-booking-notice a {
+  white-space: nowrap;
+}
+.fleet-gallery-link {
+  margin-top: 1rem;
+  color: #795924;
+  font-size: 0.8rem;
+}
+.fleet-gallery-link:hover,
+.fleet-booking-notice a:hover {
+  text-decoration: underline;
+}
+@media (max-width: 1023px) {
+  .fleet-category-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .fleet-section-heading {
+    align-items: start;
+    flex-direction: column;
+    gap: 1.4rem;
+  }
+}
+@media (max-width: 639px) {
+  .fleet-category-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.2rem;
+  }
+  .fleet-category-copy {
+    padding: 1.2rem 1.3rem;
+  }
+  .fleet-category-copy h3 {
+    font-size: 1.35rem;
+  }
+  .fleet-category-number {
+    float: right;
+    margin: 0.25rem 0 0 1rem;
+  }
+  .fleet-booking-notice {
+    flex-direction: column;
+    align-items: start;
+    gap: 0.2rem;
+  }
+  .fleet-section-heading h2 span {
+    display: block;
+  }
+}
+
+.luxury-public .fleet-image-notes {
+  color: #b8b3a9;
+}
+.luxury-public .fleet-gallery-link {
+  color: #c5a46d;
+}

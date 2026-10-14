@@ -42,9 +42,17 @@ test("four local showcase photos load without Supabase inventory and keep bookin
       .poll(() => photo.evaluate((node) => (node as HTMLImageElement).naturalWidth))
       .toBeGreaterThan(0);
   }
-  await expect(
-    page.getByText("Online booking is currently unavailable.", { exact: false }),
-  ).toBeVisible();
+  await expect(page.locator(".cinematic-booking-state")).toBeVisible();
+  const notes = categories.locator("details");
+  await expect(notes).not.toHaveAttribute("open");
+  const disclosure = notes.locator("summary");
+  await disclosure.focus();
+  await page.keyboard.press("Enter");
+  await expect(notes).toHaveAttribute("open", "");
+  await expect(notes.getByText("Marketing examples only.", { exact: false })).toBeVisible();
+  await expect(notes.getByRole("link", { name: "Usage & provenance" })).toHaveCount(4);
+  await page.keyboard.press("Enter");
+  await expect(notes).not.toHaveAttribute("open");
   await page.goto("/book");
   await expect(
     page.getByRole("heading", { name: "Online booking is currently unavailable" }),

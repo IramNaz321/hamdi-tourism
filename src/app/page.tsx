@@ -101,16 +101,25 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ l
             </div>
           </div>
         </section>
-        <section id="fleet" className="max-w-7xl mx-auto px-6 lg:px-10 py-20">
-          <p className="eyebrow mb-4">OUR FLEET</p>
-          <h2 className="text-4xl tracking-tight">The right vehicle for your plans.</h2>
-          <p className="text-muted mt-5 max-w-xl">
-            Review our published vehicles and share your passenger and luggage requirements. Our
-            team will confirm a suitable assignment.
-          </p>
+        <section id="fleet" className="fleet-section max-w-7xl mx-auto px-6 lg:px-10 py-20">
+          <div className="fleet-section-heading">
+            <div>
+              <p className="eyebrow mb-4">OUR FLEET</p>
+              <h2>
+                Travel in Comfort. <span>Arrive in Style.</span>
+              </h2>
+              <p className="fleet-intro">
+                Four ways to travel. One considered journey, from airport arrival to your final
+                destination.
+              </p>
+            </div>
+            <Link href="/book" className="button gold fleet-booking-cta">
+              Plan your transfer <ArrowUpRight size={17} aria-hidden="true" />
+            </Link>
+          </div>
           <FleetGallery fleet={fleet} />
-          <Link href="/fleet" className="button secondary mt-6">
-            Explore the published vehicle gallery
+          <Link href="/fleet" className="fleet-gallery-link">
+            View our published fleet <ArrowUpRight size={15} aria-hidden="true" />
           </Link>
         </section>
         <section id="destinations" className="bg-white py-20">

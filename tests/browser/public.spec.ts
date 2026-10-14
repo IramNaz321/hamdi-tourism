@@ -3,9 +3,7 @@ test("public website renders the required sections without fictional fleet or fa
   page,
 }, testInfo) => {
   await page.goto("/");
-  await expect(
-    page.getByRole("heading", { name: "Luxury in Every Journey" }),
-  ).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Luxury in Every Journey" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Our Fleet", exact: true })).toHaveCount(0);
   const contrast = await page
     .getByRole("link", { name: "Book Your Transfer", exact: true })
@@ -189,10 +187,12 @@ test("published fleet gallery and unknown vehicle detail never invent vehicles",
 }) => {
   await page.goto("/fleet");
   await expect(
-    page.getByRole("heading", { name: "Your journey. The right vehicle." }),
+    page.getByRole("heading", { name: "Travel in Comfort. Arrive in Style." }),
   ).toBeVisible();
   await expect(
-    page.getByText("No owner-published vehicles are available for booking yet.", { exact: false }),
+    page
+      .locator(".fleet-booking-notice")
+      .getByText("Online booking is currently unavailable.", { exact: false }),
   ).toBeVisible();
   await expect(
     page.getByRole("region", { name: "Vehicle categories" }).getByRole("img"),
