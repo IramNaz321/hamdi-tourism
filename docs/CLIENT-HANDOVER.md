@@ -2,6 +2,11 @@
 
 Last reviewed: 14 October 2026. Client: Hamid Shah.
 
+**Latest organization update:** the real organization now exists and its binding is
+configured in this Codex server runtime. Business settings are absent; see the
+[current read-only connection report](ORGANIZATION-CONNECTION.md). Earlier empty-organization
+findings below are historical, not the current hosted state.
+
 Latest independent Passenger/Driver/auth/booking fixes and current-run evidence:
 [workflow follow-up](INDEPENDENT-WORKFLOW-VERIFICATION.md). Owner activation remains blocked;
 other authorized code work has continued.
