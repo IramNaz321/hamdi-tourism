@@ -143,6 +143,37 @@ test("offline AI fixture: session history, loading and English/Arabic/Urdu rende
   await expect(window).toHaveCount(0);
 });
 
+test("narrow mobile concierge fits the viewport and supports Hindi chat", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 740 });
+  let language = "";
+  await page.route("**/api/concierge", async (route) => {
+    language = route.request().postDataJSON().language;
+    await route.fulfill({ json: { answer: "कृपया बुकिंग पृष्ठ पर विकल्प देखें।" } });
+  });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Travel concierge", exact: true }).click();
+  const window = page.getByRole("region", { name: "Travel concierge" });
+  const panel = await window.boundingBox();
+  expect(panel).not.toBeNull();
+  expect(panel!.x).toBeGreaterThanOrEqual(0);
+  expect(panel!.x + panel!.width).toBeLessThanOrEqual(320);
+  const voiceButtons = await page.locator("[data-concierge-voice] button").evaluateAll((buttons) =>
+    buttons.map((button) => {
+      const bounds = button.getBoundingClientRect();
+      return { left: bounds.left, right: bounds.right };
+    }),
+  );
+  expect(voiceButtons).toHaveLength(4);
+  expect(voiceButtons.every(({ left, right }) => left >= 0 && right <= 320)).toBe(true);
+
+  await page.getByLabel("Language", { exact: true }).selectOption("hi");
+  await expect(window).toHaveAttribute("dir", "ltr");
+  await page.getByLabel("Your question").fill("मैं बुकिंग कैसे करूँ?");
+  await page.getByRole("button", { name: "Ask concierge", exact: true }).click();
+  await expect(page.getByRole("log")).toContainText("कृपया बुकिंग पृष्ठ");
+  expect(language).toBe("hi");
+});
+
 test("offline speech fixture: playback requires explicit unmute and click, Stop and close cancel it", async ({
   page,
 }) => {

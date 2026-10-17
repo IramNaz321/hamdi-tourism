@@ -1,5 +1,6 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
+import type { AuthChangeEvent } from "@supabase/supabase-js";
 import { browserClient } from "@/lib/supabase/browser";
 import { LocationSharing as Controller } from "@/lib/location-sharing";
 import { LiveTracking } from "@/components/live-tracking";
@@ -12,6 +13,7 @@ export function LocationSharing({ tripId, eligible }: { tripId: string; eligible
   const consent = useRef<string | null>(null);
   const [sharing, setSharing] = useState(false);
   const [pending, setPending] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState<string | null>(null);
   const [message, setMessage] = useState(
     "Location is not shared. Start only if you consent to sharing during this trip.",
   );
@@ -42,6 +44,7 @@ export function LocationSharing({ tripId, eligible }: { tripId: string; eligible
           bearing: fix.heading,
           consent_id: consent.current,
         });
+        if (!error) setLastUpdated(new Date().toISOString());
         return {
           denied: !!error && ["42501", "PGRST301", "PGRST302", "PGRST303"].includes(error.code),
           error: !!error,
@@ -70,11 +73,22 @@ export function LocationSharing({ tripId, eligible }: { tripId: string; eligible
         );
       }
     };
+    const {
+      data: { subscription },
+    } = browserClient().auth.onAuthStateChange((event: AuthChangeEvent) => {
+      if (event === "SIGNED_OUT") {
+        window.setTimeout(() => {
+          invalidateStart();
+          controller.current?.stop("You signed out. Location sharing stopped.");
+        }, 0);
+      }
+    });
     window.addEventListener("offline", offline);
     document.addEventListener("visibilitychange", hidden);
     return () => {
       invalidateStart();
       controller.current?.stop();
+      subscription.unsubscribe();
       window.removeEventListener("offline", offline);
       document.removeEventListener("visibilitychange", hidden);
     };
@@ -128,6 +142,16 @@ export function LocationSharing({ tripId, eligible }: { tripId: string; eligible
         </p>
         <p role="status" className="text-sm">
           {message}
+        </p>
+        <p className="text-sm text-muted" aria-live="polite">
+          Last successful update:{" "}
+          {lastUpdated
+            ? new Intl.DateTimeFormat(undefined, {
+                dateStyle: "medium",
+                timeStyle: "medium",
+                timeZone: "Asia/Dubai",
+              }).format(new Date(lastUpdated)) + " UAE time"
+            : "none yet"}
         </p>
         <button
           className="button min-h-12"

@@ -1,11 +1,10 @@
 import type { NextConfig } from "next";
-import { configuredSiteOrigin } from "./src/lib/site-origin";
-const origin = configuredSiteOrigin(process.env);
+import { serverActionAllowedOrigins } from "./src/lib/site-origin";
 const config: NextConfig = {
   poweredByHeader: false,
   distDir: process.env.HAMDI_BROWSER_TESTS === "true" ? ".next-test" : ".next",
   experimental: {
-    serverActions: { bodySizeLimit: "6mb", allowedOrigins: origin ? [new URL(origin).host] : [] },
+    serverActions: { bodySizeLimit: "6mb", allowedOrigins: serverActionAllowedOrigins(process.env) },
   },
   async headers() {
     return [

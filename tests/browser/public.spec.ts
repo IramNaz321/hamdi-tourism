@@ -114,7 +114,9 @@ test("expired invite and recovery redirects stay on the current origin", async (
     await expect(
       page.getByRole("alert").filter({ hasText: "This link is invalid or has expired" }),
     ).toBeVisible();
-    expect(new URL(page.url()).origin).toBe("http://127.0.0.1:3000");
+    expect(new URL(page.url()).origin).toBe(
+      `http://127.0.0.1:${process.env.PLAYWRIGHT_TEST_PORT ?? "3000"}`,
+    );
   }
 });
 test("public security headers and discovery restrictions are present", async ({ request }) => {

@@ -385,6 +385,16 @@ export function parseRecord(
       if (!z.email().max(254).safeParse(value).success)
         throw new Error("Enter a valid email address.");
       result[field.name] = value.toLowerCase();
+    } else if (entity === "drivers" && field.type === "tel") {
+      const digits = value.replace(/\D/g, "");
+      if (
+        !/^\+?\d[\d\s().-]*$/.test(value) ||
+        digits.length < 7 ||
+        digits.length > 15 ||
+        value.length > 30
+      )
+        throw new Error("Enter a valid phone number.");
+      result[field.name] = value;
     } else if (field.type === "datetime-local") {
       if (
         !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value) ||

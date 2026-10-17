@@ -32,6 +32,14 @@ export function configuredSiteOrigin(env: OriginEnvironment) {
   }
 }
 
+export function serverActionAllowedOrigins(env: OriginEnvironment) {
+  const origin = configuredSiteOrigin(env);
+  if (!origin) return [];
+  const allowedOrigins = [new URL(origin).host];
+  if (env.CODESPACES === "true") allowedOrigins.push("localhost:3000");
+  return allowedOrigins;
+}
+
 /** Proxy redirects must be absolute in Next.js 16. */
 export function loginRedirectUrl(requestOrigin: string, env: OriginEnvironment) {
   const configured = configuredSiteOrigin(env);

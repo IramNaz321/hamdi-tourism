@@ -3,6 +3,9 @@ import { spawnSync } from "node:child_process";
 const env = {
   ...process.env,
   HAMDI_BROWSER_TESTS: "true",
+  CODESPACES: "false",
+  CODESPACE_NAME: "",
+  GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN: "",
   ROUTING_ENABLED: "false",
   ORS_API_KEY: "",
   NEXT_PUBLIC_SUPABASE_URL: "",

@@ -1,8 +1,10 @@
 # Travel concierge — implementation and live acceptance
 
 The existing concierge was extended without changing the homepage, fleet, branding,
-login or booking routes. UI styles are scoped to the widget. No database migration,
-account change, fake operational data, provider activation or deployment was performed.
+login or booking routes. UI styles are scoped to the widget. Production migrations
+001–009, including the Passenger RPCs and rate-limit storage used here, have been
+applied and verified. This concierge work made no production database, account,
+provider or deployment changes.
 
 ## Implemented
 
@@ -33,32 +35,33 @@ account change, fake operational data, provider activation or deployment was per
 - Failed rate-limit storage is a service-unavailable error, not a fabricated usage-limit
   result. Provider/configuration failures never create synthetic assistant answers.
 
-## Current live blockers
+## Current live acceptance gates
 
-Read-only hosted inspection found none of `concierge_context`, `concierge_consume`
-or `passenger_booking_detail`. They belong to the existing reviewed Passenger repair
-and dependencies; install only after separate production approval and authorized
-write access. Do not replay 001–007. Published business settings, genuine fleet,
-routes/fares and policies must exist before operational answers can be accepted.
+The production Passenger schema and concierge RPC dependencies are installed. Never
+replay historical migrations or apply another production migration as part of
+concierge testing. Published business settings, genuine fleet, routes/fares and
+policies still need Owner verification before the model can provide useful
+business-specific answers.
 
-This environment has no OpenAI key/model, AI rate-limit secret or Turnstile key pair,
-and `OPENAI_CONCIERGE_ENABLED` remains disabled. Configure values securely in the
-actual application host using the existing `.env.example` names:
+The Codespaces Next.js runtime loads the server-only OpenAI key, model, rate-limit
+secret and enable flag from ignored `.env.local`; Next.js environment loading was
+verified without printing values. No live OpenAI request was made, so model access,
+spend limits, answer quality and multilingual grounding remain unverified. This local
+configuration does not propagate to Vercel or another host. Configure the same
+server-only variables in the approved deployment environment, then perform an
+authorized live acceptance test. Never expose provider or Supabase service-role
+secrets to browser code or source control.
 
-- `OPENAI_API_KEY`, `OPENAI_MODEL`, `AI_RATE_LIMIT_SECRET` — server-only.
-- `TURNSTILE_SECRET_KEY` — server-only; `NEXT_PUBLIC_TURNSTILE_SITE_KEY` — public site key.
-- Existing Supabase public/session and server bindings, organization, and exact HTTPS
-  origin. Allow the intended HTTPS domain in CAPTCHA/Auth configuration and provider
-  egress (`api.openai.com`, `challenges.cloudflare.com`) where restricted.
-- Enable `OPENAI_CONCIERGE_ENABLED=true` only as part of an authorized live provider
-  acceptance. Do not put privileged values in public variables or chat.
-
-This does not unblock or delay independent Owner login, booking repair and Vercel
-work. Their existing access/approval requirements remain separate.
+Voice tests use browser mocks. Real microphone permissions, transcription and audible
+voice quality on Chrome/Edge, Safari/iOS and Android remain unverified. Supported
+browsers can process audio or text through their speech services; typing remains the
+fallback.
 
 ## What was actually tested
 
-87 unit tests and 72 desktop/mobile Chromium browser tests passed. AI and speech
+97 unit tests, 82 desktop/mobile Chromium browser tests and 210 local SQL
+RLS/workflow assertions passed; TypeScript checking, ESLint and a production build
+passed. AI and speech
 fixtures are explicitly offline; no production account, booking, usage row or provider
 request was created by them. Tests cover validation, untrusted history roles/limits,
 booking authorization denial, origin/CAPTCHA gates, missing data/configuration,
@@ -68,9 +71,8 @@ review, explicit speech playback/mute/stop, late callbacks and request cancellat
 The desktop/mobile unavailable-state screenshots are from the running application,
 not invented AI conversations. Build, ESLint and TypeScript are required before release.
 
-Real microphone permissions/transcription and audible voice quality on Chrome/Edge,
-Safari/iOS and Android devices remain unverified. SpeechRecognition is not universally
-available (including many Firefox installations); typing remains the fallback.
+SpeechRecognition is not universally available (including many Firefox installations);
+typing remains the fallback.
 Real OpenAI answer quality/declines in each language and actual authenticated booking
-RLS acceptance remain unverified until credentials, approved schema and genuine
-sessions are available. Do not describe the concierge as fully operational yet.
+RLS acceptance remain unverified until provider acceptance and genuine passenger
+sessions are tested. Do not describe the concierge as fully operational yet.

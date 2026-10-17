@@ -91,3 +91,67 @@ test("required fields and email formats are enforced", () => {
     ),
   );
 });
+
+const driver = {
+  name: "  Test Driver  ",
+  phone: "+971 50 123 4567",
+  email: "  DRIVER@EXAMPLE.TEST ",
+  license_number: "TEST-LICENCE-001",
+  license_expiry: "2028-02-29",
+  status: "available",
+  account_status: "active",
+  notes: "",
+};
+
+test("driver form normalizes and saves valid contact, licence and status fields", () => {
+  assert.deepEqual(parseRecord("drivers", form(driver)), {
+    name: "Test Driver",
+    phone: "+971 50 123 4567",
+    email: "driver@example.test",
+    license_number: "TEST-LICENCE-001",
+    license_expiry: "2028-02-29",
+    status: "available",
+    account_status: "active",
+    notes: null,
+  });
+  assert.deepEqual(
+    parseRecord("drivers", form({ ...driver, license_expiry: "" })).license_expiry,
+    null,
+  );
+});
+
+test("driver required fields, email and calendar expiry are validated on the server", () => {
+  for (const changed of [
+    { name: " " },
+    { phone: "" },
+    { phone: "letters" },
+    { phone: "12345" },
+    { phone: "+9715012345678901" },
+    { license_number: "" },
+    { email: "not-an-email" },
+    { email: `${"a".repeat(250)}@example.test` },
+    { license_expiry: "2026-02-29" },
+    { license_expiry: "not-a-date" },
+  ]) {
+    assert.throws(() => parseRecord("drivers", form({ ...driver, ...changed })));
+  }
+});
+
+test("driver availability and account status accept only the configured choices", () => {
+  for (const status of ["available", "on_trip", "unavailable"])
+    assert.equal(parseRecord("drivers", form({ ...driver, status })).status, status);
+  for (const accountStatus of ["active", "inactive"])
+    assert.equal(
+      parseRecord("drivers", form({ ...driver, account_status: accountStatus })).account_status,
+      accountStatus,
+    );
+  for (const changed of [{ status: "free" }, { account_status: "suspended" }])
+    assert.throws(() => parseRecord("drivers", form({ ...driver, ...changed })));
+});
+
+test("only owners and managers may write driver records", () => {
+  assert.equal(canWrite("owner", "drivers"), true);
+  assert.equal(canWrite("manager", "drivers"), true);
+  for (const role of ["dispatcher", "viewer", "driver"] as const)
+    assert.equal(canWrite(role, "drivers"), false);
+});

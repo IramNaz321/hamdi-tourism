@@ -1,6 +1,6 @@
 "use client";
 import { vehicleCategoryLabel } from "@/lib/vehicle-categories";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import Link from "next/link";
 import { entities, toUaeInput } from "@/lib/entities";
 import { saveRecord } from "@/app/admin/actions";
@@ -14,6 +14,23 @@ export function RecordForm({
   record?: Record<string, string | number | boolean | null>;
   related: Record<string, { id: string; name: string }>;
 }) {
+  const [values, setValues] = useState<Record<string, string>>(() =>
+    Object.fromEntries(
+      entities[entity].fields.map((field) => {
+        const raw = String(record?.[field.name] ?? "");
+        if (field.type === "checkbox")
+          return [
+            field.name,
+            (record ? Boolean(record[field.name]) : field.defaultChecked) ? "on" : "",
+          ];
+        if (field.type === "datetime-local" && raw) return [field.name, toUaeInput(raw)];
+        return [field.name, raw || field.options?.[0] || ""];
+      }),
+    ),
+  );
+  function changeValue(name: string, value: string) {
+    setValues((current) => ({ ...current, [name]: value }));
+  }
   const [state, action, pending] = useActionState(
     saveRecord.bind(null, entity, record ? String(record.id) : null),
     {},
@@ -28,8 +45,7 @@ export function RecordForm({
       <input type="hidden" name="updated_at" value={String(record?.updated_at ?? "")} />
       <div className="grid sm:grid-cols-2 gap-6">
         {entities[entity].fields.map((field) => {
-          let value = String(record?.[field.name] ?? "");
-          if (field.type === "datetime-local" && value) value = toUaeInput(value);
+          const value = values[field.name] ?? "";
           if (field.relation)
             return (
               <RelationPicker
@@ -47,7 +63,8 @@ export function RecordForm({
                 <input
                   type="checkbox"
                   name={field.name}
-                  defaultChecked={record ? Boolean(record[field.name]) : field.defaultChecked}
+                  checked={value === "on"}
+                  onChange={(event) => changeValue(field.name, event.target.checked ? "on" : "")}
                 />
                 {field.label}
               </label>
@@ -63,7 +80,8 @@ export function RecordForm({
                 <select
                   name={field.name}
                   required={field.required}
-                  defaultValue={value || field.options[0]}
+                  value={value}
+                  onChange={(event) => changeValue(field.name, event.target.value)}
                 >
                   {field.options
                     .filter(
@@ -84,15 +102,16 @@ export function RecordForm({
               ) : field.type === "textarea" ? (
                 <textarea
                   name={field.name}
-                  defaultValue={value}
+                  value={value}
                   required={field.required}
                   maxLength={4000}
+                  onChange={(event) => changeValue(field.name, event.target.value)}
                 />
               ) : (
                 <input
                   name={field.name}
                   type={field.type}
-                  defaultValue={value}
+                  value={value}
                   required={field.required}
                   min={field.min}
                   max={
@@ -102,6 +121,7 @@ export function RecordForm({
                   }
                   step={field.step}
                   maxLength={200}
+                  onChange={(event) => changeValue(field.name, event.target.value)}
                 />
               )}
             </label>

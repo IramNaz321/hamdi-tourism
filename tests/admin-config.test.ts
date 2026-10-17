@@ -1,6 +1,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { configuredSiteOrigin, loginRedirectUrl } from "../src/lib/site-origin";
+import {
+  configuredSiteOrigin,
+  loginRedirectUrl,
+  serverActionAllowedOrigins,
+} from "../src/lib/site-origin";
 import { enquiryConfigurationIssues } from "../src/lib/enquiry-readiness";
 import { accountRoute } from "../src/lib/account-route";
 import { isServerSupabaseKey } from "../src/lib/supabase/key-validation";
@@ -43,6 +47,16 @@ test("invalid origins return controlled unavailable state and reject secret-bear
     configuredSiteOrigin({ NEXT_PUBLIC_SITE_URL: " https://example.com/ " }),
     "https://example.com",
   );
+});
+test("Server Actions allow the Codespaces loopback Origin only for the configured preview", () => {
+  assert.deepEqual(serverActionAllowedOrigins(codespace), [
+    "client-preview-123-3000.app.github.dev",
+    "localhost:3000",
+  ]);
+  assert.deepEqual(serverActionAllowedOrigins({ NEXT_PUBLIC_SITE_URL: "https://client.example" }), [
+    "client.example",
+  ]);
+  assert.deepEqual(serverActionAllowedOrigins({ CODESPACES: "true" }), []);
 });
 test("only actual active membership roles reach their portal, never automatic owner promotion", () => {
   for (const role of ["owner", "manager", "dispatcher", "viewer"])
