@@ -1,0 +1,1047 @@
+@import "tailwindcss";
+/* Final branding can be applied centrally here without changing application components. */
+@theme inline {
+  --color-brand: var(--brand);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-canvas: var(--canvas);
+  --font-sans: Arial, Helvetica, sans-serif;
+}
+:root {
+  --brand: #c5a46d;
+  --brand-hover: #d5b983;
+  --ink: #111827;
+  --muted: #576273;
+  --canvas: #f8f6f1;
+  --line: #e3dfd6;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: Arial, Helvetica, sans-serif;
+}
+a,
+button,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+button,
+a,
+input,
+select,
+textarea {
+  outline-offset: 4px;
+}
+button {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.19em;
+  color: color-mix(in srgb, var(--brand) 35%, var(--ink));
+}
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: var(--ink);
+  color: white;
+  padding: 12px 19px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+.button:hover {
+  background: color-mix(in srgb, var(--ink) 85%, white);
+}
+.button.secondary {
+  background: white;
+  color: var(--ink);
+  border-color: var(--line);
+}
+.button.gold {
+  color: var(--ink);
+  background: var(--brand);
+}
+.button.gold:hover {
+  background: var(--brand-hover);
+}
+.panel {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  min-height: 46px;
+  border: 1px solid #cbd5cf;
+  background: white;
+  border-radius: 9px;
+  padding: 11px 12px;
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 400;
+}
+.field textarea {
+  min-height: 105px;
+  resize: vertical;
+}
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  outline: 2px solid var(--brand);
+  outline-offset: 1px;
+}
+.notice {
+  background: #f5f0e5;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 13px 16px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.notice.error {
+  background: #fef1ed;
+  border-color: #edc5bc;
+  color: #923523;
+}
+.auth-background {
+  background: radial-gradient(ellipse at top left, #334155, transparent 60%), var(--ink);
+}
+.badge {
+  display: inline-flex;
+  padding: 5px 9px;
+  border-radius: 6px;
+  background: #eef3ef;
+  color: #39564a;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+.badge[data-status="cancelled"],
+.badge[data-status="unavailable"],
+.badge[data-status="maintenance"] {
+  background: #fff1ec;
+  color: #97442d;
+}
+.badge[data-status="pending"],
+.badge[data-status="unpaid"] {
+  background: #fcf4e5;
+  color: #896c2d;
+}
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.admin-table th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: #fafbf9;
+  padding: 16px;
+  border-bottom: 1px solid var(--line);
+}
+.admin-table td {
+  padding: 17px 16px;
+  border-bottom: 1px solid #edf0ec;
+  max-width: 260px;
+  overflow-wrap: anywhere;
+}
+.admin-table tr:last-child td {
+  border-bottom: none;
+}
+.hero-art {
+  position: relative;
+  background: linear-gradient(155deg, #334155, var(--ink) 70%);
+  overflow: hidden;
+}
+.hero-art::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    135deg,
+    transparent,
+    transparent 50px,
+    #ffffff05 51px,
+    transparent 52px
+  );
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+}
+/* shadcn/ui semantic tokens share the client's runtime theme. */
+:root {
+  --background: var(--canvas);
+  --foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: #fff;
+  --border: var(--line);
+  --radius: 0.75rem;
+}
+section[id] {
+  scroll-margin-top: 25px;
+}
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: #ffffff;
+  --color-card-foreground: var(--ink);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--canvas);
+  --color-secondary-foreground: var(--ink);
+  --color-accent: var(--canvas);
+  --color-accent-foreground: var(--ink);
+  --color-muted-foreground: var(--muted);
+  --color-border: var(--line);
+  --color-input: var(--line);
+  --color-ring: var(--brand);
+  --color-destructive: #b4382b;
+}
+.field input[data-slot="input"] {
+  padding-right: 3rem;
+}
+.hero-highlight {
+  color: color-mix(in srgb, var(--brand) 40%, white);
+}
+
+/* Let the existing hero illustration receive input through empty copy space. */
+.hero-copy {
+  pointer-events: none;
+}
+.hero-copy a,
+.hero-copy button {
+  pointer-events: auto;
+}
+.car-interaction {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+}
+.car-interaction:focus-visible {
+  outline: 2px solid #f0ddac;
+  outline-offset: 6px;
+}
+[data-car-revving="true"] .car-interaction {
+  animation: car-rev 3200ms cubic-bezier(0.42, 0, 0.25, 1) both;
+}
+@keyframes car-rev {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  8% {
+    transform: translate3d(0, -1px, 0) rotate(-0.08deg);
+  }
+  18% {
+    transform: translate3d(0, 0, 0);
+  }
+  30% {
+    transform: translate3d(1px, -1px, 0);
+  }
+  65% {
+    transform: translate3d(16px, -2px, 0);
+  }
+  78% {
+    transform: translate3d(22px, -2px, 0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-car-revving="true"] .car-interaction {
+    animation: none;
+  }
+}
+
+.live-car-marker {
+  font-size: 26px;
+  transition: transform 220ms linear;
+}
+.journey-point-marker {
+  color: var(--brand);
+  font-size: 20px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .live-car-marker {
+    transition: none;
+  }
+}
+
+/* Midnight Luxury: owner-managed theme variables still take precedence. */
+body {
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  line-height: 1.6;
+}
+.panel {
+  box-shadow: 0 12px 36px rgb(17 24 39 / 4%);
+}
+.button {
+  min-height: 44px;
+  box-shadow: 0 3px 12px rgb(17 24 39 / 8%);
+}
+.field input,
+.field select,
+.field textarea {
+  font-size: 16px;
+  border-color: var(--line);
+}
+.field {
+  min-width: 0;
+}
+main {
+  min-width: 0;
+}
+img,
+svg {
+  max-width: 100%;
+}
+.premium-header {
+  background: var(--ink);
+  color: white;
+  border-bottom: 1px solid color-mix(in srgb, var(--brand) 30%, transparent);
+}
+.premium-header nav > div {
+  color: #e5e7eb;
+}
+.premium-header [data-slot="button"] {
+  background: var(--canvas);
+  color: var(--ink);
+  min-width: 44px;
+  min-height: 44px;
+}
+.hero-copy h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+}
+[dir="rtl"] .admin-table th {
+  text-align: right;
+}
+@media (max-width: 639px) {
+  .hero-copy {
+    padding-top: 3rem;
+    padding-bottom: 16rem;
+  }
+  .hero-copy h1 {
+    font-size: clamp(2.5rem, 11vw, 3.5rem);
+  }
+}
+.car-stage {
+  z-index: 1;
+}
+/* Public Midnight canvas; ivory cards retain dark readable text. */
+.luxury-public {
+  background: var(--ink);
+  color: white;
+}
+.luxury-public #services,
+.luxury-public #destinations {
+  background: var(--ink);
+  color: white;
+}
+.luxury-public .text-muted {
+  color: #cbd5e1;
+}
+.luxury-public .eyebrow {
+  color: var(--brand);
+}
+.luxury-public .panel,
+.luxury-public [data-slot="card"],
+.luxury-public #about {
+  color: var(--ink);
+}
+.luxury-public .panel .text-muted,
+.luxury-public [data-slot="card"] .text-muted,
+.luxury-public #about .text-muted {
+  color: var(--muted);
+}
+.luxury-public .panel .eyebrow,
+.luxury-public [data-slot="card"] .eyebrow,
+.luxury-public #about .eyebrow {
+  color: color-mix(in srgb, var(--brand) 35%, var(--ink));
+}
+.luxury-public footer {
+  color: white;
+  border-color: color-mix(in srgb, var(--brand) 25%, transparent);
+}
+.vehicle-photo {
+  border: 1px solid var(--line);
+}
+.luxury-public .notice {
+  color: var(--ink);
+}
+.luxury-public .notice.error {
+  color: #923523;
+}
+
+/* Transparent copy container lets users tap the real hero photograph beneath it. */
+.hero-copy {
+  pointer-events: none;
+}
+.hero-copy a,
+.hero-copy button {
+  pointer-events: auto;
+}
+
+/* Always-visible local photographic showcase, independently of published fleet. */
+.car-stage {
+  position: relative;
+  width: min(100%, 640px);
+  margin: 0 auto;
+  padding: 0 1.5rem 3.5rem;
+  z-index: 10;
+}
+.car-stage .car-interaction {
+  background: radial-gradient(ellipse at center, #334155 0%, #111827 72%);
+}
+.car-stage img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2 / 1;
+  object-fit: contain;
+}
+@media (max-width: 1023px) {
+  .hero-copy {
+    padding-bottom: 2rem;
+  }
+}
+@media (min-width: 1024px) {
+  .car-stage {
+    position: absolute;
+    width: 48%;
+    max-width: 660px;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 1.5rem;
+  }
+  .hero-copy h1,
+  .hero-copy > p,
+  .hero-copy > div {
+    max-width: min(560px, 48vw);
+  }
+}
+
+/* Cinematic composition from the client's written reference specification. */
+.premium-header .brand {
+  color: var(--brand);
+}
+.header-language {
+  background: transparent;
+  color: white;
+  border: 0;
+  width: 68px;
+  padding: 0.5rem;
+  font-size: 12px;
+}
+.header-language option {
+  background: var(--ink);
+  color: white;
+}
+.header-login,
+.header-book {
+  border: 1px solid var(--brand);
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1.25rem;
+  border-radius: 8px;
+  font-size: 13px;
+}
+.header-login {
+  color: var(--brand);
+}
+.header-book {
+  background: var(--brand);
+  color: var(--ink);
+  font-weight: 700;
+}
+.cinematic-hero {
+  position: relative;
+  min-height: 900px;
+  overflow: hidden;
+  color: var(--canvas);
+  background: var(--ink);
+}
+.cinematic-backdrop,
+.cinematic-shade {
+  position: absolute;
+  inset: 0;
+}
+.cinematic-backdrop img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.cinematic-shade {
+  background:
+    linear-gradient(90deg, rgba(8, 13, 23, 0.88), rgba(8, 13, 23, 0.28) 57%, transparent 85%),
+    linear-gradient(0deg, #111827 0%, transparent 28%);
+  pointer-events: none;
+}
+.cinematic-copy {
+  position: relative;
+  z-index: 3;
+  padding: 80px 40px 0;
+  max-width: 660px;
+  pointer-events: none;
+}
+.cinematic-copy a {
+  pointer-events: auto;
+}
+.cinematic-copy .eyebrow {
+  color: var(--brand);
+  font-size: 12px;
+}
+.cinematic-copy h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(46px, 4.8vw, 72px);
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  margin-top: 25px;
+  font-weight: 400;
+}
+.cinematic-copy h1 span {
+  display: block;
+  color: var(--brand);
+}
+.cinematic-description {
+  font-size: 17px;
+  line-height: 1.8;
+  max-width: 450px;
+  margin-top: 24px;
+  color: #f8f6f1dd;
+}
+.cinematic-booking-state {
+  margin-top: 24px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #f8f6f1dd;
+  max-width: 450px;
+}
+.service-preview-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+.service-preview-link > span {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid #f8f6f188;
+  border-radius: 50%;
+}
+.cinematic-route {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.route-halo {
+  fill: none;
+  stroke: var(--brand);
+  stroke-width: 13px;
+  filter: blur(9px);
+  opacity: 0.8;
+}
+.route-line {
+  fill: none;
+  stroke: #f7cc75;
+  stroke-width: 3px;
+  filter: drop-shadow(0 0 5px #ffcb6b);
+}
+.cinematic-route circle,
+.preview-route circle {
+  fill: var(--brand);
+  stroke: #fff4d2;
+  stroke-width: 2px;
+}
+.cinematic-route-label {
+  position: absolute;
+  z-index: 2;
+  top: 59%;
+  left: 50%;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #111827cc;
+  border: 1px solid #c5a46d66;
+  font-size: 12px;
+}
+.cinematic-route-label svg {
+  color: var(--brand);
+}
+.cinematic-route-label span {
+  color: #f8f6f199;
+  font-size: 10px;
+}
+.cinematic-navigation {
+  position: absolute;
+  z-index: 4;
+  bottom: 45px;
+  left: 40px;
+  width: 310px;
+  padding: 20px;
+  border: 1px solid #c5a46d77;
+  border-radius: 20px;
+  background: #080d17dc;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 0 22px #c5a46d18;
+  color: var(--canvas);
+}
+.preview-badge {
+  font-size: 10px;
+  color: var(--brand);
+  border: 1px solid #c5a46d55;
+  border-radius: 6px;
+  padding: 3px 6px;
+}
+.navigation-map-preview {
+  position: relative;
+  height: 90px;
+  margin: 14px 0;
+  overflow: hidden;
+  background: repeating-linear-gradient(135deg, #1c2634 0, #1c2634 1px, #0d1420 1px, #0d1420 24px);
+  border: 1px solid #ffffff0e;
+  border-radius: 10px;
+}
+.preview-route {
+  position: absolute;
+  width: 100%;
+  height: 145%;
+  top: -55%;
+}
+.navigation-map-preview > span {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  display: flex;
+  gap: 5px;
+  font-size: 10px;
+  color: var(--brand);
+}
+.cinematic-navigation dt {
+  color: #f8f6f199;
+  margin-bottom: 5px;
+}
+.navigation-features {
+  font-size: 12px;
+  display: grid;
+  gap: 10px;
+}
+.navigation-features a,
+.navigation-features p {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.navigation-features svg {
+  color: var(--brand);
+}
+.cinematic-engine {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.cinematic-car-hotspot {
+  position: absolute;
+  z-index: 2;
+  left: 55%;
+  top: 44%;
+  width: 44%;
+  height: 39%;
+  background: transparent;
+  pointer-events: auto;
+  border-radius: 20px;
+}
+.cinematic-car-hotspot:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: -10px;
+}
+.cinematic-engine .car-controls {
+  position: absolute;
+  z-index: 5;
+  bottom: 60px;
+  right: 30px;
+}
+.cinematic-disclosure {
+  position: absolute;
+  z-index: 4;
+  bottom: 15px;
+  right: 25px;
+  font-size: 10px;
+  color: #f8f6f1aa;
+}
+@media (max-width: 1023px) {
+  .cinematic-hero {
+    min-height: 1200px;
+  }
+  .cinematic-copy {
+    padding: 50px 22px 0;
+    max-width: 650px;
+  }
+  .cinematic-copy h1 {
+    font-size: clamp(34px, 8.6vw, 55px);
+  }
+  .cinematic-description {
+    font-size: 15px;
+    max-width: 460px;
+  }
+  .cinematic-backdrop {
+    top: 410px;
+    bottom: auto;
+    height: 430px;
+  }
+  .cinematic-backdrop img {
+    object-position: right;
+  }
+  .cinematic-shade {
+    background: linear-gradient(0deg, #111827, transparent 39%, transparent 59%, #111827 69%);
+  }
+  .cinematic-route {
+    top: 410px;
+    height: 430px;
+    width: 170%;
+    left: -40%;
+  }
+  .cinematic-route-label {
+    top: 600px;
+    left: 20px;
+    max-width: calc(100% - 40px);
+  }
+  .cinematic-car-hotspot {
+    top: 610px;
+    left: 8%;
+    width: 88%;
+    height: 215px;
+  }
+  .cinematic-engine .car-controls {
+    top: 810px;
+    bottom: auto;
+    right: 22px;
+  }
+  .cinematic-navigation {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    width: calc(100% - 44px);
+    max-width: 400px;
+    margin: 480px 22px 60px;
+  }
+  .cinematic-disclosure {
+    right: 22px;
+    left: 22px;
+    bottom: 18px;
+  }
+}
+
+/* Fleet marketing cards are independent of operational vehicle listings. */
+.fleet-section-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+}
+.fleet-section-heading h2 {
+  font:
+    400 clamp(2.15rem, 3.8vw, 3.5rem)/1.15 Georgia,
+    "Times New Roman",
+    serif;
+  letter-spacing: -0.035em;
+  max-width: 750px;
+  color: #f5efdf;
+}
+.fleet-section-heading h2 span {
+  color: #c5a46d;
+}
+.fleet-intro {
+  color: #c2bcb0;
+  font-size: 0.95rem;
+  line-height: 1.8;
+  max-width: 520px;
+  margin-top: 1.2rem;
+}
+.fleet-booking-cta {
+  flex-shrink: 0;
+  gap: 0.7rem;
+}
+.fleet-category-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.15rem;
+}
+.fleet-category-card {
+  overflow: hidden;
+  border: 1px solid #c5a46d35;
+  border-radius: 16px;
+  background: #171716;
+  color: #f5efdf;
+  box-shadow: 0 12px 28px #00000018;
+}
+.fleet-category-image {
+  position: relative;
+  aspect-ratio: 3/2;
+  overflow: hidden;
+  background: #292723;
+}
+.fleet-category-image img {
+  object-position: center;
+}
+.fleet-category-copy {
+  padding: 1.4rem 1.2rem 1.5rem;
+  border-top: 1px solid #c5a46d25;
+}
+.fleet-category-number {
+  display: block;
+  color: #c5a46d;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  margin-bottom: 0.7rem;
+}
+.fleet-category-copy h3 {
+  font:
+    400 1.22rem/1.3 Georgia,
+    "Times New Roman",
+    serif;
+  letter-spacing: -0.015em;
+}
+.fleet-category-copy p {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+  color: #c9beab;
+  font-size: 0.8rem;
+}
+.fleet-image-notes {
+  margin-top: 1.1rem;
+  font-size: 0.75rem;
+  line-height: 1.8;
+  color: #6f604a;
+}
+.fleet-image-notes summary {
+  width: fit-content;
+  padding: 0.4rem 0;
+  min-height: 32px;
+  cursor: pointer;
+  text-underline-offset: 3px;
+}
+.fleet-image-notes summary:hover {
+  color: #c5a46d;
+}
+.fleet-image-notes > div {
+  margin-top: 0.6rem;
+  padding: 1rem;
+  background: #191918;
+  color: #d5cebf;
+  border: 1px solid #c5a46d35;
+  border-radius: 10px;
+}
+.fleet-image-notes ul {
+  margin-top: 0.6rem;
+}
+.fleet-image-notes a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.fleet-booking-notice {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1.3rem;
+  border-top: 1px solid #c5a46d35;
+  font-size: 0.85rem;
+  line-height: 1.7;
+}
+.fleet-booking-notice p {
+  color: inherit;
+  opacity: 0.8;
+}
+.fleet-booking-notice a,
+.fleet-gallery-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 44px;
+  font-weight: 600;
+  text-underline-offset: 4px;
+}
+.fleet-booking-notice a {
+  white-space: nowrap;
+}
+.fleet-gallery-link {
+  margin-top: 1rem;
+  color: #795924;
+  font-size: 0.8rem;
+}
+.fleet-gallery-link:hover,
+.fleet-booking-notice a:hover {
+  text-decoration: underline;
+}
+@media (max-width: 1023px) {
+  .fleet-category-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .fleet-section-heading {
+    align-items: start;
+    flex-direction: column;
+    gap: 1.4rem;
+  }
+}
+@media (max-width: 639px) {
+  .fleet-category-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.2rem;
+  }
+  .fleet-category-copy {
+    padding: 1.2rem 1.3rem;
+  }
+  .fleet-category-copy h3 {
+    font-size: 1.35rem;
+  }
+  .fleet-category-number {
+    float: right;
+    margin: 0.25rem 0 0 1rem;
+  }
+  .fleet-booking-notice {
+    flex-direction: column;
+    align-items: start;
+    gap: 0.2rem;
+  }
+  .fleet-section-heading h2 span {
+    display: block;
+  }
+}
+
+.luxury-public .fleet-image-notes {
+  color: #b8b3a9;
+}
+.luxury-public .fleet-gallery-link {
+  color: #c5a46d;
+}
+
+/* Shared wordmark: fixed typography, intrinsic width and independent centered lines. */
+.brand {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: max-content;
+  max-width: 100%;
+  line-height: 1;
+  text-align: center;
+  text-decoration: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+}
+.brand-title {
+  display: block;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.105em;
+  padding-left: 0.105em;
+}
+.brand .brand-subtitle {
+  display: block;
+  margin-top: 6px;
+  padding-left: 0.16em;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.16em;
+  color: #c5a46d;
+}
+@media (max-width: 639px) {
+  .brand-title {
+    font-size: 25px;
+  }
+  .brand .brand-subtitle {
+    font-size: 9px;
+    margin-top: 5px;
+  }
+}
+
+/* The approved car is baked into a flat scene: move that exact photograph,
+   never fake isolated wheels or replace it with a different vehicle. */
+@media (prefers-reduced-motion: no-preference) {
+  .cinematic-hero:has(.cinematic-engine[data-car-revving="true"]) .cinematic-backdrop img {
+    transform-origin: center;
+    animation: hamdi-scene-drive 3200ms cubic-bezier(0.42, 0, 0.25, 1) both;
+    will-change: transform;
+  }
+}
+@keyframes hamdi-scene-drive {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  8% {
+    transform: translate3d(0, -0.3px, 0) scale(1.001);
+  }
+  18% {
+    transform: translate3d(0, 0.2px, 0) scale(1.002);
+  }
+  30% {
+    transform: translate3d(-0.1%, -0.03%, 0) scale(1.004);
+  }
+  55% {
+    transform: translate3d(-0.8%, -0.3%, 0) scale(1.025);
+  }
+  70% {
+    transform: translate3d(-1.6%, -0.55%, 0) scale(1.04);
+  }
+  78% {
+    transform: translate3d(-2%, -0.7%, 0) scale(1.045);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}

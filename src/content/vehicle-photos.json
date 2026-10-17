@@ -1,0 +1,37 @@
+{
+  "luxury": {
+    "src": "/vehicle-photos/studio-luxury.webp",
+    "alt": "Original photorealistic luxury sedan marketing visualization",
+    "credit": "Original AI-assisted marketing visual",
+    "source": "/vehicle-photos/STUDIO-PROVENANCE.md",
+    "license": "/vehicle-photos/STUDIO-PROVENANCE.md"
+  },
+  "sedan": {
+    "src": "/vehicle-photos/studio-sedan.webp",
+    "alt": "Original photorealistic normal sedan marketing visualization",
+    "credit": "Original AI-assisted marketing visual",
+    "source": "/vehicle-photos/STUDIO-PROVENANCE.md",
+    "license": "/vehicle-photos/STUDIO-PROVENANCE.md"
+  },
+  "van": {
+    "src": "/vehicle-photos/studio-van.webp",
+    "alt": "Original photorealistic seven-seat MPV marketing visualization",
+    "credit": "Original AI-assisted marketing visual",
+    "source": "/vehicle-photos/STUDIO-PROVENANCE.md",
+    "license": "/vehicle-photos/STUDIO-PROVENANCE.md"
+  },
+  "suv": {
+    "src": "/vehicle-photos/studio-suv.webp",
+    "alt": "Original photorealistic five-passenger crossover marketing visualization",
+    "credit": "Original AI-assisted marketing visual",
+    "source": "/vehicle-photos/STUDIO-PROVENANCE.md",
+    "license": "/vehicle-photos/STUDIO-PROVENANCE.md"
+  },
+  "hero": {
+    "src": "/vehicle-photos/studio-luxury.webp",
+    "alt": "Original photorealistic luxury sedan marketing visualization",
+    "credit": "Original AI-assisted marketing visual",
+    "source": "/vehicle-photos/STUDIO-PROVENANCE.md",
+    "license": "/vehicle-photos/STUDIO-PROVENANCE.md"
+  }
+}

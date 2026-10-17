@@ -1,0 +1,4377 @@
+{
+  "function_fingerprints": [
+    {
+      "signature": "private.accept_staff_invitation()",
+      "anon_execute": false,
+      "definition_md5": "717facce6eabcc1f9665684b5142c3f0",
+      "public_execute": false,
+      "service_role_execute": false,
+      "authenticated_execute": false
+    },
+    {
+      "signature": "private.audit_change()",
+      "anon_execute": false,
+      "definition_md5": "1d8587c1efe3d5daec6ee5a6edadef7d",
+      "public_execute": false,
+      "service_role_execute": false,
+      "authenticated_execute": false
+    },
+    {
+      "signature": "private.booking_history()",
+      "anon_execute": false,
+      "definition_md5": "1ec4a38c9e27511cafc0edaa9b2ef960",
+      "public_execute": false,
+      "service_role_execute": false,
+      "authenticated_execute": false
+    },
+    {
+      "signature": "private.check_archive()",
+      "anon_execute": false,
+      "definition_md5": "de874c1b7310cb95c63416372d6a6066",
+      "public_execute": false,
+      "service_role_execute": false,
+      "authenticated_execute": false
+    },
+    {
+      "signature": "private.current_role()",
+      "anon_execute": false,
+      "definition_md5": "d6e002950d1b0dd938650c76fad5e92d",
+      "public_execute": false,
+      "service_role_execute": false,
+      "authenticated_execute": true
+    },
+    {
+      "signature": "private.driver_access()",
+      "anon_execute": false,
+      "definition_md5": "779c08eaff89e344fe9e95111d4bdb93",
+      "public_execute": false,
+      "service_role_execute": false,
+      "authenticated_execute": false
+    },
+    {
+      "signature": "private.enquiry_status()",
+      "anon_execute": false,
+      "definition_md5": "938cf56f95bf1977a285b08089f11297",
+      "public_execute": false,
+      "service_role_execute": false,
+      "authenticated_execute": false
+    },
+    {
+      "signature": "private.inventory_safety()",
+      "anon_execute": false,
+      "definition_md5": "7bbfce2be1fd8ef9399e1ca394d8beb7",
+      "public_execute": false,
+      "service_role_execute": false,
+      "authenticated_execute": false
+    },
+    {
+      "signature": "private.lock_referenced_records()",
+      "anon_execute": false,
+      "definition_md5": "1786f808886e1dfef6dd42c26967e8b3",
+      "public_execute": false,
+      "service_role_execute": false,
+      "authenticated_execute": false
+    },
+    {
+      "signature": "private.organization_id()",
+      "anon_execute": false,
+      "definition_md5": "11a550aea7c418025e29bf81d180a8af",
+      "public_execute": false,
+      "service_role_execute": false,
+      "authenticated_execute": true
+    },
+    {
+      "signature": "private.prepare_price()",
+      "anon_execute": false,
+      "definition_md5": "23bae229b7c1e6f4affb9eae5c669f36",
+      "public_execute": false,
+      "service_role_execute": false,
+      "authenticated_execute": false
+    },
+    {
+      "signature": "private.prepare_record()",
+      "anon_execute": false,
+      "definition_md5": "a4385189230fc728ed833365909f0847",
+      "public_execute": false,
+      "service_role_execute": false,
+      "authenticated_execute": false
+    },
+    {
+      "signature": "private.protect_settings()",
+      "anon_execute": false,
+      "definition_md5": "89a0a3f2f631be5719719b238959c010",
+      "public_execute": false,
+      "service_role_execute": false,
+      "authenticated_execute": false
+    },
+    {
+      "signature": "private.route_safety()",
+      "anon_execute": false,
+      "definition_md5": "bc906e9576eb859adefd52a32030313b",
+      "public_execute": false,
+      "service_role_execute": false,
+      "authenticated_execute": false
+    },
+    {
+      "signature": "private.validate_booking()",
+      "anon_execute": false,
+      "definition_md5": "dff183009ebbda40f39ee149be7572bb",
+      "public_execute": false,
+      "service_role_execute": false,
+      "authenticated_execute": false
+    },
+    {
+      "signature": "public.booking_financials(target_booking_id uuid)",
+      "anon_execute": false,
+      "definition_md5": "ec3197f036fe705fee94c3e60da9a65b",
+      "public_execute": false,
+      "service_role_execute": false,
+      "authenticated_execute": true
+    },
+    {
+      "signature": "public.calculate_transfer_quote(business_id uuid, pickup_id uuid, dropoff_id uuid, category text, transfer_kind text, extra_ids uuid[])",
+      "anon_execute": true,
+      "definition_md5": "e0b3d8f31325141d4cc43120a00566e0",
+      "public_execute": false,
+      "service_role_execute": true,
+      "authenticated_execute": true
+    },
+    {
+      "signature": "public.cancel_staff_invitation(invitation_id uuid)",
+      "anon_execute": false,
+      "definition_md5": "47125de9775fa305fce8ca0eee6d75b2",
+      "public_execute": false,
+      "service_role_execute": false,
+      "authenticated_execute": true
+    },
+    {
+      "signature": "public.convert_booking_enquiry(target_enquiry_id uuid, outbound_end timestamp with time zone, return_end timestamp with time zone)",
+      "anon_execute": false,
+      "definition_md5": "692d568805580f4d8c92c2de8528f6df",
+      "public_execute": false,
+      "service_role_execute": false,
+      "authenticated_execute": true
+    },
+    {
+      "signature": "public.dashboard_financials()",
+      "anon_execute": false,
+      "definition_md5": "50dfc9037525b05a05ea1f66decbbab6",
+      "public_execute": false,
+      "service_role_execute": false,
+      "authenticated_execute": true
+    },
+    {
+      "signature": "public.dashboard_summary()",
+      "anon_execute": false,
+      "definition_md5": "1c3481f03de3059e6a49d3852b6ebced",
+      "public_execute": false,
+      "service_role_execute": false,
+      "authenticated_execute": true
+    },
+    {
+      "signature": "public.driver_is_available(target_driver_id uuid, at_time timestamp with time zone)",
+      "anon_execute": false,
+      "definition_md5": "e199d0c0602e361e16f6e57277426d38",
+      "public_execute": false,
+      "service_role_execute": false,
+      "authenticated_execute": true
+    },
+    {
+      "signature": "public.reserve_driver_invitation(target_driver_id uuid)",
+      "anon_execute": false,
+      "definition_md5": "23a3471e10ac02c242cc3108e9e32ebc",
+      "public_execute": false,
+      "service_role_execute": false,
+      "authenticated_execute": true
+    },
+    {
+      "signature": "public.reserve_staff_invitation(invite_email text, invite_name text, invite_role text)",
+      "anon_execute": false,
+      "definition_md5": "6da43e360c536e94439ed2126dff3da6",
+      "public_execute": false,
+      "service_role_execute": false,
+      "authenticated_execute": true
+    },
+    {
+      "signature": "public.set_staff_access(target_user_id uuid, new_role text, new_active boolean)",
+      "anon_execute": false,
+      "definition_md5": "cbffdc09fa5add4d27332954add65416",
+      "public_execute": false,
+      "service_role_execute": false,
+      "authenticated_execute": true
+    },
+    {
+      "signature": "public.submit_booking_enquiry(business_id uuid, customer_name text, customer_email text, customer_phone text, pickup_id uuid, dropoff_id uuid, pickup_time timestamp with time zone, return_time timestamp with time zone, passenger_count integer, luggage_count integer, category text, transfer_kind text, flight text, customer_notes text, extra_ids uuid[], expected_total numeric)",
+      "anon_execute": false,
+      "definition_md5": "90ad39173d0247c23f1d0acad22b5776",
+      "public_execute": false,
+      "service_role_execute": true,
+      "authenticated_execute": false
+    },
+    {
+      "signature": "public.website_content(business_id uuid)",
+      "anon_execute": true,
+      "definition_md5": "ecec89abb1baf91c3f25db5770d70deb",
+      "public_execute": false,
+      "service_role_execute": false,
+      "authenticated_execute": true
+    }
+  ],
+  "indexes": [
+    {
+      "name": "audit_events_org_time_idx",
+      "table": "audit_events",
+      "definition": "CREATE INDEX audit_events_org_time_idx ON public.audit_events USING btree (organization_id, created_at DESC)"
+    },
+    {
+      "name": "audit_events_pkey",
+      "table": "audit_events",
+      "definition": "CREATE UNIQUE INDEX audit_events_pkey ON public.audit_events USING btree (id)"
+    },
+    {
+      "name": "assignments_booking_idx",
+      "table": "booking_assignments",
+      "definition": "CREATE INDEX assignments_booking_idx ON public.booking_assignments USING btree (organization_id, booking_id, created_at DESC)"
+    },
+    {
+      "name": "booking_assignments_pkey",
+      "table": "booking_assignments",
+      "definition": "CREATE UNIQUE INDEX booking_assignments_pkey ON public.booking_assignments USING btree (id)"
+    },
+    {
+      "name": "booking_enquiries_organization_id_id_key",
+      "table": "booking_enquiries",
+      "definition": "CREATE UNIQUE INDEX booking_enquiries_organization_id_id_key ON public.booking_enquiries USING btree (organization_id, id)"
+    },
+    {
+      "name": "booking_enquiries_organization_id_reference_key",
+      "table": "booking_enquiries",
+      "definition": "CREATE UNIQUE INDEX booking_enquiries_organization_id_reference_key ON public.booking_enquiries USING btree (organization_id, reference)"
+    },
+    {
+      "name": "booking_enquiries_pkey",
+      "table": "booking_enquiries",
+      "definition": "CREATE UNIQUE INDEX booking_enquiries_pkey ON public.booking_enquiries USING btree (id)"
+    },
+    {
+      "name": "enquiry_org_time_idx",
+      "table": "booking_enquiries",
+      "definition": "CREATE INDEX enquiry_org_time_idx ON public.booking_enquiries USING btree (organization_id, created_at DESC)"
+    },
+    {
+      "name": "enquiry_rate_idx",
+      "table": "booking_enquiries",
+      "definition": "CREATE INDEX enquiry_rate_idx ON public.booking_enquiries USING btree (organization_id, email, created_at)"
+    },
+    {
+      "name": "booking_status_history_pkey",
+      "table": "booking_status_history",
+      "definition": "CREATE UNIQUE INDEX booking_status_history_pkey ON public.booking_status_history USING btree (id)"
+    },
+    {
+      "name": "status_history_booking_idx",
+      "table": "booking_status_history",
+      "definition": "CREATE INDEX status_history_booking_idx ON public.booking_status_history USING btree (organization_id, booking_id, created_at DESC)"
+    },
+    {
+      "name": "booking_enquiry_idx",
+      "table": "bookings",
+      "definition": "CREATE INDEX booking_enquiry_idx ON public.bookings USING btree (organization_id, enquiry_id)"
+    },
+    {
+      "name": "bookings_customer_idx",
+      "table": "bookings",
+      "definition": "CREATE INDEX bookings_customer_idx ON public.bookings USING btree (organization_id, customer_id)"
+    },
+    {
+      "name": "bookings_driver_idx",
+      "table": "bookings",
+      "definition": "CREATE INDEX bookings_driver_idx ON public.bookings USING btree (organization_id, driver_id, pickup_at)"
+    },
+    {
+      "name": "bookings_dropoff_idx",
+      "table": "bookings",
+      "definition": "CREATE INDEX bookings_dropoff_idx ON public.bookings USING btree (organization_id, dropoff_location_id)"
+    },
+    {
+      "name": "bookings_org_archive_idx",
+      "table": "bookings",
+      "definition": "CREATE INDEX bookings_org_archive_idx ON public.bookings USING btree (organization_id, archived, created_at DESC)"
+    },
+    {
+      "name": "bookings_organization_id_id_key",
+      "table": "bookings",
+      "definition": "CREATE UNIQUE INDEX bookings_organization_id_id_key ON public.bookings USING btree (organization_id, id)"
+    },
+    {
+      "name": "bookings_organization_id_reference_key",
+      "table": "bookings",
+      "definition": "CREATE UNIQUE INDEX bookings_organization_id_reference_key ON public.bookings USING btree (organization_id, reference)"
+    },
+    {
+      "name": "bookings_pickup_idx",
+      "table": "bookings",
+      "definition": "CREATE INDEX bookings_pickup_idx ON public.bookings USING btree (organization_id, pickup_location_id)"
+    },
+    {
+      "name": "bookings_pkey",
+      "table": "bookings",
+      "definition": "CREATE UNIQUE INDEX bookings_pkey ON public.bookings USING btree (id)"
+    },
+    {
+      "name": "bookings_schedule_idx",
+      "table": "bookings",
+      "definition": "CREATE INDEX bookings_schedule_idx ON public.bookings USING btree (organization_id, pickup_at) WHERE (NOT archived)"
+    },
+    {
+      "name": "bookings_vehicle_idx",
+      "table": "bookings",
+      "definition": "CREATE INDEX bookings_vehicle_idx ON public.bookings USING btree (organization_id, vehicle_id, pickup_at)"
+    },
+    {
+      "name": "driver_schedule_exclusion",
+      "table": "bookings",
+      "definition": "CREATE INDEX driver_schedule_exclusion ON public.bookings USING gist (organization_id, driver_id, tstzrange(pickup_at, reserved_until, '[)'::text)) WHERE ((NOT archived) AND (status = ANY (ARRAY['confirmed'::text, 'in_progress'::text])) AND (driver_id IS NOT NULL) AND (reserved_until IS NOT NULL))"
+    },
+    {
+      "name": "one_driver_active_trip_idx",
+      "table": "bookings",
+      "definition": "CREATE UNIQUE INDEX one_driver_active_trip_idx ON public.bookings USING btree (organization_id, driver_id) WHERE ((NOT archived) AND (status = 'in_progress'::text) AND (driver_id IS NOT NULL))"
+    },
+    {
+      "name": "one_vehicle_active_trip_idx",
+      "table": "bookings",
+      "definition": "CREATE UNIQUE INDEX one_vehicle_active_trip_idx ON public.bookings USING btree (organization_id, vehicle_id) WHERE ((NOT archived) AND (status = 'in_progress'::text) AND (vehicle_id IS NOT NULL))"
+    },
+    {
+      "name": "vehicle_schedule_exclusion",
+      "table": "bookings",
+      "definition": "CREATE INDEX vehicle_schedule_exclusion ON public.bookings USING gist (organization_id, vehicle_id, tstzrange(pickup_at, reserved_until, '[)'::text)) WHERE ((NOT archived) AND (status = ANY (ARRAY['confirmed'::text, 'in_progress'::text])) AND (vehicle_id IS NOT NULL) AND (reserved_until IS NOT NULL))"
+    },
+    {
+      "name": "business_settings_pkey",
+      "table": "business_settings",
+      "definition": "CREATE UNIQUE INDEX business_settings_pkey ON public.business_settings USING btree (organization_id)"
+    },
+    {
+      "name": "customers_org_archive_idx",
+      "table": "customers",
+      "definition": "CREATE INDEX customers_org_archive_idx ON public.customers USING btree (organization_id, archived, created_at DESC)"
+    },
+    {
+      "name": "customers_organization_id_id_key",
+      "table": "customers",
+      "definition": "CREATE UNIQUE INDEX customers_organization_id_id_key ON public.customers USING btree (organization_id, id)"
+    },
+    {
+      "name": "customers_pkey",
+      "table": "customers",
+      "definition": "CREATE UNIQUE INDEX customers_pkey ON public.customers USING btree (id)"
+    },
+    {
+      "name": "drivers_auth_user_id_key",
+      "table": "drivers",
+      "definition": "CREATE UNIQUE INDEX drivers_auth_user_id_key ON public.drivers USING btree (auth_user_id)"
+    },
+    {
+      "name": "drivers_org_archive_idx",
+      "table": "drivers",
+      "definition": "CREATE INDEX drivers_org_archive_idx ON public.drivers USING btree (organization_id, archived, created_at DESC)"
+    },
+    {
+      "name": "drivers_organization_id_id_key",
+      "table": "drivers",
+      "definition": "CREATE UNIQUE INDEX drivers_organization_id_id_key ON public.drivers USING btree (organization_id, id)"
+    },
+    {
+      "name": "drivers_organization_id_license_number_key",
+      "table": "drivers",
+      "definition": "CREATE UNIQUE INDEX drivers_organization_id_license_number_key ON public.drivers USING btree (organization_id, license_number)"
+    },
+    {
+      "name": "drivers_pkey",
+      "table": "drivers",
+      "definition": "CREATE UNIQUE INDEX drivers_pkey ON public.drivers USING btree (id)"
+    },
+    {
+      "name": "locations_org_archive_idx",
+      "table": "locations",
+      "definition": "CREATE INDEX locations_org_archive_idx ON public.locations USING btree (organization_id, archived, created_at DESC)"
+    },
+    {
+      "name": "locations_organization_id_id_key",
+      "table": "locations",
+      "definition": "CREATE UNIQUE INDEX locations_organization_id_id_key ON public.locations USING btree (organization_id, id)"
+    },
+    {
+      "name": "locations_pkey",
+      "table": "locations",
+      "definition": "CREATE UNIQUE INDEX locations_pkey ON public.locations USING btree (id)"
+    },
+    {
+      "name": "organizations_pkey",
+      "table": "organizations",
+      "definition": "CREATE UNIQUE INDEX organizations_pkey ON public.organizations USING btree (id)"
+    },
+    {
+      "name": "extras_pricing_idx",
+      "table": "pricing_extras",
+      "definition": "CREATE INDEX extras_pricing_idx ON public.pricing_extras USING btree (organization_id, route_pricing_id)"
+    },
+    {
+      "name": "pricing_extras_org_archive_idx",
+      "table": "pricing_extras",
+      "definition": "CREATE INDEX pricing_extras_org_archive_idx ON public.pricing_extras USING btree (organization_id, archived, created_at DESC)"
+    },
+    {
+      "name": "pricing_extras_pkey",
+      "table": "pricing_extras",
+      "definition": "CREATE UNIQUE INDEX pricing_extras_pkey ON public.pricing_extras USING btree (id)"
+    },
+    {
+      "name": "active_route_price_idx",
+      "table": "route_pricing",
+      "definition": "CREATE UNIQUE INDEX active_route_price_idx ON public.route_pricing USING btree (organization_id, pickup_location_id, dropoff_location_id, vehicle_category) WHERE (NOT archived)"
+    },
+    {
+      "name": "pricing_dropoff_idx",
+      "table": "route_pricing",
+      "definition": "CREATE INDEX pricing_dropoff_idx ON public.route_pricing USING btree (organization_id, dropoff_location_id)"
+    },
+    {
+      "name": "pricing_pickup_idx",
+      "table": "route_pricing",
+      "definition": "CREATE INDEX pricing_pickup_idx ON public.route_pricing USING btree (organization_id, pickup_location_id)"
+    },
+    {
+      "name": "pricing_route_idx",
+      "table": "route_pricing",
+      "definition": "CREATE INDEX pricing_route_idx ON public.route_pricing USING btree (organization_id, route_id)"
+    },
+    {
+      "name": "route_pricing_org_archive_idx",
+      "table": "route_pricing",
+      "definition": "CREATE INDEX route_pricing_org_archive_idx ON public.route_pricing USING btree (organization_id, archived, created_at DESC)"
+    },
+    {
+      "name": "route_pricing_organization_id_id_key",
+      "table": "route_pricing",
+      "definition": "CREATE UNIQUE INDEX route_pricing_organization_id_id_key ON public.route_pricing USING btree (organization_id, id)"
+    },
+    {
+      "name": "route_pricing_pkey",
+      "table": "route_pricing",
+      "definition": "CREATE UNIQUE INDEX route_pricing_pkey ON public.route_pricing USING btree (id)"
+    },
+    {
+      "name": "routes_org_archive_idx",
+      "table": "routes",
+      "definition": "CREATE INDEX routes_org_archive_idx ON public.routes USING btree (organization_id, archived, created_at DESC)"
+    },
+    {
+      "name": "routes_organization_id_id_key",
+      "table": "routes",
+      "definition": "CREATE UNIQUE INDEX routes_organization_id_id_key ON public.routes USING btree (organization_id, id)"
+    },
+    {
+      "name": "routes_organization_id_pickup_location_id_dropoff_location__key",
+      "table": "routes",
+      "definition": "CREATE UNIQUE INDEX routes_organization_id_pickup_location_id_dropoff_location__key ON public.routes USING btree (organization_id, pickup_location_id, dropoff_location_id)"
+    },
+    {
+      "name": "routes_pkey",
+      "table": "routes",
+      "definition": "CREATE UNIQUE INDEX routes_pkey ON public.routes USING btree (id)"
+    },
+    {
+      "name": "pending_invite_email_idx",
+      "table": "staff_invitations",
+      "definition": "CREATE UNIQUE INDEX pending_invite_email_idx ON public.staff_invitations USING btree (email) WHERE (accepted_at IS NULL)"
+    },
+    {
+      "name": "staff_invitations_organization_idx",
+      "table": "staff_invitations",
+      "definition": "CREATE INDEX staff_invitations_organization_idx ON public.staff_invitations USING btree (organization_id)"
+    },
+    {
+      "name": "staff_invitations_pkey",
+      "table": "staff_invitations",
+      "definition": "CREATE UNIQUE INDEX staff_invitations_pkey ON public.staff_invitations USING btree (id)"
+    },
+    {
+      "name": "staff_members_organization_idx",
+      "table": "staff_members",
+      "definition": "CREATE INDEX staff_members_organization_idx ON public.staff_members USING btree (organization_id)"
+    },
+    {
+      "name": "staff_members_pkey",
+      "table": "staff_members",
+      "definition": "CREATE UNIQUE INDEX staff_members_pkey ON public.staff_members USING btree (user_id)"
+    },
+    {
+      "name": "vehicles_org_archive_idx",
+      "table": "vehicles",
+      "definition": "CREATE INDEX vehicles_org_archive_idx ON public.vehicles USING btree (organization_id, archived, created_at DESC)"
+    },
+    {
+      "name": "vehicles_organization_id_id_key",
+      "table": "vehicles",
+      "definition": "CREATE UNIQUE INDEX vehicles_organization_id_id_key ON public.vehicles USING btree (organization_id, id)"
+    },
+    {
+      "name": "vehicles_organization_id_plate_number_key",
+      "table": "vehicles",
+      "definition": "CREATE UNIQUE INDEX vehicles_organization_id_plate_number_key ON public.vehicles USING btree (organization_id, plate_number)"
+    },
+    {
+      "name": "vehicles_pkey",
+      "table": "vehicles",
+      "definition": "CREATE UNIQUE INDEX vehicles_pkey ON public.vehicles USING btree (id)"
+    },
+    {
+      "name": "verified_payments_booking_idx",
+      "table": "verified_payments",
+      "definition": "CREATE INDEX verified_payments_booking_idx ON public.verified_payments USING btree (organization_id, booking_id)"
+    },
+    {
+      "name": "verified_payments_pkey",
+      "table": "verified_payments",
+      "definition": "CREATE UNIQUE INDEX verified_payments_pkey ON public.verified_payments USING btree (id)"
+    },
+    {
+      "name": "verified_payments_provider_provider_event_id_key",
+      "table": "verified_payments",
+      "definition": "CREATE UNIQUE INDEX verified_payments_provider_provider_event_id_key ON public.verified_payments USING btree (provider, provider_event_id)"
+    }
+  ],
+  "triggers": [
+    {
+      "name": "accept_staff_invitation",
+      "table": "users",
+      "schema": "auth",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER accept_staff_invitation AFTER INSERT ON auth.users FOR EACH ROW EXECUTE FUNCTION private.accept_staff_invitation()"
+    },
+    {
+      "name": "audit_enquiry",
+      "table": "booking_enquiries",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER audit_enquiry AFTER INSERT OR UPDATE ON public.booking_enquiries FOR EACH ROW EXECUTE FUNCTION private.audit_change()"
+    },
+    {
+      "name": "enquiry_status",
+      "table": "booking_enquiries",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER enquiry_status BEFORE UPDATE ON public.booking_enquiries FOR EACH ROW EXECUTE FUNCTION private.enquiry_status()"
+    },
+    {
+      "name": "a_lock_references",
+      "table": "bookings",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER a_lock_references BEFORE INSERT OR UPDATE ON public.bookings FOR EACH ROW EXECUTE FUNCTION private.lock_referenced_records()"
+    },
+    {
+      "name": "audit_record",
+      "table": "bookings",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER audit_record AFTER INSERT OR UPDATE ON public.bookings FOR EACH ROW EXECUTE FUNCTION private.audit_change()"
+    },
+    {
+      "name": "booking_history",
+      "table": "bookings",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER booking_history AFTER INSERT OR UPDATE ON public.bookings FOR EACH ROW EXECUTE FUNCTION private.booking_history()"
+    },
+    {
+      "name": "check_archive",
+      "table": "bookings",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER check_archive BEFORE INSERT OR UPDATE ON public.bookings FOR EACH ROW EXECUTE FUNCTION private.check_archive()"
+    },
+    {
+      "name": "prepare_record",
+      "table": "bookings",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER prepare_record BEFORE UPDATE ON public.bookings FOR EACH ROW EXECUTE FUNCTION private.prepare_record()"
+    },
+    {
+      "name": "validate_booking",
+      "table": "bookings",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER validate_booking BEFORE INSERT OR UPDATE ON public.bookings FOR EACH ROW EXECUTE FUNCTION private.validate_booking()"
+    },
+    {
+      "name": "audit_settings",
+      "table": "business_settings",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER audit_settings AFTER INSERT OR UPDATE ON public.business_settings FOR EACH ROW EXECUTE FUNCTION private.audit_change()"
+    },
+    {
+      "name": "protect_settings",
+      "table": "business_settings",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER protect_settings BEFORE INSERT OR UPDATE ON public.business_settings FOR EACH ROW EXECUTE FUNCTION private.protect_settings()"
+    },
+    {
+      "name": "audit_record",
+      "table": "customers",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER audit_record AFTER INSERT OR UPDATE ON public.customers FOR EACH ROW EXECUTE FUNCTION private.audit_change()"
+    },
+    {
+      "name": "check_archive",
+      "table": "customers",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER check_archive BEFORE INSERT OR UPDATE ON public.customers FOR EACH ROW EXECUTE FUNCTION private.check_archive()"
+    },
+    {
+      "name": "prepare_record",
+      "table": "customers",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER prepare_record BEFORE UPDATE ON public.customers FOR EACH ROW EXECUTE FUNCTION private.prepare_record()"
+    },
+    {
+      "name": "audit_record",
+      "table": "drivers",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER audit_record AFTER INSERT OR UPDATE ON public.drivers FOR EACH ROW EXECUTE FUNCTION private.audit_change()"
+    },
+    {
+      "name": "check_archive",
+      "table": "drivers",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER check_archive BEFORE INSERT OR UPDATE ON public.drivers FOR EACH ROW EXECUTE FUNCTION private.check_archive()"
+    },
+    {
+      "name": "driver_access",
+      "table": "drivers",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER driver_access AFTER INSERT OR UPDATE ON public.drivers FOR EACH ROW EXECUTE FUNCTION private.driver_access()"
+    },
+    {
+      "name": "inventory_safety",
+      "table": "drivers",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER inventory_safety BEFORE UPDATE ON public.drivers FOR EACH ROW EXECUTE FUNCTION private.inventory_safety()"
+    },
+    {
+      "name": "prepare_record",
+      "table": "drivers",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER prepare_record BEFORE UPDATE ON public.drivers FOR EACH ROW EXECUTE FUNCTION private.prepare_record()"
+    },
+    {
+      "name": "audit_record",
+      "table": "locations",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER audit_record AFTER INSERT OR UPDATE ON public.locations FOR EACH ROW EXECUTE FUNCTION private.audit_change()"
+    },
+    {
+      "name": "check_archive",
+      "table": "locations",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER check_archive BEFORE INSERT OR UPDATE ON public.locations FOR EACH ROW EXECUTE FUNCTION private.check_archive()"
+    },
+    {
+      "name": "prepare_record",
+      "table": "locations",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER prepare_record BEFORE UPDATE ON public.locations FOR EACH ROW EXECUTE FUNCTION private.prepare_record()"
+    },
+    {
+      "name": "route_safety",
+      "table": "locations",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER route_safety BEFORE UPDATE ON public.locations FOR EACH ROW EXECUTE FUNCTION private.route_safety()"
+    },
+    {
+      "name": "audit_record",
+      "table": "pricing_extras",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER audit_record AFTER INSERT OR UPDATE ON public.pricing_extras FOR EACH ROW EXECUTE FUNCTION private.audit_change()"
+    },
+    {
+      "name": "prepare_record",
+      "table": "pricing_extras",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER prepare_record BEFORE UPDATE ON public.pricing_extras FOR EACH ROW EXECUTE FUNCTION private.prepare_record()"
+    },
+    {
+      "name": "a_prepare_price",
+      "table": "route_pricing",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER a_prepare_price BEFORE INSERT OR UPDATE ON public.route_pricing FOR EACH ROW EXECUTE FUNCTION private.prepare_price()"
+    },
+    {
+      "name": "audit_record",
+      "table": "route_pricing",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER audit_record AFTER INSERT OR UPDATE ON public.route_pricing FOR EACH ROW EXECUTE FUNCTION private.audit_change()"
+    },
+    {
+      "name": "check_archive",
+      "table": "route_pricing",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER check_archive BEFORE INSERT OR UPDATE ON public.route_pricing FOR EACH ROW EXECUTE FUNCTION private.check_archive()"
+    },
+    {
+      "name": "prepare_record",
+      "table": "route_pricing",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER prepare_record BEFORE UPDATE ON public.route_pricing FOR EACH ROW EXECUTE FUNCTION private.prepare_record()"
+    },
+    {
+      "name": "audit_record",
+      "table": "routes",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER audit_record AFTER INSERT OR UPDATE ON public.routes FOR EACH ROW EXECUTE FUNCTION private.audit_change()"
+    },
+    {
+      "name": "prepare_record",
+      "table": "routes",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER prepare_record BEFORE UPDATE ON public.routes FOR EACH ROW EXECUTE FUNCTION private.prepare_record()"
+    },
+    {
+      "name": "route_safety",
+      "table": "routes",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER route_safety BEFORE INSERT OR UPDATE ON public.routes FOR EACH ROW EXECUTE FUNCTION private.route_safety()"
+    },
+    {
+      "name": "audit_invites",
+      "table": "staff_invitations",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER audit_invites AFTER INSERT OR UPDATE ON public.staff_invitations FOR EACH ROW EXECUTE FUNCTION private.audit_change()"
+    },
+    {
+      "name": "audit_staff",
+      "table": "staff_members",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER audit_staff AFTER INSERT OR UPDATE ON public.staff_members FOR EACH ROW EXECUTE FUNCTION private.audit_change()"
+    },
+    {
+      "name": "audit_record",
+      "table": "vehicles",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER audit_record AFTER INSERT OR UPDATE ON public.vehicles FOR EACH ROW EXECUTE FUNCTION private.audit_change()"
+    },
+    {
+      "name": "check_archive",
+      "table": "vehicles",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER check_archive BEFORE INSERT OR UPDATE ON public.vehicles FOR EACH ROW EXECUTE FUNCTION private.check_archive()"
+    },
+    {
+      "name": "inventory_safety",
+      "table": "vehicles",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER inventory_safety BEFORE UPDATE ON public.vehicles FOR EACH ROW EXECUTE FUNCTION private.inventory_safety()"
+    },
+    {
+      "name": "prepare_record",
+      "table": "vehicles",
+      "schema": "public",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER prepare_record BEFORE UPDATE ON public.vehicles FOR EACH ROW EXECUTE FUNCTION private.prepare_record()"
+    }
+  ],
+  "storage_realtime_policies": [
+    {
+      "name": "business_media_delete",
+      "roles": ["authenticated"],
+      "table": "objects",
+      "using": "((bucket_id = 'business-media'::text) AND (split_part(name, '/'::text, 1) = (( SELECT private.organization_id() AS organization_id))::text) AND (((split_part(name, '/'::text, 2) = ANY (ARRAY['vehicles'::text, 'locations'::text])) AND (( SELECT private.\"current_role\"() AS \"current_role\") = ANY (ARRAY['owner'::text, 'manager'::text]))) OR ((split_part(name, '/'::text, 2) = 'logo'::text) AND (( SELECT private.\"current_role\"() AS \"current_role\") = 'owner'::text))))",
+      "schema": "storage",
+      "command": "DELETE",
+      "with_check": null
+    },
+    {
+      "name": "business_media_insert",
+      "roles": ["authenticated"],
+      "table": "objects",
+      "using": null,
+      "schema": "storage",
+      "command": "INSERT",
+      "with_check": "((bucket_id = 'business-media'::text) AND (split_part(name, '/'::text, 1) = (( SELECT private.organization_id() AS organization_id))::text) AND (((split_part(name, '/'::text, 2) = ANY (ARRAY['vehicles'::text, 'locations'::text])) AND (( SELECT private.\"current_role\"() AS \"current_role\") = ANY (ARRAY['owner'::text, 'manager'::text]))) OR ((split_part(name, '/'::text, 2) = 'logo'::text) AND (( SELECT private.\"current_role\"() AS \"current_role\") = 'owner'::text))))"
+    },
+    {
+      "name": "business_media_read",
+      "roles": ["authenticated"],
+      "table": "objects",
+      "using": "((bucket_id = 'business-media'::text) AND (split_part(name, '/'::text, 1) = (( SELECT private.organization_id() AS organization_id))::text) AND (( SELECT private.\"current_role\"() AS \"current_role\") = ANY (ARRAY['owner'::text, 'manager'::text, 'dispatcher'::text, 'viewer'::text])))",
+      "schema": "storage",
+      "command": "SELECT",
+      "with_check": null
+    }
+  ],
+  "table_grants": [
+    {
+      "role": "authenticated",
+      "table": "audit_events",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_assignments",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_enquiries",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_status_history",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "customers",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "customers",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "customers",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "organizations",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "pricing_extras",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "pricing_extras",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "pricing_extras",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "routes",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "routes",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "routes",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "staff_invitations",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "staff_members",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "verified_payments",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "service_role",
+      "table": "verified_payments",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "service_role",
+      "table": "verified_payments",
+      "privilege": "SELECT"
+    }
+  ],
+  "column_grants": [
+    {
+      "role": "authenticated",
+      "table": "audit_events",
+      "column": "actor_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "audit_events",
+      "column": "changed_fields",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "audit_events",
+      "column": "created_at",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "audit_events",
+      "column": "id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "audit_events",
+      "column": "operation",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "audit_events",
+      "column": "organization_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "audit_events",
+      "column": "record_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "audit_events",
+      "column": "table_name",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_assignments",
+      "column": "actor_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_assignments",
+      "column": "booking_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_assignments",
+      "column": "created_at",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_assignments",
+      "column": "driver_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_assignments",
+      "column": "id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_assignments",
+      "column": "organization_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_assignments",
+      "column": "vehicle_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_enquiries",
+      "column": "created_at",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_enquiries",
+      "column": "dropoff_location_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_enquiries",
+      "column": "email",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_enquiries",
+      "column": "extras",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_enquiries",
+      "column": "flight_number",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_enquiries",
+      "column": "id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_enquiries",
+      "column": "luggage",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_enquiries",
+      "column": "name",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_enquiries",
+      "column": "notes",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_enquiries",
+      "column": "organization_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_enquiries",
+      "column": "passengers",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_enquiries",
+      "column": "phone",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_enquiries",
+      "column": "pickup_at",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_enquiries",
+      "column": "pickup_location_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_enquiries",
+      "column": "pricing_snapshot",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_enquiries",
+      "column": "quoted_outbound_aed",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_enquiries",
+      "column": "quoted_return_aed",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_enquiries",
+      "column": "reference",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_enquiries",
+      "column": "return_at",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_enquiries",
+      "column": "status",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_enquiries",
+      "column": "status",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_enquiries",
+      "column": "transfer_type",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_enquiries",
+      "column": "updated_at",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_enquiries",
+      "column": "vehicle_category",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_status_history",
+      "column": "actor_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_status_history",
+      "column": "booking_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_status_history",
+      "column": "created_at",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_status_history",
+      "column": "id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_status_history",
+      "column": "new_status",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_status_history",
+      "column": "old_status",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_status_history",
+      "column": "organization_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "booking_status_history",
+      "column": "reason",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "archived",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "archived",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "archived",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "cancellation_reason",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "cancellation_reason",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "cancellation_reason",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "created_at",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "created_at",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "created_at",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "customer_id",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "customer_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "customer_id",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "driver_id",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "driver_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "driver_id",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "dropoff_location_id",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "dropoff_location_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "dropoff_location_id",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "end_at",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "end_at",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "end_at",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "enquiry_id",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "enquiry_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "enquiry_id",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "flight_number",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "flight_number",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "flight_number",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "flight_status",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "flight_status",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "flight_status",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "flight_status_updated_at",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "flight_status_updated_at",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "flight_status_updated_at",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "id",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "id",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "luggage",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "luggage",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "luggage",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "notes",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "notes",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "notes",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "organization_id",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "organization_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "organization_id",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "passengers",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "passengers",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "passengers",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "payment_status",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "payment_status",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "payment_status",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "pickup_at",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "pickup_at",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "pickup_at",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "pickup_location_id",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "pickup_location_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "pickup_location_id",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "price_aed",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "price_aed",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "price_aed",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "reference",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "reference",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "reference",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "reserved_until",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "reserved_until",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "reserved_until",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "return_of_booking_id",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "return_of_booking_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "return_of_booking_id",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "status",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "status",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "status",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "updated_at",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "updated_at",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "updated_at",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "vehicle_category",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "vehicle_category",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "vehicle_category",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "vehicle_id",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "vehicle_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "bookings",
+      "column": "vehicle_id",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "about_text",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "about_text",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "about_text",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "address",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "address",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "address",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "booking_policy",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "booking_policy",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "booking_policy",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "brand_color",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "brand_color",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "brand_color",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "cancellation_policy",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "cancellation_policy",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "cancellation_policy",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "canvas_color",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "canvas_color",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "canvas_color",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "contact_email",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "contact_email",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "contact_email",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "currency",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "currency",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "currency",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "display_name",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "display_name",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "display_name",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "enquiries_enabled",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "enquiries_enabled",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "enquiries_enabled",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "font_family",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "font_family",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "font_family",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "ink_color",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "ink_color",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "ink_color",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "logo_path",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "logo_path",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "logo_path",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "minimum_notice_hours",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "minimum_notice_hours",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "minimum_notice_hours",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "organization_id",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "organization_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "organization_id",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "phone",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "phone",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "phone",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "published",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "published",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "published",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "turnaround_minutes",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "turnaround_minutes",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "turnaround_minutes",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "updated_at",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "updated_at",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "updated_at",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "whatsapp",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "whatsapp",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "business_settings",
+      "column": "whatsapp",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "customers",
+      "column": "archived",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "customers",
+      "column": "archived",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "customers",
+      "column": "archived",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "customers",
+      "column": "created_at",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "customers",
+      "column": "created_at",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "customers",
+      "column": "created_at",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "customers",
+      "column": "email",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "customers",
+      "column": "email",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "customers",
+      "column": "email",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "customers",
+      "column": "id",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "customers",
+      "column": "id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "customers",
+      "column": "id",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "customers",
+      "column": "name",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "customers",
+      "column": "name",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "customers",
+      "column": "name",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "customers",
+      "column": "notes",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "customers",
+      "column": "notes",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "customers",
+      "column": "notes",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "customers",
+      "column": "organization_id",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "customers",
+      "column": "organization_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "customers",
+      "column": "organization_id",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "customers",
+      "column": "phone",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "customers",
+      "column": "phone",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "customers",
+      "column": "phone",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "customers",
+      "column": "updated_at",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "customers",
+      "column": "updated_at",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "customers",
+      "column": "updated_at",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "column": "account_status",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "column": "account_status",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "column": "account_status",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "column": "archived",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "column": "archived",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "column": "auth_user_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "column": "created_at",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "column": "email",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "column": "email",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "column": "email",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "column": "id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "column": "license_expiry",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "column": "license_expiry",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "column": "license_expiry",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "column": "license_number",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "column": "license_number",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "column": "license_number",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "column": "name",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "column": "name",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "column": "name",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "column": "notes",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "column": "notes",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "column": "notes",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "column": "organization_id",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "column": "organization_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "column": "phone",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "column": "phone",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "column": "phone",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "column": "status",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "column": "status",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "column": "status",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "column": "updated_at",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "address",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "address",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "address",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "airport_code",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "airport_code",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "airport_code",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "archived",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "archived",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "archived",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "city",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "city",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "city",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "created_at",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "created_at",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "created_at",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "description",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "description",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "description",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "featured_destination",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "featured_destination",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "featured_destination",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "id",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "id",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "image_path",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "image_path",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "image_path",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "kind",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "kind",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "kind",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "latitude",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "latitude",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "latitude",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "longitude",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "longitude",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "longitude",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "name",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "name",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "name",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "organization_id",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "organization_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "organization_id",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "public_listed",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "public_listed",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "public_listed",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "updated_at",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "updated_at",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "locations",
+      "column": "updated_at",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "organizations",
+      "column": "created_at",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "organizations",
+      "column": "id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "organizations",
+      "column": "name",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "pricing_extras",
+      "column": "archived",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "pricing_extras",
+      "column": "archived",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "pricing_extras",
+      "column": "archived",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "pricing_extras",
+      "column": "charge_basis",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "pricing_extras",
+      "column": "charge_basis",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "pricing_extras",
+      "column": "charge_basis",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "pricing_extras",
+      "column": "created_at",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "pricing_extras",
+      "column": "created_at",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "pricing_extras",
+      "column": "created_at",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "pricing_extras",
+      "column": "id",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "pricing_extras",
+      "column": "id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "pricing_extras",
+      "column": "id",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "pricing_extras",
+      "column": "name",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "pricing_extras",
+      "column": "name",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "pricing_extras",
+      "column": "name",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "pricing_extras",
+      "column": "organization_id",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "pricing_extras",
+      "column": "organization_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "pricing_extras",
+      "column": "organization_id",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "pricing_extras",
+      "column": "price_aed",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "pricing_extras",
+      "column": "price_aed",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "pricing_extras",
+      "column": "price_aed",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "pricing_extras",
+      "column": "route_pricing_id",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "pricing_extras",
+      "column": "route_pricing_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "pricing_extras",
+      "column": "route_pricing_id",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "pricing_extras",
+      "column": "updated_at",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "pricing_extras",
+      "column": "updated_at",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "pricing_extras",
+      "column": "updated_at",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "additional_charges_aed",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "additional_charges_aed",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "additional_charges_aed",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "archived",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "archived",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "archived",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "created_at",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "created_at",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "created_at",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "dropoff_location_id",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "dropoff_location_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "dropoff_location_id",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "id",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "id",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "name",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "name",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "name",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "organization_id",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "organization_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "organization_id",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "pickup_location_id",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "pickup_location_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "pickup_location_id",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "price_aed",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "price_aed",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "price_aed",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "public_listed",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "public_listed",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "public_listed",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "return_fare_aed",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "return_fare_aed",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "return_fare_aed",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "route_id",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "route_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "route_id",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "updated_at",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "updated_at",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "updated_at",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "vehicle_category",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "vehicle_category",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "route_pricing",
+      "column": "vehicle_category",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "routes",
+      "column": "archived",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "routes",
+      "column": "archived",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "routes",
+      "column": "archived",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "routes",
+      "column": "created_at",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "routes",
+      "column": "created_at",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "routes",
+      "column": "created_at",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "routes",
+      "column": "dropoff_location_id",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "routes",
+      "column": "dropoff_location_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "routes",
+      "column": "dropoff_location_id",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "routes",
+      "column": "id",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "routes",
+      "column": "id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "routes",
+      "column": "id",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "routes",
+      "column": "name",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "routes",
+      "column": "name",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "routes",
+      "column": "name",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "routes",
+      "column": "organization_id",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "routes",
+      "column": "organization_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "routes",
+      "column": "organization_id",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "routes",
+      "column": "pickup_location_id",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "routes",
+      "column": "pickup_location_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "routes",
+      "column": "pickup_location_id",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "routes",
+      "column": "updated_at",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "routes",
+      "column": "updated_at",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "routes",
+      "column": "updated_at",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "staff_invitations",
+      "column": "accepted_at",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "staff_invitations",
+      "column": "created_at",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "staff_invitations",
+      "column": "display_name",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "staff_invitations",
+      "column": "driver_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "staff_invitations",
+      "column": "email",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "staff_invitations",
+      "column": "expires_at",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "staff_invitations",
+      "column": "id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "staff_invitations",
+      "column": "invited_by",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "staff_invitations",
+      "column": "organization_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "staff_invitations",
+      "column": "role",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "staff_members",
+      "column": "active",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "staff_members",
+      "column": "created_at",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "staff_members",
+      "column": "display_name",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "staff_members",
+      "column": "email",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "staff_members",
+      "column": "organization_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "staff_members",
+      "column": "role",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "staff_members",
+      "column": "user_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "archived",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "archived",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "archived",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "capacity",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "capacity",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "capacity",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "category",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "category",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "category",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "created_at",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "created_at",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "created_at",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "description",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "description",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "description",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "id",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "id",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "image_path",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "image_path",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "image_path",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "luggage_capacity",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "luggage_capacity",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "luggage_capacity",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "make",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "make",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "make",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "model",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "model",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "model",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "name",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "name",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "name",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "notes",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "notes",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "notes",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "organization_id",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "organization_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "organization_id",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "plate_number",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "plate_number",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "plate_number",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "public_listed",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "public_listed",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "public_listed",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "registration_expiry",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "registration_expiry",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "registration_expiry",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "status",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "status",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "status",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "updated_at",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "updated_at",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "vehicles",
+      "column": "updated_at",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "verified_payments",
+      "column": "amount_aed",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "service_role",
+      "table": "verified_payments",
+      "column": "amount_aed",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "service_role",
+      "table": "verified_payments",
+      "column": "amount_aed",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "verified_payments",
+      "column": "booking_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "service_role",
+      "table": "verified_payments",
+      "column": "booking_id",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "service_role",
+      "table": "verified_payments",
+      "column": "booking_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "verified_payments",
+      "column": "created_at",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "service_role",
+      "table": "verified_payments",
+      "column": "created_at",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "service_role",
+      "table": "verified_payments",
+      "column": "created_at",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "verified_payments",
+      "column": "currency",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "service_role",
+      "table": "verified_payments",
+      "column": "currency",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "service_role",
+      "table": "verified_payments",
+      "column": "currency",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "verified_payments",
+      "column": "id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "service_role",
+      "table": "verified_payments",
+      "column": "id",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "service_role",
+      "table": "verified_payments",
+      "column": "id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "verified_payments",
+      "column": "kind",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "service_role",
+      "table": "verified_payments",
+      "column": "kind",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "service_role",
+      "table": "verified_payments",
+      "column": "kind",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "verified_payments",
+      "column": "organization_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "service_role",
+      "table": "verified_payments",
+      "column": "organization_id",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "service_role",
+      "table": "verified_payments",
+      "column": "organization_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "verified_payments",
+      "column": "provider",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "service_role",
+      "table": "verified_payments",
+      "column": "provider",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "service_role",
+      "table": "verified_payments",
+      "column": "provider",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "verified_payments",
+      "column": "provider_event_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "service_role",
+      "table": "verified_payments",
+      "column": "provider_event_id",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "service_role",
+      "table": "verified_payments",
+      "column": "provider_event_id",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "verified_payments",
+      "column": "verified_at",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "service_role",
+      "table": "verified_payments",
+      "column": "verified_at",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "service_role",
+      "table": "verified_payments",
+      "column": "verified_at",
+      "privilege": "SELECT"
+    }
+  ],
+  "public_policy_modes": [
+    {
+      "mode": "PERMISSIVE",
+      "name": "audit_read",
+      "table": "audit_events"
+    },
+    {
+      "mode": "PERMISSIVE",
+      "name": "read_records",
+      "table": "booking_assignments"
+    },
+    {
+      "mode": "PERMISSIVE",
+      "name": "enquiries_update",
+      "table": "booking_enquiries"
+    },
+    {
+      "mode": "PERMISSIVE",
+      "name": "read_records",
+      "table": "booking_enquiries"
+    },
+    {
+      "mode": "PERMISSIVE",
+      "name": "read_records",
+      "table": "booking_status_history"
+    },
+    {
+      "mode": "PERMISSIVE",
+      "name": "create_records",
+      "table": "bookings"
+    },
+    {
+      "mode": "PERMISSIVE",
+      "name": "read_records",
+      "table": "bookings"
+    },
+    {
+      "mode": "PERMISSIVE",
+      "name": "update_records",
+      "table": "bookings"
+    },
+    {
+      "mode": "PERMISSIVE",
+      "name": "owner_settings_insert",
+      "table": "business_settings"
+    },
+    {
+      "mode": "PERMISSIVE",
+      "name": "owner_settings_update",
+      "table": "business_settings"
+    },
+    {
+      "mode": "PERMISSIVE",
+      "name": "read_records",
+      "table": "business_settings"
+    },
+    {
+      "mode": "PERMISSIVE",
+      "name": "create_records",
+      "table": "customers"
+    },
+    {
+      "mode": "PERMISSIVE",
+      "name": "read_records",
+      "table": "customers"
+    },
+    {
+      "mode": "PERMISSIVE",
+      "name": "update_records",
+      "table": "customers"
+    },
+    {
+      "mode": "PERMISSIVE",
+      "name": "create_records",
+      "table": "drivers"
+    },
+    {
+      "mode": "PERMISSIVE",
+      "name": "read_records",
+      "table": "drivers"
+    },
+    {
+      "mode": "PERMISSIVE",
+      "name": "update_records",
+      "table": "drivers"
+    },
+    {
+      "mode": "PERMISSIVE",
+      "name": "create_records",
+      "table": "locations"
+    },
+    {
+      "mode": "PERMISSIVE",
+      "name": "read_records",
+      "table": "locations"
+    },
+    {
+      "mode": "PERMISSIVE",
+      "name": "update_records",
+      "table": "locations"
+    },
+    {
+      "mode": "PERMISSIVE",
+      "name": "organization_read",
+      "table": "organizations"
+    },
+    {
+      "mode": "PERMISSIVE",
+      "name": "read_records",
+      "table": "pricing_extras"
+    },
+    {
+      "mode": "PERMISSIVE",
+      "name": "update_records",
+      "table": "pricing_extras"
+    },
+    {
+      "mode": "PERMISSIVE",
+      "name": "write_records",
+      "table": "pricing_extras"
+    },
+    {
+      "mode": "PERMISSIVE",
+      "name": "create_records",
+      "table": "route_pricing"
+    },
+    {
+      "mode": "PERMISSIVE",
+      "name": "read_records",
+      "table": "route_pricing"
+    },
+    {
+      "mode": "PERMISSIVE",
+      "name": "update_records",
+      "table": "route_pricing"
+    },
+    {
+      "mode": "PERMISSIVE",
+      "name": "read_records",
+      "table": "routes"
+    },
+    {
+      "mode": "PERMISSIVE",
+      "name": "update_records",
+      "table": "routes"
+    },
+    {
+      "mode": "PERMISSIVE",
+      "name": "write_records",
+      "table": "routes"
+    },
+    {
+      "mode": "PERMISSIVE",
+      "name": "invitations_read",
+      "table": "staff_invitations"
+    },
+    {
+      "mode": "PERMISSIVE",
+      "name": "staff_read",
+      "table": "staff_members"
+    },
+    {
+      "mode": "PERMISSIVE",
+      "name": "create_records",
+      "table": "vehicles"
+    },
+    {
+      "mode": "PERMISSIVE",
+      "name": "read_records",
+      "table": "vehicles"
+    },
+    {
+      "mode": "PERMISSIVE",
+      "name": "update_records",
+      "table": "vehicles"
+    },
+    {
+      "mode": "PERMISSIVE",
+      "name": "read_records",
+      "table": "verified_payments"
+    }
+  ],
+  "schema_access": [
+    {
+      "schema": "private",
+      "anon_usage": false,
+      "authenticated_usage": true
+    },
+    {
+      "schema": "public",
+      "anon_usage": true,
+      "authenticated_usage": true
+    }
+  ],
+  "media_bucket": {
+    "public": false,
+    "file_size_limit": 5242880,
+    "allowed_mime_types": ["image/webp"]
+  },
+  "realtime_tables": ["booking_enquiries", "bookings", "drivers", "vehicles"],
+  "constraints": {
+    "routes": [
+      "CHECK (((length(TRIM(BOTH FROM name)) >= 1) AND (length(TRIM(BOTH FROM name)) <= 200)))",
+      "CHECK ((pickup_location_id <> dropoff_location_id))",
+      "FOREIGN KEY (organization_id) REFERENCES organizations(id)",
+      "FOREIGN KEY (organization_id, dropoff_location_id) REFERENCES locations(organization_id, id)",
+      "FOREIGN KEY (organization_id, pickup_location_id) REFERENCES locations(organization_id, id)",
+      "PRIMARY KEY (id)",
+      "UNIQUE (organization_id, id)",
+      "UNIQUE (organization_id, pickup_location_id, dropoff_location_id)"
+    ],
+    "drivers": [
+      "CHECK (((length(TRIM(BOTH FROM license_number)) >= 1) AND (length(TRIM(BOTH FROM license_number)) <= 200)))",
+      "CHECK (((length(TRIM(BOTH FROM name)) >= 1) AND (length(TRIM(BOTH FROM name)) <= 200)))",
+      "CHECK (((length(TRIM(BOTH FROM phone)) >= 1) AND (length(TRIM(BOTH FROM phone)) <= 200)))",
+      "CHECK ((account_status = ANY (ARRAY['active'::text, 'inactive'::text])))",
+      "CHECK ((length(notes) <= 4000))",
+      "CHECK ((status = ANY (ARRAY['available'::text, 'on_trip'::text, 'unavailable'::text])))",
+      "FOREIGN KEY (auth_user_id) REFERENCES auth.users(id) ON DELETE SET NULL",
+      "FOREIGN KEY (organization_id) REFERENCES organizations(id)",
+      "PRIMARY KEY (id)",
+      "UNIQUE (auth_user_id)",
+      "UNIQUE (organization_id, id)",
+      "UNIQUE (organization_id, license_number)"
+    ],
+    "bookings": [
+      "CHECK (((end_at IS NULL) OR (end_at > pickup_at)))",
+      "CHECK (((luggage >= 0) AND (luggage <= 1000)))",
+      "CHECK (((passengers >= 1) AND (passengers <= 1000)))",
+      "CHECK (((price_aed >= (0)::numeric) AND (price_aed <= (10000000)::numeric)))",
+      "CHECK ((flight_status = ANY (ARRAY['not_recorded'::text, 'scheduled'::text, 'delayed'::text, 'arrived'::text, 'cancelled'::text])))",
+      "CHECK ((length(cancellation_reason) <= 4000))",
+      "CHECK ((length(flight_number) <= 200))",
+      "CHECK ((length(notes) <= 4000))",
+      "CHECK ((payment_status = ANY (ARRAY['unpaid'::text, 'paid'::text, 'refunded'::text])))",
+      "CHECK ((pickup_location_id <> dropoff_location_id))",
+      "CHECK ((status = ANY (ARRAY['pending'::text, 'confirmed'::text, 'in_progress'::text, 'completed'::text, 'cancelled'::text])))",
+      "CHECK ((vehicle_category = ANY (ARRAY['sedan'::text, 'suv'::text, 'van'::text, 'luxury'::text])))",
+      "EXCLUDE USING gist (organization_id WITH =, driver_id WITH =, tstzrange(pickup_at, reserved_until, '[)'::text) WITH &&) WHERE (((NOT archived) AND (status = ANY (ARRAY['confirmed'::text, 'in_progress'::text])) AND (driver_id IS NOT NULL) AND (reserved_until IS NOT NULL)))",
+      "EXCLUDE USING gist (organization_id WITH =, vehicle_id WITH =, tstzrange(pickup_at, reserved_until, '[)'::text) WITH &&) WHERE (((NOT archived) AND (status = ANY (ARRAY['confirmed'::text, 'in_progress'::text])) AND (vehicle_id IS NOT NULL) AND (reserved_until IS NOT NULL)))",
+      "FOREIGN KEY (organization_id) REFERENCES organizations(id)",
+      "FOREIGN KEY (organization_id, customer_id) REFERENCES customers(organization_id, id)",
+      "FOREIGN KEY (organization_id, driver_id) REFERENCES drivers(organization_id, id)",
+      "FOREIGN KEY (organization_id, dropoff_location_id) REFERENCES locations(organization_id, id)",
+      "FOREIGN KEY (organization_id, enquiry_id) REFERENCES booking_enquiries(organization_id, id)",
+      "FOREIGN KEY (organization_id, pickup_location_id) REFERENCES locations(organization_id, id)",
+      "FOREIGN KEY (organization_id, return_of_booking_id) REFERENCES bookings(organization_id, id)",
+      "FOREIGN KEY (organization_id, vehicle_id) REFERENCES vehicles(organization_id, id)",
+      "PRIMARY KEY (id)",
+      "UNIQUE (organization_id, id)",
+      "UNIQUE (organization_id, reference)"
+    ],
+    "vehicles": [
+      "CHECK (((capacity >= 1) AND (capacity <= 1000)))",
+      "CHECK (((image_path IS NULL) OR (image_path ~~ ((((organization_id)::text || '/vehicles/'::text) || (id)::text) || '/%'::text))))",
+      "CHECK (((length(TRIM(BOTH FROM name)) >= 1) AND (length(TRIM(BOTH FROM name)) <= 200)))",
+      "CHECK (((length(TRIM(BOTH FROM plate_number)) >= 1) AND (length(TRIM(BOTH FROM plate_number)) <= 200)))",
+      "CHECK (((luggage_capacity >= 0) AND (luggage_capacity <= 1000)))",
+      "CHECK ((category = ANY (ARRAY['sedan'::text, 'suv'::text, 'van'::text, 'luxury'::text])))",
+      "CHECK ((length(description) <= 4000))",
+      "CHECK ((length(make) <= 200))",
+      "CHECK ((length(model) <= 200))",
+      "CHECK ((length(notes) <= 4000))",
+      "CHECK ((status = ANY (ARRAY['available'::text, 'on_trip'::text, 'maintenance'::text, 'unavailable'::text, 'inactive'::text])))",
+      "FOREIGN KEY (organization_id) REFERENCES organizations(id)",
+      "PRIMARY KEY (id)",
+      "UNIQUE (organization_id, id)",
+      "UNIQUE (organization_id, plate_number)"
+    ],
+    "customers": [
+      "CHECK (((length(TRIM(BOTH FROM name)) >= 1) AND (length(TRIM(BOTH FROM name)) <= 200)))",
+      "CHECK (((length(TRIM(BOTH FROM phone)) >= 1) AND (length(TRIM(BOTH FROM phone)) <= 200)))",
+      "CHECK ((length(notes) <= 4000))",
+      "FOREIGN KEY (organization_id) REFERENCES organizations(id)",
+      "PRIMARY KEY (id)",
+      "UNIQUE (organization_id, id)"
+    ],
+    "locations": [
+      "CHECK (((airport_code IS NULL) OR (airport_code ~ '^[A-Z]{3}$'::text)))",
+      "CHECK (((image_path IS NULL) OR (image_path ~~ ((((organization_id)::text || '/locations/'::text) || (id)::text) || '/%'::text))))",
+      "CHECK (((latitude >= ('-90'::integer)::numeric) AND (latitude <= (90)::numeric)))",
+      "CHECK (((latitude IS NULL) = (longitude IS NULL)))",
+      "CHECK (((length(TRIM(BOTH FROM address)) >= 1) AND (length(TRIM(BOTH FROM address)) <= 4000)))",
+      "CHECK (((length(TRIM(BOTH FROM name)) >= 1) AND (length(TRIM(BOTH FROM name)) <= 200)))",
+      "CHECK (((longitude >= ('-180'::integer)::numeric) AND (longitude <= (180)::numeric)))",
+      "CHECK ((kind = ANY (ARRAY['airport'::text, 'hotel'::text, 'residence'::text, 'office'::text, 'other'::text])))",
+      "CHECK ((length(city) <= 200))",
+      "CHECK ((length(description) <= 4000))",
+      "FOREIGN KEY (organization_id) REFERENCES organizations(id)",
+      "PRIMARY KEY (id)",
+      "UNIQUE (organization_id, id)"
+    ],
+    "audit_events": [
+      "FOREIGN KEY (organization_id) REFERENCES organizations(id)",
+      "PRIMARY KEY (id)"
+    ],
+    "organizations": [
+      "CHECK (((length(TRIM(BOTH FROM name)) >= 1) AND (length(TRIM(BOTH FROM name)) <= 200)))",
+      "PRIMARY KEY (id)"
+    ],
+    "route_pricing": [
+      "CHECK (((additional_charges_aed >= (0)::numeric) AND (additional_charges_aed <= (10000000)::numeric)))",
+      "CHECK (((price_aed >= (0)::numeric) AND (price_aed <= (10000000)::numeric)))",
+      "CHECK (((return_fare_aed >= (0)::numeric) AND (return_fare_aed <= (10000000)::numeric)))",
+      "CHECK ((pickup_location_id <> dropoff_location_id))",
+      "CHECK ((vehicle_category = ANY (ARRAY['sedan'::text, 'suv'::text, 'van'::text, 'luxury'::text])))",
+      "FOREIGN KEY (organization_id) REFERENCES organizations(id)",
+      "FOREIGN KEY (organization_id, dropoff_location_id) REFERENCES locations(organization_id, id)",
+      "FOREIGN KEY (organization_id, pickup_location_id) REFERENCES locations(organization_id, id)",
+      "FOREIGN KEY (organization_id, route_id) REFERENCES routes(organization_id, id)",
+      "PRIMARY KEY (id)",
+      "UNIQUE (organization_id, id)"
+    ],
+    "staff_members": [
+      "CHECK (((length(TRIM(BOTH FROM display_name)) >= 1) AND (length(TRIM(BOTH FROM display_name)) <= 200)))",
+      "CHECK ((role = ANY (ARRAY['owner'::text, 'manager'::text, 'dispatcher'::text, 'viewer'::text, 'driver'::text])))",
+      "FOREIGN KEY (organization_id) REFERENCES organizations(id)",
+      "FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE",
+      "PRIMARY KEY (user_id)"
+    ],
+    "pricing_extras": [
+      "CHECK (((length(TRIM(BOTH FROM name)) >= 1) AND (length(TRIM(BOTH FROM name)) <= 200)))",
+      "CHECK (((price_aed >= (0)::numeric) AND (price_aed <= (10000000)::numeric)))",
+      "CHECK ((charge_basis = ANY (ARRAY['per_booking'::text, 'per_leg'::text])))",
+      "FOREIGN KEY (organization_id) REFERENCES organizations(id)",
+      "FOREIGN KEY (organization_id, route_pricing_id) REFERENCES route_pricing(organization_id, id)",
+      "PRIMARY KEY (id)"
+    ],
+    "booking_enquiries": [
+      "CHECK ((((transfer_type = 'one_way'::text) AND (return_at IS NULL)) OR ((transfer_type = 'return'::text) AND (return_at > pickup_at))))",
+      "CHECK (((length(TRIM(BOTH FROM name)) >= 1) AND (length(TRIM(BOTH FROM name)) <= 200)))",
+      "CHECK (((length(phone) >= 7) AND (length(phone) <= 100)))",
+      "CHECK (((luggage >= 0) AND (luggage <= 1000)))",
+      "CHECK (((passengers >= 1) AND (passengers <= 1000)))",
+      "CHECK ((length(email) <= 254))",
+      "CHECK ((length(flight_number) <= 200))",
+      "CHECK ((length(notes) <= 4000))",
+      "CHECK ((pickup_location_id <> dropoff_location_id))",
+      "CHECK ((status = ANY (ARRAY['new'::text, 'reviewed'::text, 'converted'::text, 'closed'::text])))",
+      "CHECK ((transfer_type = ANY (ARRAY['one_way'::text, 'return'::text])))",
+      "CHECK ((vehicle_category = ANY (ARRAY['sedan'::text, 'suv'::text, 'van'::text, 'luxury'::text])))",
+      "FOREIGN KEY (organization_id) REFERENCES organizations(id)",
+      "FOREIGN KEY (organization_id, dropoff_location_id) REFERENCES locations(organization_id, id)",
+      "FOREIGN KEY (organization_id, pickup_location_id) REFERENCES locations(organization_id, id)",
+      "PRIMARY KEY (id)",
+      "UNIQUE (organization_id, id)",
+      "UNIQUE (organization_id, reference)"
+    ],
+    "business_settings": [
+      "CHECK (((length(TRIM(BOTH FROM display_name)) >= 1) AND (length(TRIM(BOTH FROM display_name)) <= 200)))",
+      "CHECK (((logo_path IS NULL) OR (logo_path ~~ ((organization_id)::text || '/logo/%'::text))))",
+      "CHECK (((minimum_notice_hours >= 0) AND (minimum_notice_hours <= 8760)))",
+      "CHECK (((turnaround_minutes >= 0) AND (turnaround_minutes <= 1440)))",
+      "CHECK (((whatsapp IS NULL) OR (whatsapp ~ '^\\+?[0-9]{7,15}$'::text)))",
+      "CHECK ((brand_color ~ '^#[0-9a-fA-F]{6}$'::text))",
+      "CHECK ((canvas_color ~ '^#[0-9a-fA-F]{6}$'::text))",
+      "CHECK ((currency = 'AED'::text))",
+      "CHECK ((font_family = ANY (ARRAY['system'::text, 'serif'::text])))",
+      "CHECK ((ink_color ~ '^#[0-9a-fA-F]{6}$'::text))",
+      "CHECK ((length(about_text) <= 4000))",
+      "CHECK ((length(address) <= 4000))",
+      "CHECK ((length(booking_policy) <= 4000))",
+      "CHECK ((length(cancellation_policy) <= 4000))",
+      "CHECK ((length(contact_email) <= 254))",
+      "CHECK ((length(phone) <= 100))",
+      "FOREIGN KEY (organization_id) REFERENCES organizations(id)",
+      "PRIMARY KEY (organization_id)"
+    ],
+    "staff_invitations": [
+      "CHECK (((length(TRIM(BOTH FROM display_name)) >= 1) AND (length(TRIM(BOTH FROM display_name)) <= 200)))",
+      "CHECK (((role = 'driver'::text) = (driver_id IS NOT NULL)))",
+      "CHECK ((email = lower(TRIM(BOTH FROM email))))",
+      "CHECK ((role = ANY (ARRAY['manager'::text, 'dispatcher'::text, 'viewer'::text, 'driver'::text])))",
+      "FOREIGN KEY (invited_by) REFERENCES auth.users(id)",
+      "FOREIGN KEY (organization_id) REFERENCES organizations(id)",
+      "FOREIGN KEY (organization_id, driver_id) REFERENCES drivers(organization_id, id)",
+      "PRIMARY KEY (id)"
+    ],
+    "verified_payments": [
+      "CHECK (((length(provider) >= 1) AND (length(provider) <= 100)))",
+      "CHECK (((length(provider_event_id) >= 1) AND (length(provider_event_id) <= 300)))",
+      "CHECK ((amount_aed > (0)::numeric))",
+      "CHECK ((currency = 'AED'::text))",
+      "CHECK ((kind = ANY (ARRAY['charge'::text, 'refund'::text])))",
+      "FOREIGN KEY (organization_id) REFERENCES organizations(id)",
+      "FOREIGN KEY (organization_id, booking_id) REFERENCES bookings(organization_id, id)",
+      "PRIMARY KEY (id)",
+      "UNIQUE (provider, provider_event_id)"
+    ],
+    "booking_assignments": [
+      "FOREIGN KEY (organization_id) REFERENCES organizations(id)",
+      "FOREIGN KEY (organization_id, booking_id) REFERENCES bookings(organization_id, id)",
+      "FOREIGN KEY (organization_id, driver_id) REFERENCES drivers(organization_id, id)",
+      "FOREIGN KEY (organization_id, vehicle_id) REFERENCES vehicles(organization_id, id)",
+      "PRIMARY KEY (id)"
+    ],
+    "booking_status_history": [
+      "FOREIGN KEY (organization_id) REFERENCES organizations(id)",
+      "FOREIGN KEY (organization_id, booking_id) REFERENCES bookings(organization_id, id)",
+      "PRIMARY KEY (id)"
+    ]
+  }
+}
