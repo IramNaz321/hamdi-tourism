@@ -77,7 +77,17 @@ part of this implementation.
 
 - To: `Hamid.shah@mail.ru` only
 - Subject: `TEST — HAMDI TOURISM Booking Notification`
-- Body: `This is a system test, NOT a real booking.`
+- Body:
+
+```text
+Hello,
+
+This is a test notification from the HAMDI TOURISM booking system.
+
+This message is only to verify email delivery. It is NOT a real passenger booking.
+
+HAMDI TOURISM
+```
 
 `npm run check:booking-email` prepares this exact draft offline. No database booking,
 passenger record or outbox fixture should be created for it. The draft is not itself
@@ -89,3 +99,35 @@ integration (HTTP 403); never replace an unseen existing recovery key. Verify th
 actual serving worker is paused before rollout; an absent matching database cron
 job or a local disabled flag is not sufficient evidence. Archive/key retention must
 be confirmed in client-controlled storage outside the ephemeral Codespace.
+
+The developer explicitly authorized **one** standalone test using the exact draft
+above, conditional on verified sender and authorized Brevo access. No send has
+occurred in this environment: Codespaces access returns HTTP 403 and its Brevo
+key/sender/worker-secret configuration and encrypted archive are unavailable here.
+Do not treat the offline checker as a send or retry mechanism. Before any future
+send, reconcile available task/provider evidence to avoid repeating a test already
+accepted by Brevo. Provider acceptance must be recorded separately from inbox
+confirmation. Production migrations remain separately unapproved; test email
+sending must not create database records or depend on applying those migrations.
+
+### Restore and rollout prerequisites rechecked read-only
+
+The production ledger still records 001–009 only; the Owner outbox is absent.
+No database cron command directly referencing the notification worker was found;
+the external serving worker's pause cannot be verified from this environment.
+Production PostgreSQL 17 has `pg_cron 1.6.4` preloaded, configured for database
+`postgres`; other installed dependencies include `pgcrypto 1.3`, `uuid-ossp 1.1`
+and `supabase_vault 0.3.1`. The local plain `postgres:17-alpine` image has no
+`pg_cron.control`. A compatible isolated Supabase/PostgreSQL target must have the
+matching extensions, preload settings and role/ownership bootstrap before restore.
+Do not skip extensions, ownership or ACLs to claim a complete restore pass.
+No actual archive restore was performed here.
+
+After proven recovery, paused workers and separate explicit migration approval:
+apply `supabase/migrations/202610120010_owner_booking_notifications.sql`, verify
+its outbox/trigger/RPCs and grants, then apply
+`supabase/migrations/202610120012_brevo_owner_retry_window.sql`. Do not apply 011
+for email setup and do not replay installed migrations. Migration 012 must abort
+if previously attempted queued/sending Owner notices need reconciliation. Keep
+delivery disabled throughout; capture pre-012 function definitions for the existing
+reconciled rollback procedure. No production execution is approved by these notes.

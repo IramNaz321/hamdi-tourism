@@ -6,7 +6,10 @@ test("booking email draft is harmless, single-recipient and requires approval", 
   assert.equal(result.status, "BLOCKED");
   assert.deepEqual(result.testEmailDraft.to, ["Hamid.shah@mail.ru"]);
   assert.equal(result.testEmailDraft.subject, "TEST — HAMDI TOURISM Booking Notification");
-  assert.equal(result.testEmailDraft.text, "This is a system test, NOT a real booking.");
+  assert.equal(
+    result.testEmailDraft.text,
+    "Hello,\n\nThis is a test notification from the HAMDI TOURISM booking system.\n\nThis message is only to verify email delivery. It is NOT a real passenger booking.\n\nHAMDI TOURISM",
+  );
   assert.equal(result.emailsSent, false);
   assert.equal(result.databaseWrites, false);
   assert.equal(result.sendingRequiresSeparateExplicitApproval, true);
