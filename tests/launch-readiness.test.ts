@@ -9,7 +9,7 @@ test("handover gate reports absent configuration without disclosing values", () 
 });
 test("provider flags alone cannot enable readiness and configuration never certifies production", () => {
   const result = launchReadiness({
-    OPENAI_CONCIERGE_ENABLED: "true",
+    GROQ_CONCIERGE_ENABLED: "true",
     ROUTING_ENABLED: "true",
     STRIPE_LIVE_PAYMENTS_APPROVED: "true",
     PASSENGER_AUTH_ENABLED: "true",

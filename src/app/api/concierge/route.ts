@@ -16,10 +16,11 @@ function result(data: object, status = 200) {
   return NextResponse.json(data, { status, headers: { "Cache-Control": "private, no-store" } });
 }
 export async function POST(request: Request) {
+  const model = (process.env.GROQ_MODEL || "llama-3.3-70b-versatile").trim();
   if (
-    process.env.OPENAI_CONCIERGE_ENABLED !== "true" ||
-    !process.env.OPENAI_API_KEY ||
-    !process.env.OPENAI_MODEL ||
+    process.env.GROQ_CONCIERGE_ENABLED !== "true" ||
+    !process.env.GROQ_API_KEY ||
+    !/^[a-zA-Z0-9._/-]{1,100}$/.test(model) ||
     !process.env.AI_RATE_LIMIT_SECRET ||
     !isConfigured() ||
     !publicBusinessId()
@@ -109,14 +110,14 @@ export async function POST(request: Request) {
         { error: "Business information requires a human response. Please contact our team." },
         503,
       );
-    const response = await fetch("https://api.openai.com/v1/responses", {
+    const response = await fetch("https://api.groq.com/openai/v1/responses", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: process.env.OPENAI_MODEL,
+        model,
         max_output_tokens: 220,
         store: false,
         instructions: conciergeSystem,
@@ -138,7 +139,10 @@ export async function POST(request: Request) {
     if (!response.ok) {
       console.error("Concierge provider request failed", { status: response.status });
       return result(
-        { error: "Travel concierge is temporarily unavailable. Contact our team." },
+        {
+          error: "Travel concierge is temporarily unavailable. Contact our team.",
+          code: "provider_unavailable",
+        },
         503,
       );
     }

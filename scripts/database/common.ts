@@ -1,7 +1,50 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
-import { createHash } from "node:crypto";
+import { createHash, X509Certificate } from "node:crypto";
+import { constants, closeSync, fstatSync, lstatSync, openSync } from "node:fs";
+import { homedir } from "node:os";
+import { join } from "node:path";
+import { checkServerIdentity } from "node:tls";
 import { Client } from "pg";
 export const projectRef = "hzcupgjphowrzvrdffrf";
+const supabaseCaFingerprint =
+  "807025AD50D4ED219D2C9C7D299C004F824EB00CF7F65AFEF607D07B72E6CAFA";
+
+function verifiedSupabaseCa() {
+  const dataHome = process.env.XDG_DATA_HOME || join(homedir(), ".local", "share");
+  const certificateDirectory = join(dataHome, "hamdi-tourism", "certs");
+  const certificatePath = join(certificateDirectory, "supabase-prod-ca-2021.crt");
+  const directory = lstatSync(certificateDirectory);
+  const uid = process.getuid?.();
+  if (
+    !directory.isDirectory() ||
+    directory.isSymbolicLink() ||
+    (uid !== undefined && directory.uid !== uid) ||
+    (directory.mode & 0o077) !== 0
+  )
+    throw new Error("The verified Supabase CA directory has unsafe ownership or permissions.");
+
+  const descriptor = openSync(certificatePath, constants.O_RDONLY | constants.O_NOFOLLOW);
+  try {
+    const certificate = fstatSync(descriptor);
+    if (
+      !certificate.isFile() ||
+      (uid !== undefined && certificate.uid !== uid) ||
+      (certificate.mode & 0o077) !== 0
+    )
+      throw new Error("The verified Supabase CA file has unsafe ownership or permissions.");
+
+    const contents = readFileSync(descriptor);
+    const fingerprint = new X509Certificate(contents).fingerprint256
+      .replaceAll(":", "")
+      .toUpperCase();
+    if (fingerprint !== supabaseCaFingerprint)
+      throw new Error("The Supabase CA fingerprint does not match the pinned project certificate.");
+    return contents;
+  } finally {
+    closeSync(descriptor);
+  }
+}
+
 export function loadEnvironment() {
   if (existsSync(".env.local")) process.loadEnvFile(".env.local");
 }
@@ -33,7 +76,11 @@ export function verifiedDatabaseUrl() {
 export async function connect() {
   const client = new Client({
     connectionString: verifiedDatabaseUrl(),
-    ssl: { rejectUnauthorized: true },
+    ssl: {
+      ca: verifiedSupabaseCa(),
+      rejectUnauthorized: true,
+      checkServerIdentity,
+    },
     connectionTimeoutMillis: 15000,
     statement_timeout: 15000,
   });
@@ -45,14 +92,20 @@ export type Reference = { migrations: Record<string, string>; catalog: Catalog }
 export function reference(
   withDriver = process.argv.includes("--with-driver"),
   withPassenger = process.argv.includes("--with-passenger"),
+  withOwnerNotifications = process.argv.includes("--with-owner-notifications"),
+  withUnpricedEnquiries = process.argv.includes("--with-unpriced-enquiries"),
 ) {
   const result = JSON.parse(
     readFileSync(
-      withPassenger
-        ? "supabase/schema-reference-passenger.json"
-        : withDriver
-          ? "supabase/schema-reference-driver.json"
-          : "supabase/schema-reference.json",
+      withUnpricedEnquiries
+        ? "supabase/schema-reference-unpriced-enquiries.json"
+        : withOwnerNotifications
+          ? "supabase/schema-reference-owner-notifications.json"
+        : withPassenger
+          ? "supabase/schema-reference-passenger.json"
+          : withDriver
+            ? "supabase/schema-reference-driver.json"
+            : "supabase/schema-reference.json",
       "utf8",
     ),
   ) as Reference;
@@ -118,9 +171,11 @@ export async function audit(
   client: Client,
   withDriver = process.argv.includes("--with-driver"),
   withPassenger = process.argv.includes("--with-passenger"),
+  withOwnerNotifications = process.argv.includes("--with-owner-notifications"),
+  withUnpricedEnquiries = process.argv.includes("--with-unpriced-enquiries"),
 ) {
   const mismatches = compareCatalog(
-    reference(withDriver, withPassenger).catalog,
+    reference(withDriver, withPassenger, withOwnerNotifications, withUnpricedEnquiries).catalog,
     await catalog(client),
   );
   if (mismatches.length) {
@@ -144,7 +199,7 @@ export async function audit(
     [["bookings", "drivers", "vehicles", "booking_enquiries"]],
   );
   if (realtime.rowCount !== 4) throw new Error("Realtime publication requires review.");
-  if (withDriver || withPassenger) {
+  if (withDriver || withPassenger || withOwnerNotifications || withUnpricedEnquiries) {
     const cron = await client.query("select to_regclass('cron.job') is not null as exists");
     if (!cron.rows[0].exists) throw new Error("Tracking retention worker requires configuration.");
     const job = await client.query(
@@ -153,7 +208,7 @@ export async function audit(
     if (job.rowCount !== 1) throw new Error("Tracking retention worker requires configuration.");
   }
   console.log(
-    `PASS: ${projectRef} schema matches ${Object.keys(reference(withDriver, withPassenger).catalog).length} expected catalog objects; private storage and Realtime verified.`,
+    `PASS: ${projectRef} schema matches ${Object.keys(reference(withDriver, withPassenger, withOwnerNotifications).catalog).length} expected catalog objects; private storage and Realtime verified.`,
   );
 }
 export function reportError() {

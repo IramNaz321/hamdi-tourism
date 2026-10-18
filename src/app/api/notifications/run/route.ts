@@ -2,7 +2,14 @@ import { NextResponse } from "next/server";
 import { timingSafeEqual } from "node:crypto";
 import { createServiceClient } from "@/lib/supabase/admin";
 import { siteOrigin } from "@/lib/auth";
-import { notificationSubject, notificationText } from "@/lib/notification-adapter";
+import {
+  notificationSubject,
+  notificationText,
+  ownerBookingNotificationRecipient,
+  ownerBookingNotificationSubject,
+  ownerBookingNotificationText,
+  parseOwnerBookingNotification,
+} from "@/lib/notification-adapter";
 export const runtime = "nodejs";
 export async function POST(request: Request) {
   if (
@@ -21,8 +28,10 @@ export async function POST(request: Request) {
     const service = createServiceClient();
     const { data, error } = await service.rpc("notification_claim");
     if (error) throw new Error("Claim");
-    let accepted = 0;
+    let accepted = 0,
+      processed = 0;
     for (const row of data ?? []) {
+      processed++;
       let providerId: string | null = null;
       let ok = false;
       try {
@@ -56,7 +65,45 @@ export async function POST(request: Request) {
       if (saveError) throw new Error("Result");
       if (ok) accepted++;
     }
-    return NextResponse.json({ processed: data?.length ?? 0, accepted });
+    const { data: ownerData, error: ownerError } = await service.rpc("owner_notification_claim");
+    if (ownerError) throw new Error("Owner claim");
+    const ownerRows = (ownerData ?? []).map(parseOwnerBookingNotification);
+    for (const row of ownerRows) {
+      processed++;
+      let providerId: string | null = null;
+      let ok = false;
+      try {
+        const response = await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+            "Content-Type": "application/json",
+            "Idempotency-Key": `hamdi-owner-booking:${row.id}`,
+          },
+          body: JSON.stringify({
+            from: process.env.NOTIFICATION_FROM,
+            to: [ownerBookingNotificationRecipient],
+            subject: ownerBookingNotificationSubject(row.reference),
+            text: ownerBookingNotificationText(row),
+          }),
+          signal: AbortSignal.timeout(10000),
+        });
+        const result = await response.json();
+        providerId = typeof result.id === "string" ? result.id : null;
+        ok = response.ok && !!providerId;
+      } catch {
+        ok = false;
+      }
+      const { error: saveError } = await service.rpc("owner_notification_result", {
+        notification: row.booking_id,
+        provider_message: providerId,
+        was_accepted: ok,
+        lease: row.lease,
+      });
+      if (saveError) throw new Error("Owner result");
+      if (ok) accepted++;
+    }
+    return NextResponse.json({ processed, accepted });
   } catch {
     return NextResponse.json(
       { error: "Notification processing unavailable; retry required" },

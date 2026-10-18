@@ -291,7 +291,7 @@ async function apiAudit() {
       });
       if (schemaResponse.ok) {
         const schema = await schemaResponse.json();
-        const expectedNames = Object.keys(reference(true, true).catalog)
+        const expectedNames = Object.keys(reference(true, true, true).catalog)
           .filter((key) => key.startsWith("table:"))
           .map((key) => key.slice(6));
         const exposed = Object.keys(schema.definitions ?? {}).filter((name) =>
@@ -336,6 +336,7 @@ async function main() {
     { version: 7, reference: reference(false, false) },
     { version: 8, reference: reference(true, false) },
     { version: 9, reference: reference(true, true) },
+    { version: 10, reference: reference(true, true, true) },
   ];
   const origin = configuredSiteOrigin(process.env);
   report("configuration", {

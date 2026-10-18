@@ -11,7 +11,8 @@ import {
 } from "@/lib/booking-validation";
 import { siteOrigin } from "@/lib/auth";
 import { publishedFleetCapacityError } from "@/lib/fleet-capacity";
-export type EnquiryState = { error?: string; quote?: Quote; reference?: string };
+import { headers } from "next/headers";
+export type EnquiryState = { error?: string; quote?: Quote; reference?: string; manual?: boolean };
 const safeErrors = [
   "Online enquiries are unavailable",
   "Check your journey details",
@@ -89,7 +90,13 @@ export async function quoteTransfer(_: EnquiryState, form: FormData): Promise<En
       transfer_kind: journey.transfer_type,
       extra_ids: journey.extras,
     });
-    if (error) return { error: publicError(error.message) };
+    if (error)
+      return {
+        error: publicError(error.message),
+        manual:
+          error.message === "A quote is not available for this route and category" ||
+          error.message === "Return pricing is not available for this route",
+      };
     return { quote: data as Quote };
   } catch {
     return { error: "Online quotes are currently unavailable. Please contact our team." };
@@ -113,10 +120,14 @@ export async function submitEnquiry(_: EnquiryState, form: FormData): Promise<En
         dropoff_address: z.string().trim().max(500),
         token: z.string().min(1).max(2048),
         expected: z
-          .string()
-          .regex(/^\d+(\.\d{1,2})?$/)
-          .transform(Number)
-          .pipe(z.number().finite().min(0).max(1000000000)),
+          .union([
+            z.literal("").transform(() => null),
+            z
+              .string()
+              .regex(/^\d+(\.\d{1,2})?$/)
+              .transform(Number)
+              .pipe(z.number().finite().min(0).max(1000000000)),
+          ]),
       })
       .parse({
         name: form.get("name"),
@@ -126,7 +137,7 @@ export async function submitEnquiry(_: EnquiryState, form: FormData): Promise<En
         pickup_address: form.get("pickup_address") ?? "",
         dropoff_address: form.get("dropoff_address") ?? "",
         token: form.get("cf-turnstile-response"),
-        expected: form.get("expected_total"),
+        expected: form.get("expected_total") ?? "",
       });
     contact.notes = formatJourneyNotes(
       contact.notes,
@@ -144,9 +155,14 @@ export async function submitEnquiry(_: EnquiryState, form: FormData): Promise<En
     };
   }
   try {
+    const requestHeaders = await headers();
+    if (requestHeaders.get("origin") !== siteOrigin())
+      return { error: "This request could not be verified. Refresh and try again." };
     const supabase = await createClient();
-    const vehicleError = await publishedVehicleError(supabase, journey);
-    if (vehicleError) return { error: vehicleError };
+    if (contact.expected !== null) {
+      const vehicleError = await publishedVehicleError(supabase, journey);
+      if (vehicleError) return { error: vehicleError };
+    }
     const response = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -168,6 +184,28 @@ export async function submitEnquiry(_: EnquiryState, form: FormData): Promise<En
         error: "The security check expired or could not be verified. Please complete it again.",
       };
     const service = createServiceClient();
+    if (contact.expected === null) {
+      const { data, error } = await service.rpc("submit_unpriced_transfer_enquiry", {
+        business_id: publicBusinessId(),
+        customer_name: contact.name,
+        customer_email: contact.email,
+        customer_phone: contact.phone,
+        pickup_id: journey.pickup_id,
+        dropoff_id: journey.dropoff_id,
+        pickup_address: contact.pickup_address,
+        dropoff_address: contact.dropoff_address,
+        pickup_time: journey.pickup_at,
+        return_time: journey.return_at,
+        passenger_count: journey.passengers,
+        luggage_count: journey.luggage,
+        category: journey.category,
+        transfer_kind: journey.transfer_type,
+        flight: journey.flight,
+        customer_notes: contact.notes,
+      });
+      if (error) return { error: publicError(error.message) };
+      return { reference: String(data), manual: true };
+    }
     const { data, error } = await service.rpc("submit_booking_enquiry", {
       business_id: publicBusinessId(),
       customer_name: contact.name,

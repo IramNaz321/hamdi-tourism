@@ -31,18 +31,20 @@ No provider has been enabled by this task.
 ## Database release gate
 
 - Review the existing supplied schema evidence and `docs/HOSTED-REPAIR-REVIEW.md`.
-  Do not replay 001–007. SQL proposals 010 → 020 → 030 are separate approval stages,
-  not auto-run deployment scripts. Settings insertion is idempotent; Driver/Passenger
-  stages refuse partial/replayed installation instead of hiding unknown schema drift.
-- Finish catalog/function/grant/Storage/Realtime/cron verification through an authorized
-  database execution channel. Direct PostgreSQL is blocked and no such integration
-  is available here. Do not ask the client to repeatedly copy inspection SQL as an
-  application workaround. No production mutation is authorized by passing local tests.
-- `npm run test:repair` rehearses the approved-source proposals only in disposable
-  PostgreSQL. It checks settings/idempotency, missing-organization/retention/order/
-  replay refusals, installs the guarded Passenger candidate after original 008, and
-  runs 195 local RLS/workflow assertions. The local image has no pg_cron: the production
-  Driver preflight must refuse that condition, and a live retention worker is untested.
+  Keep historical migrations 001–009 immutable; the combined
+  `040-production-infrastructure.sql` is superseded and must not be executed.
+  The guarded sequence is ledger-only 001–007 baseline, then separately approved
+  transactional 008 Driver/GPS, 009 Passenger, and 010 owner-notification migrations.
+  Details, pinned hashes, backup evidence and postflight checks are in
+  `docs/GPS-PASSENGER-PRODUCTION-UNBLOCK.md`.
+- Every stage requires its matching read-only catalog/history/Owner/recovery
+  preflight and the exact project-plus-hash approval. Failure rolls back that
+  individual stage; no automatic down migration or production fixture is approved.
+  Passing local tests alone authorizes no production mutation.
+- `npm run test:repair` rehearses guarded 008/009 candidates and the additive 010
+  migration only in disposable PostgreSQL. It runs 210 local RLS/workflow
+  assertions; the isolated test image does not verify production pg_cron, real
+  provider delivery or live Realtime.
 - `npm run check:handover` checks local binding names/shapes and migration integrity,
   never certifying hosted acceptance. Run HTTPS-only `check:supabase` where permitted;
   do not repeat blocked PostgreSQL attempts without a meaningful access change.

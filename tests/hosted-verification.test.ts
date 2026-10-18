@@ -15,6 +15,7 @@ const stages: Stage[] = [
   { version: 7, reference: reference(false, false) },
   { version: 8, reference: reference(true, false) },
   { version: 9, reference: reference(true, true) },
+  { version: 10, reference: reference(true, true, true) },
 ];
 test("seventeen tables and absent ledger identify a candidate baseline, never an empty database", () => {
   const comparisons = compareStages(stages[0].reference.catalog, stages);
@@ -25,19 +26,28 @@ test("seventeen tables and absent ledger identify a candidate baseline, never an
   assert.deepEqual(plan.pending, [
     "202610120008_driver_tracking.sql",
     "202610120009_passenger_platform.sql",
+    "202610120010_owner_booking_notifications.sql",
   ]);
   assert.ok(plan.reason.includes("never replay"));
 });
 test("matching driver schema needs only passenger SQL and ledger-only recording if history is absent", () => {
   const plan = migrationPlan(compareStages(stages[1].reference.catalog, stages), null, stages);
   assert.equal(plan.schemaVersion, 8);
-  assert.deepEqual(plan.pending, ["202610120009_passenger_platform.sql"]);
+  assert.deepEqual(plan.pending, [
+    "202610120009_passenger_platform.sql",
+    "202610120010_owner_booking_notifications.sql",
+  ]);
   assert.equal(plan.unrecorded?.length, 8);
 });
-test("matching complete schema never repeats 008 or 009 even without migration history", () => {
+test("matching passenger schema plans only owner notification migration and never replay", () => {
   const plan = migrationPlan(compareStages(stages[2].reference.catalog, stages), null, stages);
-  assert.deepEqual(plan.pending, []);
+  assert.deepEqual(plan.pending, ["202610120010_owner_booking_notifications.sql"]);
   assert.equal(plan.unrecorded?.length, 9);
+});
+test("matching complete schema never repeats an installed migration even without history", () => {
+  const plan = migrationPlan(compareStages(stages[3].reference.catalog, stages), null, stages);
+  assert.deepEqual(plan.pending, []);
+  assert.equal(plan.unrecorded?.length, 10);
 });
 test("unchanged table count cannot disguise schema drift or partial driver installation", () => {
   const actual = structuredClone(stages[0].reference.catalog);
@@ -56,8 +66,8 @@ test("ledger entries for missing schema and unknown versions block deployment pl
 });
 test("fully recorded complete schema requires launch acceptance rather than more SQL", () => {
   const plan = migrationPlan(
-    compareStages(stages[2].reference.catalog, stages),
-    Object.keys(stages[2].reference.migrations).map((f) => f.split("_")[0]),
+    compareStages(stages[3].reference.catalog, stages),
+    Object.keys(stages[3].reference.migrations).map((f) => f.split("_")[0]),
     stages,
   );
   assert.equal(plan.unrecorded?.length, 0);

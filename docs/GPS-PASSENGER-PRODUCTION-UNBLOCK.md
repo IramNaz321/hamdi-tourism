@@ -1,124 +1,109 @@
-# GPS and Passenger production unblock — 17 October 2026
+# GPS, Passenger and notification production unblock — 17 October 2026
 
-**READY for SQL review; BLOCKED for production execution and live acceptance.**
-No hosted migrations, business records, Owner credentials, staff permissions or
-application environment values were changed.
+**Recovery evidence: PASS. Production migration approval: NOT GRANTED.**
+No production schema, ledger, settings, booking, email or deployment change was
+made.
 
-## Fresh read-only production findings
+## Verified production baseline
 
-Target project `hzcupgjphowrzvrdffrf`; organization
-`9f53250d-5e05-409d-9182-3d45448aa399` matches HAMDI TOURISM.
-The HTTPS Management read-only endpoint queried PostgreSQL catalogs directly.
+The prior TLS-verified, read-only Supabase audit for project
+`hzcupgjphowrzvrdffrf` matched the 001–007 schema (83 reviewed catalog objects,
+17 public tables with RLS); the CLI migration ledger was absent. The earlier
+audit found the 008 Driver/GPS objects and 009 Passenger objects were not
+installed. It also found `business_settings` has no row for the existing
+organization; no row or operational data should be seeded without approval.
+`verified_payments` already exists and must not be recreated.
 
-- 17 public tables, all RLS enabled; 001–007 catalog and all 14 security metadata
-  categories match the reference (zero differences).
-- `supabase_migrations.schema_migrations` does not exist. This is not an empty DB
-  and does not justify replaying 001–007 or fabricating history entries.
-- 008 is missing five tables: `driver_trip_progress`, `driver_trip_events`,
-  `trip_live_locations`, `trip_location_consent`, `passenger_tracking_access`.
-  Its Driver/GPS RPCs, supporting private functions and new policies are absent.
-- 009 is missing ten tables: `passenger_profiles`, `passenger_booking_accounts`,
-  `passenger_route_configuration`, `passenger_platform_settings`,
-  `passenger_quotes`, `passenger_cancellation_requests`, `payment_attempts`,
-  `payment_webhook_events`, `passenger_notification_outbox`, `concierge_usage`.
-  Its Passenger/operations RPCs and supporting functions/policies are absent.
-- `business_settings` exists but the target organization's row is absent.
-  `verified_payments` already exists and must not be recreated.
-- `realtime.messages` exists with RLS enabled, but
-  `private_tracking_notifications` is absent. The application uses private
-  `broadcast` channels plus authorized RPC snapshots, not raw GPS table streaming.
-- `pg_cron` is available/preloaded for database `postgres`, but the extension and
-  application retention job are not installed.
-- API exposed-schema configuration is not observable through this read-only SQL
-  session (`pgrst.db_schemas` is null). No API-exposure conclusion was inferred
-  from that null or from API error responses. Catalog absence is independently
-  established. Realtime WebSocket delivery remains untested against production.
-- Access is read-only. Recovery readiness and a maintenance window remain
-  unverified; no TLS/native PostgreSQL/backup troubleshooting was repeated.
+The previous `schema_access` discrepancy was in the disposable test shim:
+Supabase grants anon `USAGE` on `storage` and `realtime`, while the shim did not.
+The shim now models those provider schema grants. It does not grant anon access
+to `private` or change table, column, function or RLS permissions. The guarded
+references were regenerated from local disposable PostgreSQL and the repair
+rehearsal passed. A fresh production prerequisite comparison remains mandatory.
 
-## Exact files and dependency order
+The latest attempted read-only production baseline invocation exited with status
+1 and the repository's secret-safe wrapper returned only its generic failure
+message. It made no changes. Therefore this local preparation does not claim a
+fresh successful production preflight; do not apply any stage until its exact
+read-only guards pass.
 
-Original migrations (reference only):
+## Immutable, separately approved migration sequence
 
-1. `supabase/migrations/202610120008_driver_tracking.sql`
-2. `supabase/migrations/202610120009_passenger_platform.sql`
+Do not edit or replay migrations 001–009. In particular,
+`supabase/proposals/hosted-repair/040-production-infrastructure.sql` is
+**superseded**: its pinned hashes are stale and its Passenger body diverges from
+the current source. Never execute that combined file or merely update its hash.
+Use the individual SHA-256-pinned transactional runners:
 
-Use the guarded production artifact, **not** those raw migrations:
-`supabase/proposals/hosted-repair/040-production-infrastructure.sql`.
-It atomically combines:
+1. **Record the existing 001–007 baseline only.** `npm run db:baseline -- --apply
+   --approve hzcupgjphowrzvrdffrf:baseline` records seven ledger entries only
+   after the fresh schema audit reports an exact 001–007 match. It does not
+   replay historical migration SQL.
+2. **Install 008 Driver/GPS.** File:
+   `supabase/migrations/202610120008_driver_tracking.sql`; SHA-256
+   `b4224e941c97339f67da406dda898dcb7a3ea50f5b6b692e95c8c2eb339fe1e1`.
+   Approval target: `hzcupgjphowrzvrdffrf:driver-tracking:b4224e941c97`.
+3. **Install 009 Passenger.** File:
+   `supabase/migrations/202610120009_passenger_platform.sql`; unchanged SHA-256
+   `f19619e42e0ec5797afe782e21d45b0f1c6bbc59b1b1013cd76907aff5c2675c`.
+   Approval target: `hzcupgjphowrzvrdffrf:passenger-platform:f19619e42e0e`.
+4. **Install 010 Owner booking email outbox.** This is a new additive migration:
+   `supabase/migrations/202610120010_owner_booking_notifications.sql`; SHA-256
+   `1c06094e98ae593d3380f1bf1983b454fe6c530cd989c4c5589066f4ca4b52cf`.
+   Approval target:
+   `hzcupgjphowrzvrdffrf:owner-booking-notifications:1c06094e98ae`.
 
-1. `010-settings-candidate.sql`: only the missing unpublished settings row,
-   plus its existing audit-trigger event; no published fares/inventory/policies.
-2. `020-driver-candidate.sql`: 008 Driver assignment/progress, consent-based GPS,
-   private tracking policies/broadcast and retention job.
-3. `030-passenger-candidate.sql`: 009 Passenger ownership/quotes/bookings,
-   operations configuration and automatic authorized passenger tracking.
+Obtain approval for each exact stage separately. The driver and passenger
+migration runners require the exact prior ledger and catalog stage; the owner
+runner requires the exact nine-migration stage. Each runner wraps only its own
+DDL and ledger insertion in one transaction, rechecks schema/RLS/grants and the
+retention worker, and rolls back the whole stage on failure. Stop and inspect
+read-only if commit status is uncertain; never replay blindly. No automatic
+down migration is safe after commit. Preserve production records and use an
+approved forward repair if required.
 
-SHA-256:
-`d2a7dec797245e2b5348055142ae89a4c562ed4b7105eea0fcff7675565dd453`.
-`production-manifest.json` pins all sources. `npm run db:prepare-production`
-confirmed exact reproducibility; no regeneration or SQL edits were required.
+Migration 010 adds a private RLS-enabled outbox, an insert-only trigger for new
+genuine bookings, service-role claim/result/webhook RPCs and no public table
+grants. It does not backfill existing bookings, send mail during migration,
+change booking status or store passenger contact details. Each notification is
+idempotently keyed by booking at the provider; status becomes `delivered` only
+after the signed provider webhook confirms delivery.
 
-Do not execute the bundle and standalone candidates together. It guards against
-schema drift, replay, partial installation and unexpected record changes. It
-preserves all existing staff/Owner membership records and does not change Auth.
-It intentionally replaces reviewed Driver availability/dashboard functions and
-private tracking authorization to support the new modules. These changes are
-fingerprint-guarded, not broad permission grants or RLS bypasses.
+After each approved stage, run the read-only audit against that exact reference.
+After 008–010, verify the final 33-table catalog, RLS/ACL/RPC/index/policy
+fingerprints, private Storage and Realtime, and the active once-per-minute
+tracking-retention job. Real authenticated role workflows, private Realtime
+delivery and device GPS remain live acceptance gates. Do not run business
+acceptance tests against production without a separate written plan/approval.
 
-## SQL Editor route — only after separate approval and prerequisites
+## Existing backup and isolated restore evidence
 
-1. An authorized project operator confirms the existing recovery requirement and
-   approved maintenance window; this document does not waive them. Do not create
-   an additional account or grant Owner permissions to execute the repair.
-2. Open Supabase dashboard → project `hzcupgjphowrzvrdffrf` → SQL Editor → New
-   query. Select the authorized migration-capable database role. Confirm the
-   project reference in the dashboard; the file's organization guards alone are
-   not proof that the correct dashboard project is selected.
-3. Open the complete `040-production-infrastructure.sql`, copy all of it without
-   truncation, and verify the pinned hash. Obtain approval for this exact artifact
-   before selecting Run. Run the complete single transaction once; do not select
-   partial statements, prepend Owner SQL or replay baseline migrations.
-4. On any error, stop and return only the error text with credentials removed.
-   The transaction rolls back. If commit status is uncertain, inspect read-only;
-   do not rerun blindly. After a successful commit, a read-only operator runs
-   `npm run db:production-preflight -- --post-deploy` and verifies the exact final
-   catalog, ACLs/RLS, 32 public tables and one active successful retention job.
-5. If the catalog is correct but PostgREST still reports missing RPCs, check that
-   `public` is exposed in the project's Data API settings without exposing
-   `private`, `auth` or raw GPS tables. With authorization, refresh the schema
-   cache using `NOTIFY pgrst, 'reload schema';` and retest the existing grants.
-   API cache refresh is not a replacement for the missing schema.
-6. Verify private authenticated Realtime subscription for the assigned trip and
-   authorized Admin organization channel. Do not enable raw GPS Postgres Changes
-   as a workaround. A successful broadcast must trigger an ownership-checked
-   snapshot read. No public GPS payload or invented ETA is permitted.
+The existing encrypted archive
+`hamdi-tourism-20261017T100542Z-77865.dump.gpg` was decrypted directly into
+`pg_restore` stdin using its existing mode-600 local passphrase file. No
+plaintext archive or duplicate backup was created. On 17 October 2026,
+`pg_restore --exit-on-error --single-transaction --no-owner --no-privileges`
+completed against a throwaway `supabase/postgres:17.11.0.004` container using
+its isolated `supabase_admin` role. The catalog check found 17 public tables,
+including `bookings`, `staff_members` and `business_settings`. The container was
+removed; production was untouched.
 
-Full RPC inventory, recovery/lock requirements and post-commit recovery handling
-are in `PRODUCTION-DATABASE-DEPLOYMENT.md`. Hosted SQL execution is still not
-approved by this preparation task.
+This verifies the encrypted logical archive and an isolated transactional
+restore. It does not certify Supabase Auth/dashboard settings, Storage object
+bytes, PITR, or a restore on a separate hosted project. Confirm the current
+production recovery point and approved maintenance window before any write.
 
-## Validation actually completed
+## Owner email readiness and disposable verification
 
-`npm run test:production-repair` passed on disposable PostgreSQL 17 with genuine
-pg_cron. The exact bundle installs once; baseline drift/replay are refused;
-exceptions after 008 and after 009 roll back schema, settings/audit and cron
-extension/job. Existing fixture Auth, Owner/staff memberships and operational
-records retain identical fingerprints. The real retention worker executes.
-All **212 SQL assertions** pass, covering RLS/ownership, cross-passenger isolation,
-booking pricing/idempotency, assigned-driver handoff, cancellation, GPS consent,
-private tracking and terminal-trip revocation. No production acceptance or
-Owner credential test is claimed.
+The server-side worker has a fixed recipient (`hamdi.tourism@mail.ru`), Resend
+idempotency key, five-attempt lease/retry policy, minimal booking snapshot, and
+signed delivery-event recording. Credentials/configuration remain disabled in
+the current handover configuration; do not report the email as operational until
+Resend's sender domain, worker secret, webhook and feature flag are configured
+and tested. Migration 010 must be approved and installed first.
 
-## Remaining requirements for real operations
-
-After approved deployment: genuine published fleet/capacities, routes/fares,
-route duration/policies and Passenger platform configuration; authorized real
-Passenger/Driver/Admin sessions; HTTPS geolocation consent on actual devices;
-verified private Realtime delivery and stale/terminal GPS cleanup. Migration
-installation alone does not create availability, trips, driver assignments or
-GPS records. See `BOOKING-ACCEPTANCE-CHECKLIST.md` for real-client acceptance.
-
-**One next action:** arrange the authorized Supabase project operator's review of
-this exact SQL Editor package and obtain explicit execution approval conditional
-on the existing recovery/maintenance prerequisites. Do not run it yet.
+`npm run test:repair` passed against disposable PostgreSQL after the shim fix and
+owner-notification addition, reporting 210 local RLS/workflow assertions. The
+test covers new-booking queueing, passenger isolation, fixed minimum payload,
+service-only claim, transient retry and provider-confirmed delivery. It sends no
+real email and writes no production records.

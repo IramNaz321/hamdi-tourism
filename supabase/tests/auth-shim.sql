@@ -13,6 +13,7 @@ create table storage.buckets(id text primary key,name text,public boolean,file_s
 create table storage.objects(id uuid primary key default gen_random_uuid(),bucket_id text references storage.buckets(id),name text);
 alter table storage.objects enable row level security;
 grant usage on schema storage to authenticated;
+grant usage on schema storage to anon;
 grant select,insert,delete on storage.objects to authenticated;
 create publication supabase_realtime;
 
@@ -21,6 +22,7 @@ create schema realtime;
 create table realtime.messages(id bigint generated always as identity primary key,topic text,extension text,payload jsonb,event text,private boolean);
 alter table realtime.messages enable row level security;
 grant usage on schema realtime to authenticated;
+grant usage on schema realtime to anon;
 grant select,insert on realtime.messages to authenticated;
 create function realtime.topic() returns text language sql stable as $$select current_setting('realtime.topic',true)$$;
 create function realtime.send(payload jsonb,event text,topic text,private boolean default false) returns void language sql as $$insert into realtime.messages(topic,extension,payload,event,private) values(topic,'broadcast',payload,event,private)$$;

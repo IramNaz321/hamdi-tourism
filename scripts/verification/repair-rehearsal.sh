@@ -56,6 +56,12 @@ node -e 'const a=require("fs").readFileSync(process.argv[1],"utf8").trim().split
 node --import tsx scripts/verification/repair-reference.ts "$repair_tmp/inspection.json" "$repair_tmp/stage8.json" "$repair_tmp/stage9.json" "${HAMDI_WRITE_REPAIR_REFERENCE:-false}"
 # Remove only our throwaway fixture before legacy SQL tests seed their own isolated data.
 printf "%s\n" "delete from public.audit_events where organization_id='9f53250d-5e05-409d-9182-3d45448aa399'; delete from public.business_settings where organization_id='9f53250d-5e05-409d-9182-3d45448aa399'; delete from public.organizations where id='9f53250d-5e05-409d-9182-3d45448aa399';" | repair_psql >/dev/null
-cat supabase/tests/rls.sql supabase/tests/expanded.sql supabase/tests/driver-portal.sql supabase/tests/tracking.sql supabase/tests/passenger.sql | repair_psql > "$repair_tmp/rls.log" 2>&1 || { tail -25 "$repair_tmp/rls.log"; exit 1; }
+repair_psql < supabase/migrations/202610120010_owner_booking_notifications.sql > "$repair_tmp/owner-notification.log" 2>&1
+printf "%s\n" "select count(*)=33 and bool_and(c.relrowsecurity) from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='public' and c.relkind in ('r','p');" | repair_psql -At > "$repair_tmp/owner-notification-assertion"
+node -e 'if(require("fs").readFileSync(process.argv[1],"utf8").trim()!=="t")process.exit(1)' "$repair_tmp/owner-notification-assertion"
+repair_psql < supabase/migrations/202610120011_unpriced_transfer_enquiries.sql > "$repair_tmp/unpriced-enquiry.log" 2>&1
+printf "%s\n" "select count(*)=34 and bool_and(c.relrowsecurity) from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='public' and c.relkind in ('r','p');" | repair_psql -At > "$repair_tmp/unpriced-enquiry-assertion"
+node -e 'if(require("fs").readFileSync(process.argv[1],"utf8").trim()!=="t")process.exit(1)' "$repair_tmp/unpriced-enquiry-assertion"
+cat supabase/tests/rls.sql supabase/tests/expanded.sql supabase/tests/driver-portal.sql supabase/tests/tracking.sql supabase/tests/passenger.sql supabase/tests/unpriced-enquiries.sql | repair_psql > "$repair_tmp/rls.log" 2>&1 || { tail -25 "$repair_tmp/rls.log"; exit 1; }
 printf 'PASS: local repair inspection, settings idempotency, organization/retention/order/replay guards, 32 RLS-enabled tables.\n'
 printf 'PASS: %s local RLS/workflow assertions after guarded Passenger installation.\n' "$(node -e 'console.log((require("fs").readFileSync(process.argv[1],"utf8").match(/PASS:/g)||[]).length)' "$repair_tmp/rls.log")"

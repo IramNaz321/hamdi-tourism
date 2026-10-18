@@ -172,6 +172,8 @@ export function TravelConcierge({ bookingId }: { bookingId?: string } = {}) {
                     setError(
                       data.code === "configuration_required"
                         ? "Travel concierge is currently unavailable. AI assistance has not been enabled yet. Please contact our team or plan a transfer."
+                        : data.code === "provider_unavailable"
+                          ? "AI assistance is temporarily at capacity. Please use the published website information or contact our team; no price or availability can be confirmed here."
                         : response.status === 429
                           ? "Concierge limit reached. Please wait or contact our team."
                           : response.status === 403

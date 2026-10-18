@@ -88,15 +88,15 @@ test("concierge API fails closed on missing configuration, unauthorized bookings
     routeModule.exports,
   );
   const keys = [
-    "OPENAI_CONCIERGE_ENABLED",
-    "OPENAI_API_KEY",
-    "OPENAI_MODEL",
+    "GROQ_CONCIERGE_ENABLED",
+    "GROQ_API_KEY",
+    "GROQ_MODEL",
     "AI_RATE_LIMIT_SECRET",
   ];
   const previous = Object.fromEntries(keys.map((k) => [k, process.env[k]]));
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async (url, init) => {
-    assert.equal(url, "https://api.openai.com/v1/responses");
+    assert.equal(url, "https://api.groq.com/openai/v1/responses");
     state.calls++;
     state.aiBody = JSON.parse(String(init?.body));
     return new Response(
@@ -127,15 +127,15 @@ test("concierge API fails closed on missing configuration, unauthorized bookings
       }),
     );
   try {
-    process.env.OPENAI_CONCIERGE_ENABLED = "false";
+    process.env.GROQ_CONCIERGE_ENABLED = "false";
     const unavailable = await request();
     assert.equal(unavailable.status, 503);
     assert.equal((await unavailable.json()).code, "configuration_required");
     assert.equal(state.calls, 0);
     Object.assign(process.env, {
-      OPENAI_CONCIERGE_ENABLED: "true",
-      OPENAI_API_KEY: "offline-test-only",
-      OPENAI_MODEL: "offline-model",
+      GROQ_CONCIERGE_ENABLED: "true",
+      GROQ_API_KEY: "offline-test-only",
+      GROQ_MODEL: "offline-model",
       AI_RATE_LIMIT_SECRET: "offline-test-only",
     });
     state.origin = false;

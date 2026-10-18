@@ -46,9 +46,13 @@ async function main() {
       .filter(
         (n) =>
           n.endsWith(".sql") &&
-          (process.argv.includes("--with-passenger") ||
+          (base.includes(n) ||
             (process.argv.includes("--with-driver") && n.split("_")[0] <= "202610120008") ||
-            base.includes(n)),
+            (process.argv.includes("--with-passenger") && n.split("_")[0] <= "202610120009") ||
+            (process.argv.includes("--with-owner-notifications") &&
+              n.split("_")[0] <= "202610120010") ||
+            (process.argv.includes("--with-unpriced-enquiries") &&
+              n.split("_")[0] <= "202610120011")),
       )
       .sort()) {
       const content = readFileSync(`supabase/migrations/${file}`, "utf8");
@@ -63,11 +67,15 @@ async function main() {
       ),
     );
     writeFileSync(
-      process.argv.includes("--with-passenger")
-        ? "supabase/schema-reference-passenger.json"
-        : process.argv.includes("--with-driver")
-          ? "supabase/schema-reference-driver.json"
-          : "supabase/schema-reference.json",
+      process.argv.includes("--with-unpriced-enquiries")
+        ? "supabase/schema-reference-unpriced-enquiries.json"
+        : process.argv.includes("--with-owner-notifications")
+          ? "supabase/schema-reference-owner-notifications.json"
+        : process.argv.includes("--with-passenger")
+          ? "supabase/schema-reference-passenger.json"
+          : process.argv.includes("--with-driver")
+            ? "supabase/schema-reference-driver.json"
+            : "supabase/schema-reference.json",
       JSON.stringify({ migrations, catalog }, null, 2) + "\n",
     );
     console.log(

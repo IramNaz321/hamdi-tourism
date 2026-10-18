@@ -4,7 +4,7 @@ import { loadEnvironment, reference } from "./database/common";
 loadEnvironment();
 const findings = launchReadiness(process.env);
 try {
-  const schema = reference(true, true);
+  const schema = reference(true, true, true);
   console.log(
     JSON.stringify(
       { ...findings, reviewedMigrationFiles: Object.keys(schema.migrations).length },

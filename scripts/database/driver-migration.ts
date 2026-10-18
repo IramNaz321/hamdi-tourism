@@ -29,8 +29,12 @@ async function main() {
     const exists = await client.query(
       "select to_regclass('supabase_migrations.schema_migrations') is not null as exists",
     );
-    if (!exists.rows[0].exists)
+    if (!exists.rows[0].exists) {
+      console.error(
+        `BLOCKED: Production schema matches the reviewed 001–007 baseline, but its migration ledger is absent. Recording ${projectRef}:baseline requires separate explicit approval; no changes were made.`,
+      );
       throw new Error("Approved seven-migration baseline must be recorded first.");
+    }
     const versions = (
       await client.query(
         "select version from supabase_migrations.schema_migrations order by version",

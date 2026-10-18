@@ -2,6 +2,8 @@
 
 Target project: `hzcupgjphowrzvrdffrf`. The client reports applying migrations 001–007 manually and confirming a real Auth user. This is reported status, not hosted verification. No command auto-replays those migrations.
 
+For the read-only PostgreSQL 17 backup procedure, including Codespaces secret setup and coverage limitations, see [DATABASE-BACKUP.md](DATABASE-BACKUP.md). The backup is a logical dump and does not include Storage object bytes or project-level settings.
+
 ## Secure access
 
 Codespaces variables do not transfer to Codex. Enter `SUPABASE_DB_URL` in this environment's secure variable settings. Obtain the URI from the project's Connect dialog, selecting a reachable direct or session-pooler connection. Never paste it in chat or put it in tracked files. The guard checks the project hostname or project-qualified pooler username, the `postgres` database, and verified TLS. It rejects URI overrides. Custom DNS aliases are deliberately rejected. Pooler connection errors must be diagnosed without disabling certificate verification. Transactions enforce read-only mode for audits and plans.
@@ -20,7 +22,7 @@ After verified client identity/authority and concrete change approval, configure
 
 ## Future migrations and deployment
 
-Do not edit historical migration files. Prepare subsequent schema changes as new migrations, with rollback/risk notes and local database tests. The committed reference includes migration hashes and fails if those originals change. `npm run db:reference` regenerates expected metadata only in a disposable local PostgreSQL 17 container; never point it at Supabase. It contains no business records. New migrations require a reviewed reference strategy for the prior deployed state and final expected state before application; the current baseline handles the seven existing migrations only.
+Do not edit historical migration files. Prepare subsequent schema changes as new migrations, with rollback/risk notes and local database tests. The committed references include migration hashes and fail if those originals change. `npm run db:reference` regenerates expected metadata only in a disposable local PostgreSQL 17 container; `--with-owner-notifications` generates the complete ten-migration reference. Never point it at Supabase. New migrations require a reviewed reference strategy for the prior deployed state and final expected state before application; the original seven-migration baseline remains distinct from the 008–010 catalogs.
 
 Once the seven-migration baseline is verified and recorded, a trusted deployment runner can use a pinned Supabase CLI to link the confirmed project, inspect migration history and run `supabase db push --dry-run`. The dry-run is a proposal, not approval. Review pending file identities and backup/restore readiness before explicitly authorizing `supabase db push`. Do not invoke that command during startup, regular CI or a pull-request preview. No database migration or production deployment is triggered by merging application code.
 
@@ -50,7 +52,7 @@ Protected workflow choices include driver-plan and driver-apply once this workfl
 
 See [Phase 3 verification](PHASE-3-VERIFICATION.md). Original seven/eight catalogs remain distinct from `supabase/schema-reference-passenger.json`. The migration-008 review/approval is separate and must finish first. `npm run db:passenger-migration` is a read-only plan against the exact verified eight-migration catalog/history and actual confirmed Owner organization. After explicit reviewed project/hash authorization, `npm run db:passenger-migration -- --apply --approve <reviewed-target>` applies only 009 transactionally and records its ledger entry after full schema/retention checks.
 
-`npm run db:audit -- --with-passenger` audits the deployed nine-migration catalog. `npm run db:reference -- --with-passenger` generates the reference locally in disposable PostgreSQL. Protected workflow choices audit-driver/audit-passenger and passenger-plan/passenger-apply are available after workflow publication to the default branch. Never replay historical SQL, run test fixtures on hosted databases or dispatch apply without client approval.
+`npm run db:audit -- --with-passenger` audits the deployed nine-migration catalog. `npm run db:reference -- --with-passenger` generates that reference locally in disposable PostgreSQL. Owner email notifications are in separate immutable migration 010, with its own guarded runner (`npm run db:owner-notification-migration`) and complete catalog (`npm run db:audit -- --with-owner-notifications`). Never replay historical SQL, run test fixtures on hosted databases or dispatch apply without client approval.
 
 Booking enablement and genuine route durations/policies are configured by authorized staff at `/admin/passenger-platform`. Registration, live Stripe and email delivery remain separately opt-in with secure provider setup. Scheduled notification delivery requires an approved protected host scheduler calling the secret-authenticated POST endpoint; no n8n/workflow platform is required. Readiness depends on hosted acceptance, not a merged code branch.
 

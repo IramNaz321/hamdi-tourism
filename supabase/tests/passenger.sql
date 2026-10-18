@@ -40,6 +40,8 @@ select set_config('test.created',public.passenger_create_booking((current_settin
 select public.test_assert(jsonb_array_length(current_setting('test.created')::jsonb)=2,'return legs created atomically');
 select public.test_assert(public.passenger_create_booking((current_setting('test.quote')::jsonb->>'id')::uuid,'a8000000-0000-4000-8000-000000000001','Test instruction',true)=current_setting('test.created')::jsonb,'booking retry idempotent');
 select public.test_assert(jsonb_array_length(public.passenger_bookings('a0000000-0000-4000-8000-000000000001'))=2,'genuine created legs appear in own history');
+select public.test_reject($q$select * from public.owner_booking_notification_outbox$q$,array['42501'],'passengers cannot read owner notification details');
+select public.test_reject($q$select public.owner_notification_claim()$q$,array['42501'],'passengers cannot claim owner notifications');
 select set_config('test.trip',current_setting('test.created')::jsonb->0->>'id',true);
 select public.test_assert(public.passenger_booking_detail(current_setting('test.trip')::uuid)->>'status'='pending','passenger request starts pending without confirmation');
 select public.test_assert(public.passenger_booking_detail(current_setting('test.trip')::uuid)->>'driver' is null,'no automatic fictional driver assignment');
@@ -63,7 +65,9 @@ select public.test_assert(public.passenger_booking_detail(current_setting('test.
 set local request.jwt.claim.sub='a1000000-0000-4000-8000-000000000002';
 select public.test_assert(not private.can_track(current_setting('test.trip')::uuid),'other passenger cannot track confirmed trip');
 select public.test_reject($q$select public.tracking_snapshot(current_setting('test.trip')::uuid)$q$,array['42501'],'tracking RPC enforces identity');
-reset role;set local role service_role;
+reset role;
+select public.test_assert((select count(*)=2 and bool_and(reference ~ '^H[TE]-' and passengers=2) and count(*) filter(where pickup_name='Test pickup' and dropoff_name='Test destination' and flight_number='TEST')=1 and count(*) filter(where pickup_name='Test destination' and dropoff_name='Test pickup' and flight_number is null)=1 from public.owner_booking_notification_outbox where booking_id in ((current_setting('test.created')::jsonb->0->>'id')::uuid,(current_setting('test.created')::jsonb->1->>'id')::uuid)),'genuine booking insert queues minimal owner notification details');
+set local role service_role;
 select public.test_reject($q$select public.payment_reserve(current_setting('test.trip')::uuid,'a1000000-0000-4000-8000-000000000002')$q$,array['42501'],'trusted payment rejects wrong customer identity');
 select set_config('test.attempt',public.payment_reserve(current_setting('test.trip')::uuid,'a1000000-0000-4000-8000-000000000001')->>'id',true);
 select public.payment_attach(current_setting('test.attempt')::uuid,'cs_test_local');
@@ -80,6 +84,15 @@ select public.test_assert(jsonb_array_length(current_setting('test.claim')::json
 select public.notification_result((current_setting('test.claim')::jsonb->0->>'id')::uuid,'msg_test',true,(current_setting('test.claim')::jsonb->0->>'lease')::uuid);
 select public.test_assert(public.notification_delivered('msg_test','email.delivered'),'provider delivery evidence matched');
 select public.test_assert(not public.notification_delivered('unknown','email.delivered'),'unmatched delivery evidence requires retry');
+select set_config('test.owner_claim',public.owner_notification_claim()::text,true);
+select public.test_assert(jsonb_array_length(current_setting('test.owner_claim')::jsonb)=2,'owner worker claims genuine booking notices only');
+select public.test_assert(not (current_setting('test.owner_claim')::jsonb->0 ? 'email'),'owner claim contains no customer email');
+select public.owner_notification_result((current_setting('test.owner_claim')::jsonb->0->>'booking_id')::uuid,'owner_msg_test',true,(current_setting('test.owner_claim')::jsonb->0->>'lease')::uuid);
+select public.test_assert(public.owner_notification_delivered('owner_msg_test','email.delivered'),'owner email is marked delivered only by provider evidence');
+select public.owner_notification_result((current_setting('test.owner_claim')::jsonb->1->>'booking_id')::uuid,null,false,(current_setting('test.owner_claim')::jsonb->1->>'lease')::uuid);
+reset role;
+select public.test_assert((select status='queued' and provider_id is null from public.owner_booking_notification_outbox where booking_id=(current_setting('test.owner_claim')::jsonb->1->>'booking_id')::uuid),'transient owner email failure remains retryable without false delivery');
+set local role service_role;
 select public.test_assert(public.concierge_consume(repeat('a',64),'a0000000-0000-4000-8000-000000000001'),'persistent AI rate limiter consumes authorized server request');
 do $$begin for n in 1..9 loop perform public.concierge_consume(repeat('a',64),'a0000000-0000-4000-8000-000000000001');end loop;end$$;
 select public.test_assert(not public.concierge_consume(repeat('a',64),'a0000000-0000-4000-8000-000000000001'),'AI hourly user limit enforced');

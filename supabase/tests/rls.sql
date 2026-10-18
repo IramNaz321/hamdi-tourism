@@ -30,6 +30,19 @@ set local role authenticated;
 set local request.jwt.claim.sub = '20000000-0000-4000-8000-000000000001';
 select public.test_assert((select count(*) = 1 from public.customers), 'owner sees only own business records');
 select public.test_assert((select count(*) = 4 from public.staff_members), 'owner sees only own staff');
+insert into public.drivers(organization_id,name,phone,email,license_number,license_expiry,status,account_status)
+values ('10000000-0000-4000-8000-000000000001','Test-only driver','+971501234567','driver@example.test','TEST-LICENCE-001',current_date+30,'available','active');
+select public.test_assert((select name = 'Test-only driver' and email = 'driver@example.test' from public.drivers where license_number = 'TEST-LICENCE-001'), 'owner creates and reads a driver');
+select public.test_assert(public.driver_is_available((select id from public.drivers where license_number='TEST-LICENCE-001')), 'active driver with a current licence is available');
+update public.drivers set name='Updated test-only driver',phone='+971509876543' where license_number='TEST-LICENCE-001';
+select public.test_assert((select name='Updated test-only driver' and phone='+971509876543' from public.drivers where license_number='TEST-LICENCE-001'), 'owner updates driver details');
+update public.drivers set license_expiry=current_date-1 where license_number='TEST-LICENCE-001';
+select public.test_assert(not public.driver_is_available((select id from public.drivers where license_number='TEST-LICENCE-001')), 'expired licence prevents driver availability');
+update public.drivers set license_expiry=current_date+30,account_status='inactive' where license_number='TEST-LICENCE-001';
+select public.test_assert(not public.driver_is_available((select id from public.drivers where license_number='TEST-LICENCE-001')), 'inactive account prevents driver availability');
+update public.drivers set account_status='active',archived=true where license_number='TEST-LICENCE-001';
+select public.test_assert((select archived from public.drivers where license_number='TEST-LICENCE-001') and not public.driver_is_available((select id from public.drivers where license_number='TEST-LICENCE-001')), 'owner archives driver without losing its record');
+select public.test_reject($q$delete from public.drivers where license_number='TEST-LICENCE-001'$q$,array['42501'],'driver hard delete denied to preserve business history');
 select public.test_reject($q$insert into public.customers(organization_id,name,phone) values ('10000000-0000-4000-8000-000000000002','Test forged','test')$q$, array['42501'], 'cross-tenant insert denied');
 select public.test_reject($q$update public.staff_members set role = 'owner' where role = 'viewer'$q$,array['42501'],'direct role modification denied');
 select public.test_reject($q$select public.set_staff_access('20000000-0000-4000-8000-000000000001','viewer',true)$q$,array['P0001'],'last owner demotion denied');
@@ -45,6 +58,8 @@ set local request.jwt.claim.sub = '20000000-0000-4000-8000-000000000004';
 select public.test_assert((select count(*) = 1 from public.staff_members),'dispatcher cannot list staff');
 select public.test_reject($q$select public.reserve_staff_invitation('unauthorized@example.test','Unauthorized','manager')$q$,array['P0001'],'dispatcher cannot invite');
 select public.test_reject($q$insert into public.drivers(organization_id,name,phone,license_number,status) values ('10000000-0000-4000-8000-000000000001','Test','test','test','available')$q$,array['42501'],'dispatcher cannot create drivers');
+with changed as (update public.drivers set name='Unauthorized edit' where license_number='TEST-LICENCE-001' returning id)
+select public.test_assert((select count(*)=0 from changed),'dispatcher cannot update drivers');
 insert into public.bookings(id,organization_id,customer_id,pickup_location_id,dropoff_location_id,pickup_at,end_at,vehicle_category,luggage,passengers,status,price_aed,payment_status) values
 ('50000000-0000-4000-8000-000000000001','10000000-0000-4000-8000-000000000001','30000000-0000-4000-8000-000000000001','40000000-0000-4000-8000-000000000001','40000000-0000-4000-8000-000000000002',now()+interval '1 day',now()+interval '1 day 1 hour','sedan',0,2,'pending',100,'unpaid');
 select public.test_assert((select count(*) = 1 from public.bookings),'dispatcher creates booking');

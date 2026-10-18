@@ -50,6 +50,11 @@ New additive `202610120009_passenger_platform.sql` adds passenger profiles/booki
 
 Original 001–008, the old driver proposal and the original seven/eight reference catalogs are unchanged. Migration 009 was applied only to disposable local PostgreSQL. The separate `schema-reference-passenger.json` records nine migrations. `npm run db:passenger-migration` is a read-only plan; apply requires the exact reviewed project-plus-migration-hash approval, verified eight-migration catalog/history, real active confirmed Owner and existing tracking retention job. Only 009 executes in a transaction with post-schema audit and ledger recording. The guarded migration-008 workflow remains separately approved and is **not automatically run**.
 
+Owner booking email notification uses a separate additive migration 010 so the
+reviewed 009 source and hash stay unchanged. See
+`GPS-PASSENGER-PRODUCTION-UNBLOCK.md` for its owner-only outbox, exact approval
+target, provider configuration gates and isolated SQL-test evidence.
+
 Use `npm run db:audit -- --with-passenger` after an approved nine-migration rollout. GitHub workflow supports explicit audit-driver/audit-passenger and passenger-plan/passenger-apply choices after the workflow reaches the default branch. An empty historical migration ledger is not authority to replay SQL. Hosted schema/user/organization state is still unknown; the client-reported original seven migrations are not a verified catalog observation.
 
 ## 7. Security and permissions evidence

@@ -25,11 +25,19 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid provider signature" }, { status: 400 });
   }
   try {
-    const { data, error } = await createServiceClient().rpc("notification_delivered", {
+    const service = createServiceClient();
+    const { data, error } = await service.rpc("notification_delivered", {
       provider_message: event.data.email_id,
       event_type: event.type,
     });
-    if (error || data !== true) throw new Error("Store");
+    if (error) throw new Error("Store");
+    if (data !== true) {
+      const ownerResult = await service.rpc("owner_notification_delivered", {
+        provider_message: event.data.email_id,
+        event_type: event.type,
+      });
+      if (ownerResult.error || ownerResult.data !== true) throw new Error("Store");
+    }
     return NextResponse.json({ received: true });
   } catch {
     return NextResponse.json(

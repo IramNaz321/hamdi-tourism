@@ -35,6 +35,8 @@ export function TransferEnquiry({
   const [captchaError, setCaptchaError] = useState("");
   const captcha = useRef<HTMLDivElement>(null);
   const quote = dirty || quoting ? undefined : quoteState.quote;
+  const manualEnquiry = !dirty && !quoting && quoteState.manual;
+  const showContactForm = !!quote || manualEnquiry;
   const categories = vehicleCategories.filter((item) =>
     fleet.some((vehicle) => vehicle.category === item.code),
   );
@@ -48,7 +50,7 @@ export function TransferEnquiry({
     ...selectedVehicles.map((vehicle) => vehicle.luggage_capacity ?? 0),
   );
   useEffect(() => {
-    if (!quote || !captchaReady || !captcha.current || !canSubmit) return;
+    if (!showContactForm || !captchaReady || !captcha.current || !canSubmit) return;
     const api = (window as unknown as { turnstile?: TurnstileAPI }).turnstile;
     if (!api) return;
     const id = api.render(captcha.current, {
@@ -69,7 +71,7 @@ export function TransferEnquiry({
       api.remove(id);
       setToken("");
     };
-  }, [quote, captchaReady, canSubmit, submitState]);
+  }, [showContactForm, captchaReady, canSubmit, submitState]);
   if (submitState.reference)
     return (
       <div className="panel p-8 text-center" role="status">
@@ -77,6 +79,7 @@ export function TransferEnquiry({
         <h2 className="text-2xl font-semibold">Your enquiry has been received</h2>
         <p className="text-muted mt-4">
           Reference: {submitState.reference}. Our team will review availability and contact you.
+          {submitState.manual ? " No instant price was available; your request is for a manual quote." : ""}{" "}
           Your transfer is not confirmed yet.
         </p>
         <button type="button" className="button mt-6" onClick={() => window.location.reload()}>
@@ -268,23 +271,35 @@ export function TransferEnquiry({
           Journey details changed. Request a fresh quote before submitting.
         </p>
       )}
-      {quote && (
+      {showContactForm && (
         <section className="mt-7 pt-7 border-t border-stone-200">
-          <div className="flex flex-wrap gap-4 justify-between">
-            <div>
-              <h3 className="text-lg font-semibold">Your route quote</h3>
-              <p className="text-xs text-muted mt-2">
-                Base fare {money(Number(quote.base_fare))} · Additional charges{" "}
-                {money(Number(quote.additional_charges))} per leg. Optional extras included where
-                selected.
+          {quote ? (
+            <>
+              <div className="flex flex-wrap gap-4 justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold">Your route quote</h3>
+                  <p className="text-xs text-muted mt-2">
+                    Base fare {money(Number(quote.base_fare))} · Additional charges{" "}
+                    {money(Number(quote.additional_charges))} per leg. Optional extras included where
+                    selected.
+                  </p>
+                </div>
+                <p className="text-3xl font-semibold">{money(Number(quote.total_aed))}</p>
+              </div>
+              <p className="text-sm text-muted mt-3">
+                This is a route quote, subject to availability and your confirmed journey details.
+              </p>
+              <input type="hidden" name="expected_total" value={quote.total_aed} />
+            </>
+          ) : (
+            <div className="notice">
+              <h3 className="font-semibold">A manual quote is needed</h3>
+              <p className="text-sm mt-2">
+                No published fare is available for this route or vehicle type. Send your request
+                and our team will review it. No price or availability is promised.
               </p>
             </div>
-            <p className="text-3xl font-semibold">{money(Number(quote.total_aed))}</p>
-          </div>
-          <p className="text-sm text-muted mt-3">
-            This is a route quote, subject to availability and your confirmed journey details.
-          </p>
-          <input type="hidden" name="expected_total" value={quote.total_aed} />
+          )}
           {!canSubmit ? (
             <p className="notice mt-5">
               Please contact our team with these journey details to continue your enquiry.
@@ -325,7 +340,11 @@ export function TransferEnquiry({
                 No payment is collected here.
               </p>
               <Button formAction={submitAction} disabled={sending || !token} className="mt-5">
-                {sending ? "Sending…" : "Send transfer enquiry"}
+                {sending
+                  ? "Sending…"
+                  : manualEnquiry
+                    ? "Request a manual quote"
+                    : "Send transfer enquiry"}
                 <ArrowRight />
               </Button>
             </>

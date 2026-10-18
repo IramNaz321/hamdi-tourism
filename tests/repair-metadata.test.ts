@@ -49,3 +49,17 @@ test("trusted server-role extras do not relax anonymous or authenticated compari
   data.function_fingerprints[0].anon_execute = !data.function_fingerprints[0].anon_execute;
   assert.deepEqual(repairMetadataDifferences(data, expected), ["function_fingerprints"]);
 });
+
+test("Supabase provider schema access is permitted without exposing private schema", () => {
+  const data = fixture();
+  data.schema_access = [
+    { schema: "private", anon_usage: false, authenticated_usage: true },
+    { schema: "public", anon_usage: true, authenticated_usage: true },
+    { schema: "realtime", anon_usage: true, authenticated_usage: true },
+    { schema: "storage", anon_usage: true, authenticated_usage: true },
+  ];
+  const expected = repairMetadataHashes(data);
+  assert.deepEqual(repairMetadataDifferences(data, expected), []);
+  data.schema_access[0].anon_usage = true;
+  assert.deepEqual(repairMetadataDifferences(data, expected), ["schema_access"]);
+});

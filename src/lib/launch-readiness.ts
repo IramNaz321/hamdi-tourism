@@ -29,8 +29,11 @@ export function launchReadiness(env: Record<string, string | undefined>) {
         present("NEXT_PUBLIC_TURNSTILE_SITE_KEY", "TURNSTILE_SECRET_KEY"),
       roadRouting: env.ROUTING_ENABLED === "true" && present("ORS_API_KEY"),
       concierge:
-        env.OPENAI_CONCIERGE_ENABLED === "true" &&
-        present("OPENAI_API_KEY", "OPENAI_MODEL", "AI_RATE_LIMIT_SECRET"),
+        env.GROQ_CONCIERGE_ENABLED === "true" &&
+        present("GROQ_API_KEY", "AI_RATE_LIMIT_SECRET") &&
+        /^[a-zA-Z0-9._/-]{1,100}$/.test(
+          env.GROQ_MODEL?.trim() || "llama-3.3-70b-versatile",
+        ),
       payments:
         env.STRIPE_LIVE_PAYMENTS_APPROVED === "true" &&
         present("STRIPE_SECRET_KEY", "STRIPE_WEBHOOK_SECRET"),

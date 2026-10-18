@@ -4,7 +4,9 @@
 -- Sources: supabase/proposals/hosted-repair/010-settings-candidate.sql sha256=9da4b33d2feece8e9c5b379aee2bde0bcf2d71401cbc2cf95c9f547e0e9e0776
 -- supabase/proposals/hosted-repair/020-driver-candidate.sql sha256=b0648e7dfa253a5e72f577fe55560daf67fd689c718717df45389f6282762d7e
 -- supabase/proposals/hosted-repair/030-passenger-candidate.sql sha256=d9e6e23dcf414f67efb1ff78cdcadc67b3e5a421e0d577dc9dcb036a319b94eb
-BEGIN;
+-- SUPERSEDED / DO NOT EXECUTE: pinned migration hashes are stale and the Passenger section diverges from its immutable source.
+-- Use the separately reviewed, SHA-256-guarded migrations 008, 009 and 010 instead.
+begin;
 SET LOCAL lock_timeout = '5s';
 SET LOCAL statement_timeout = '120s';
 SET LOCAL standard_conforming_strings = on;

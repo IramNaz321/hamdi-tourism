@@ -26,9 +26,11 @@ const links = [
   { href: "/admin/routes", label: "Routes", icon: Route },
   { href: "/admin/pricing_extras", label: "Optional extras", icon: Route },
   { href: "/admin/enquiries", label: "Transfer enquiries", icon: Inbox },
+  { href: "/admin/manual-enquiries", label: "Manual quote requests", icon: Inbox },
   { href: "/admin/operations", label: "Live Operations", icon: Radio },
   { href: "/admin/reports", label: "Reports", icon: ChartColumn },
   { href: "/admin/settings", label: "Business Settings", icon: Settings },
+  { href: "/admin/pricing-review", label: "Fare review", icon: Route },
   { href: "/admin/staff", label: "Staff & access", icon: ShieldCheck },
 ];
 export function AdminNav({ owner }: { owner: boolean }) {
@@ -36,7 +38,11 @@ export function AdminNav({ owner }: { owner: boolean }) {
   return (
     <nav aria-label="Admin navigation" className="flex lg:flex-col gap-1 overflow-x-auto py-2">
       {links
-        .filter((link) => owner || !["/admin/staff", "/admin/settings"].includes(link.href))
+        .filter(
+          (link) =>
+            owner ||
+            !["/admin/staff", "/admin/settings", "/admin/pricing-review"].includes(link.href),
+        )
         .map(({ href, label, icon: Icon }) => {
           const active = href === "/admin" ? pathname === href : pathname.startsWith(href);
           return (

@@ -1,5 +1,5 @@
 import { compareCatalog, type Catalog, type Reference } from "../database/common";
-export type Stage = { version: 7 | 8 | 9; reference: Reference };
+export type Stage = { version: 7 | 8 | 9 | 10; reference: Reference };
 /** Full definitions/policies must match. Counts and a missing ledger never authorize SQL replay. */
 export function compareStages(actual: Catalog, stages: Stage[]) {
   return stages.map(({ version, reference }) => ({
@@ -35,7 +35,10 @@ export function migrationPlan(
       pending: [] as string[],
     };
   const unrecorded = versions.filter((version) => !ledger?.includes(version));
-  const pending = Object.keys(stages.find((stage) => stage.version === 9)!.reference.migrations)
+  const finalReference = stages.reduce((latest, stage) =>
+    stage.version > latest.version ? stage : latest,
+  ).reference;
+  const pending = Object.keys(finalReference.migrations)
     .filter((file) => !Object.hasOwn(current.reference.migrations, file))
     .sort();
   return {
