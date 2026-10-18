@@ -84,7 +84,6 @@ If Git reports a conflict, stop; do not reset or overwrite local work. Database
 migration execution, real booking/email tests, fare publication and deployment
 remain separate approval decisions.
 
-
 ## Final verification
 
 PASS: 104 unit tests; 221 disposable SQL/RLS assertions through both database
@@ -93,7 +92,6 @@ production build. The independent handover gate remains NOT READY, as expected,
 for missing live environment/acceptance evidence. Browser speech/provider tests
 use labelled fixtures and do not certify actual microphone services or live AI.
 No paid service or public hosting deployment was activated.
-
 
 ### Booking notification recipient update
 
@@ -104,9 +102,9 @@ Passenger transactional notices retain their existing authorized recipients.
 Retries, lease checks, strict payload validation and stable idempotency keys are
 unchanged. Previously delivered mail is not resent by this code change.
 
-Delivery is not live-verified: this Codex runtime has no `RESEND_API_KEY`,
-`NOTIFICATION_FROM`, `NOTIFICATION_WORKER_SECRET` or `RESEND_WEBHOOK_SECRET`.
-A Resend-verified sender/domain, secure runtime configuration and the separately
-approved notification infrastructure are still required before live acceptance.
-The recipient mailbox is not automatically an authorized sending address. No
-real emails, production migrations or deployment were performed for this update.
+Owner delivery now uses Brevo, with a separately reviewed ten-minute retry
+window in migration 012. Live delivery remains unverified. Secure Brevo sender
+configuration, a worker secret and separately approved database prerequisites
+are required. Existing passenger notifications remain on Resend. See
+[Brevo setup and controlled acceptance](BREVO-BOOKING-EMAILS.md).
+No real emails, production migrations or deployment were performed for this update.

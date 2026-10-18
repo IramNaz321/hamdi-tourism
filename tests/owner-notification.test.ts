@@ -25,6 +25,7 @@ const booking = () =>
     price_aed: 250,
     payment_status: "unpaid",
     flight_number: "EK123",
+    first_attempt_at: new Date().toISOString(),
     attempt: 1,
   });
 
@@ -55,4 +56,18 @@ test("owner booking notification validation rejects extra private fields and lin
     ownerBookingNotificationSubject("HAMDI-123\nForged"),
     "New booking request · HAMDI-123 Forged",
   );
+});
+
+test("owner notice labels missing optional verified fields without inventing information", () => {
+  const text = ownerBookingNotificationText({
+    ...booking(),
+    customer_email: null,
+    luggage: null,
+    vehicle_category: null,
+    flight_number: null,
+  });
+  assert.match(text, /Customer email: Not provided/);
+  assert.match(text, /Luggage: Not recorded/);
+  assert.match(text, /Vehicle category: Not recorded/);
+  assert.doesNotMatch(text, /Flight number:/);
 });

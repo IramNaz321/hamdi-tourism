@@ -36,7 +36,7 @@ the current source. Never execute that combined file or merely update its hash.
 Use the individual SHA-256-pinned transactional runners:
 
 1. **Record the existing 001–007 baseline only.** `npm run db:baseline -- --apply
-   --approve hzcupgjphowrzvrdffrf:baseline` records seven ledger entries only
+--approve hzcupgjphowrzvrdffrf:baseline` records seven ledger entries only
    after the fresh schema audit reports an exact 001–007 match. It does not
    replay historical migration SQL.
 2. **Install 008 Driver/GPS.** File:
@@ -95,12 +95,13 @@ production recovery point and approved maintenance window before any write.
 
 ## Owner email readiness and disposable verification
 
-The server-side worker has a fixed recipient (`Hamid.shah@mail.ru`), Resend
-idempotency key, five-attempt lease/retry policy, minimal booking snapshot, and
-signed delivery-event recording. Credentials/configuration remain disabled in
-the current handover configuration; do not report the email as operational until
-Resend's sender domain, worker secret, webhook and feature flag are configured
-and tested. Migration 010 must be approved and installed first.
+The server-side owner worker has a fixed recipient (`Hamid.shah@mail.ru`),
+Brevo idempotency key, five-attempt lease/retry policy and strict verified booking
+snapshot. Delivery is not live-tested. Brevo sender credentials, worker secret,
+feature flag and separately approved migrations 010 and 012 are required.
+Migration 012 bounds retries inside Brevo's deduplication window; do not enable
+the new adapter against the older claim payload. See
+[Brevo booking emails](BREVO-BOOKING-EMAILS.md). Passenger notices retain Resend.
 
 `npm run test:repair` passed against disposable PostgreSQL after the shim fix and
 owner-notification addition, reporting 210 local RLS/workflow assertions. The

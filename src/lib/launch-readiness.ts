@@ -31,20 +31,13 @@ export function launchReadiness(env: Record<string, string | undefined>) {
       concierge:
         env.GROQ_CONCIERGE_ENABLED === "true" &&
         present("GROQ_API_KEY", "AI_RATE_LIMIT_SECRET") &&
-        /^[a-zA-Z0-9._/-]{1,100}$/.test(
-          env.GROQ_MODEL?.trim() || "llama-3.3-70b-versatile",
-        ),
+        /^[a-zA-Z0-9._/-]{1,100}$/.test(env.GROQ_MODEL?.trim() || "llama-3.3-70b-versatile"),
       payments:
         env.STRIPE_LIVE_PAYMENTS_APPROVED === "true" &&
         present("STRIPE_SECRET_KEY", "STRIPE_WEBHOOK_SECRET"),
       notifications:
         env.NOTIFICATION_EMAIL_ENABLED === "true" &&
-        present(
-          "RESEND_API_KEY",
-          "RESEND_WEBHOOK_SECRET",
-          "NOTIFICATION_FROM",
-          "NOTIFICATION_WORKER_SECRET",
-        ),
+        present("BREVO_API_KEY", "BREVO_SENDER_EMAIL", "NOTIFICATION_WORKER_SECRET"),
     },
     requiredExternalVerification: [
       "client_identity_and_explicit_owner_authorization",

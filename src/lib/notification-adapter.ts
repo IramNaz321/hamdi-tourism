@@ -19,6 +19,7 @@ const ownerBookingNotificationSchema = z
     price_aed: z.number().min(0).max(10000000),
     payment_status: z.enum(["unpaid", "paid", "refunded"]),
     flight_number: z.string().max(200).nullable(),
+    first_attempt_at: z.iso.datetime({ offset: true }),
     attempt: z.number().int().min(1).max(5),
   })
   .strict();

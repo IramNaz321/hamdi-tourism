@@ -18,9 +18,9 @@ The earlier workspace's uncommitted changes remain untouched in its checkout.
   persistent quotas, request cancellation and booking-ID checks remain required.
 - Owner booking notification recipient is fixed at `Hamid.shah@mail.ru`.
   Claimed records are strictly parsed; only verified outbox booking fields are
-  emailed. Stable Resend idempotency keys and leases support retries. A response
-  ID from a failed HTTP request is never treated as accepted. Signed webhook
-  evidence, not send acceptance, marks delivery. Worker secret requires at least
+  emailed. Owner delivery now uses Brevo; stable idempotency keys and leases support retries. A response
+  ID from a failed HTTP request is never treated as accepted. Provider evidence,
+  not send acceptance, is required to verify delivery. Worker secret requires at least
   32 characters; no worker key is placed in the browser.
 - Migration 010 fixed a real NOT NULL/contact-purge conflict that prevented result
   recording after successful sends. Active queue rows still require contact
@@ -93,3 +93,7 @@ references for 010/011 were regenerated in disposable PostgreSQL and verified by
 the unit/catalog checks. The local handover gate correctly reports
 `productionReady:false` because live configuration and acceptance remain unverified.
 No real credentials are required by these tests.
+
+Owner delivery now also requires separately approved migration 012 for Brevo
+retry-window safety; the older 23-hour Resend policy above is historical. See
+[Brevo booking emails](BREVO-BOOKING-EMAILS.md) for current setup and acceptance.
