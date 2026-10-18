@@ -80,3 +80,31 @@ export type Quote = {
   total_aed: number;
   extras: { id: string; name: string; price_aed: number; charge_basis: string }[];
 };
+
+/** Validate published RPC evidence before rendering a fare or enabling its submission. */
+export const transferQuoteSchema = z
+  .object({
+    pricing_id: z.uuid(),
+    currency: z.literal("AED"),
+    base_fare: z.number().finite().nonnegative(),
+    additional_charges: z.number().finite().nonnegative(),
+    outbound_aed: z.number().finite().nonnegative(),
+    return_aed: z.number().finite().nonnegative().nullable(),
+    total_aed: z.number().finite().nonnegative(),
+    extras: z
+      .array(
+        z.object({
+          id: z.uuid(),
+          name: z.string().min(1),
+          price_aed: z.number().finite().nonnegative(),
+          charge_basis: z.enum(["per_booking", "per_leg"]),
+        }),
+      )
+      .max(20),
+  })
+  .refine(
+    (q) =>
+      Math.abs(q.total_aed - q.outbound_aed - (q.return_aed ?? 0)) < 0.005 &&
+      new Set(q.extras.map((e) => e.id)).size === q.extras.length,
+    "Fare evidence is inconsistent",
+  );

@@ -7,6 +7,7 @@ import {
   journeySchema,
   journeyData,
   formatJourneyNotes,
+  transferQuoteSchema,
   type Quote,
 } from "@/lib/booking-validation";
 import { siteOrigin } from "@/lib/auth";
@@ -97,7 +98,10 @@ export async function quoteTransfer(_: EnquiryState, form: FormData): Promise<En
           error.message === "A quote is not available for this route and category" ||
           error.message === "Return pricing is not available for this route",
       };
-    return { quote: data as Quote };
+    const quote = transferQuoteSchema.safeParse(data);
+    if (!quote.success || (journey.transfer_type === "return") !== (quote.data.return_aed !== null))
+      return { error: "A valid published fare could not be verified. Please contact our team." };
+    return { quote: quote.data };
   } catch {
     return { error: "Online quotes are currently unavailable. Please contact our team." };
   }

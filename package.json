@@ -26,7 +26,8 @@
     "check:handover": "node --import tsx scripts/check-handover.ts",
     "db:history": "node --import tsx scripts/database/history.ts",
     "test:repair": "bash scripts/verification/repair-rehearsal.sh",
-    "db:repair": "node --import tsx scripts/database/repair.ts"
+    "db:repair": "node --import tsx scripts/database/repair.ts",
+    "check:concierge": "node --use-env-proxy --import tsx scripts/check-concierge.ts"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.3.0",

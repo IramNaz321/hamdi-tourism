@@ -19,17 +19,25 @@ export default async function BookPage({
   let signedIn = false;
   let profile: { name: string; email: string; phone: string } | null = null;
   if (isConfigured() && publicBusinessId()) {
-    const client = await createClient();
-    const [{ data: userResult }, { data: config }] = await Promise.all([
-      client.auth.getUser(),
-      client.rpc("passenger_booking_configuration", { business_id: publicBusinessId() }),
-    ]);
-    signedIn = !!userResult.user?.email_confirmed_at;
-    if (signedIn) {
-      const result = await client.rpc("passenger_profile", { business_id: publicBusinessId() });
-      profile = result.error ? null : result.data;
+    try {
+      const client = await createClient();
+      const [{ data: userResult }, { data: config }] = await Promise.all([
+        client.auth.getUser(),
+        client.rpc("passenger_booking_configuration", { business_id: publicBusinessId() }),
+      ]);
+      signedIn = !!userResult.user?.email_confirmed_at;
+      if (signedIn) {
+        const result = await client.rpc("passenger_profile", { business_id: publicBusinessId() });
+        const parsed = z
+          .object({ name: z.string().min(1), email: z.email(), phone: z.string().min(7) })
+          .safeParse(result.data);
+        profile = !result.error && parsed.success ? parsed.data : null;
+      }
+      ready = !!config?.enabled && !!config?.routes?.length;
+    } catch {
+      ready = false;
+      profile = null;
     }
-    ready = !!config?.enabled && !!config?.routes?.length;
   }
   return (
     <main className="max-w-4xl mx-auto p-5 py-10 space-y-7">

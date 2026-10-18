@@ -9,7 +9,7 @@ type Options = {
 /** Only explicit start() requests device permission; no coordinate history or offline queue. */
 export class LocationSharing {
   private watch: number | null = null;
-  private pending = false;
+  private pending: number | null = null;
   private lastSent = -Infinity;
   private active = false;
   private generation = 0;
@@ -48,7 +48,7 @@ export class LocationSharing {
     if (
       !this.active ||
       generation !== this.generation ||
-      this.pending ||
+      this.pending === generation ||
       now - this.lastSent < 8000
     )
       return;
@@ -72,7 +72,7 @@ export class LocationSharing {
       this.options.report("GPS accuracy is insufficient. Waiting for a reliable fix.", true);
       return;
     }
-    this.pending = true;
+    this.pending = generation;
     this.lastSent = now;
     try {
       const result = await this.options.send(parsed.data);
@@ -95,7 +95,7 @@ export class LocationSharing {
           "Connection unavailable. Sharing stopped; reconnect and start again with consent.",
         );
     } finally {
-      this.pending = false;
+      if (this.pending === generation) this.pending = null;
     }
   }
   stop(message = "Location sharing stopped.") {

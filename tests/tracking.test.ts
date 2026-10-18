@@ -212,3 +212,50 @@ test("browser GPS start failure stops cleanly without any transmitted fix", () =
   assert.equal(revoked, 1);
   assert.equal(states.at(-1), false);
 });
+
+test("a pending send from stopped consent cannot block or release a restarted generation", async () => {
+  let emit: PositionCallback = () => {};
+  let now = Date.now();
+  const deliveries: ((value: object) => void)[] = [];
+  const c = new LocationSharing({
+    geolocation: {
+      watchPosition: (s) => {
+        emit = s;
+        return 1;
+      },
+      clearWatch: () => {},
+    },
+    now: () => now,
+    send: () => new Promise((resolve) => deliveries.push(resolve)),
+    revoke: async () => {},
+    report: () => {},
+  });
+  const position = () =>
+    ({
+      timestamp: now,
+      coords: { latitude: 0, longitude: 0, accuracy: 10, heading: null },
+    }) as GeolocationPosition;
+  c.start();
+  emit(position());
+  await tick();
+  assert.equal(deliveries.length, 1);
+  c.stop();
+  c.start();
+  emit(position());
+  await tick();
+  assert.equal(deliveries.length, 2);
+  deliveries[0]({});
+  await tick();
+  now += 9000;
+  emit(position());
+  await tick();
+  assert.equal(deliveries.length, 2); // old completion cannot unlock the current pending send
+  deliveries[1]({});
+  await tick();
+  emit(position());
+  await tick();
+  assert.equal(deliveries.length, 3);
+  deliveries[2]({});
+  await tick();
+  c.stop();
+});
