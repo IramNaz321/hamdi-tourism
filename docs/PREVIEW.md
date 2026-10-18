@@ -1,35 +1,80 @@
-# Actual website preview
+# HAMDI TOURISM — client-review preview
 
-October 13, 2026. Captured from the running production-style application with hosted credentials removed for safety. These are actual UI screens, not invented bookings, vehicle records, GPS positions or AI responses. All 16 PNGs were decoded and visually inspected. The four client-requested service categories appear on the homepage and booking page. The real hosted asset audit found no published fleet vehicles. The four static marketing category photographs do not represent available inventory; the actual published-fleet gallery remains empty.
+This is a review of the existing website, **not a live booking launch**. Production
+has no published fleet/fares yet. Do not demonstrate invented reservations, prices,
+accounts or tracking, and do not enable providers for a presentation.
 
-## Homepage — includes the fleet gallery
+## Open the existing Codespace
 
-![Desktop homepage](previews/desktop.png)
+In `/workspaces/hamdi-tourism`:
 
-![Mobile homepage](previews/mobile.png)
+```bash
+git status --short
+git pull --ff-only origin feat/hamdi-tourism-application
+```
 
-The hero now shows an original photorealistic Dubai sunset marketing visualization with a rear-view black sedan, golden decorative route and navigation preview card. The reference image mentioned in the upload was absent, so exact visual matching remains unverified. Four licensed category photographs are bundled as static assets and display even without Supabase fleet records. User-triggered synthesized V8-style audio remains separate from actual vehicle make, engine or availability. See [Photo credits](VEHICLE-PHOTOS.md).
+Do not reset/stash/overwrite local changes, certificates or `.local-backups`.
+If Git reports a conflict, preserve the existing workspace and stop the update;
+the previously running preview can still be shown. No dependency changes are
+required by this sprint. If dependencies are missing, use `npm ci`.
 
-## Desktop and mobile screens
+If port 3000 is already running, open **Ports → 3000 → Open in Browser**. Otherwise:
 
-| Screen                    | Desktop                                   | Mobile                                   |
-| ------------------------- | ----------------------------------------- | ---------------------------------------- |
-| Homepage fleet section    | [Open](previews/desktop-fleet.png)        | [Open](previews/mobile-fleet.png)        |
-| Published vehicle gallery | [Open](previews/desktop-gallery.png)      | [Open](previews/mobile-gallery.png)      |
-| Booking                   | [Open](previews/desktop-booking.png)      | [Open](previews/mobile-booking.png)      |
-| Login                     | [Open](previews/desktop-login.png)        | [Open](previews/mobile-login.png)        |
-| Protected Admin access    | [Open](previews/desktop-admin-access.png) | [Open](previews/mobile-admin-access.png) |
-| Tracking                  | [Open](previews/desktop-tracking.png)     | [Open](previews/mobile-tracking.png)     |
-| Travel concierge          | [Open](previews/desktop-concierge.png)    | [Open](previews/mobile-concierge.png)    |
+```bash
+GROQ_CONCIERGE_ENABLED=false NOTIFICATION_EMAIL_ENABLED=false STRIPE_LIVE_PAYMENTS_APPROVED=false npm run dev
+```
 
-Admin screenshots show the actual login redirect, because no authorized Owner membership exists. An authenticated dashboard screenshot cannot be supplied without approved real access. The concierge includes microphone, mute and stop controls.
+These flags affect only this preview process; they do not edit private configuration.
+Confirm the terminal reports port **3000**. If it offers 3001 because 3000 is in use,
+open the existing 3000 service rather than starting duplicate servers. Codespaces
+provides the exact HTTPS browser URL; do not substitute localhost or invent a URL.
+Keep forwarding **Private**. Use an authorized GitHub session or screen-share for
+client review; changing port visibility/public deployment needs separate approval.
+This Codex integration cannot access that Codespace (previous HTTP 403); it cannot
+verify or start the remote server on the client's behalf.
 
-Booking, tracking and concierge screenshots honestly show unavailable configuration/access. There is no fictitious trip or moving map marker. Public vehicle details use genuine published records only; no such record currently exists to photograph.
+## Five-minute review
 
-## Open the actual website in your browser
+1. `/`: approved Dubai homepage, branding, four marketing categories and contact.
+2. `/book`: clear unavailable-booking state until genuine configuration is published.
+3. `/fleet`: genuine published vehicles only; an empty list is expected without them.
+4. `/login`, `/passenger/login`, `/passenger/register`: real account forms. Use only
+   an authorized existing account privately; do not share passwords. Registration
+   and recovery require configured Auth/CAPTCHA/email services.
+5. `/admin`, `/driver-account`, `/passenger`: unauthenticated visitors must redirect
+   to login. Genuine dashboards need the appropriate verified account/membership.
+   A protected-route redirect is not a dashboard login success.
+6. Tracking/AI/email remain unavailable or disabled until their live acceptance.
+   Do not submit bookings, invitations, registration or recovery emails merely to
+   demonstrate forms; those actions need genuine data and the required approval.
 
-There is no external port-forwarding or approved deployment capability in this Codex environment. The local production server was started successfully and its homepage returned HTTP 200, but its internal address is not a client-accessible URL.
+If a genuine Owner session works, follow [Owner operating guide](OWNER-OPERATING-GUIDE.md)
+to enter actual business records. This task does not mutate Owner identity/config.
 
-In your existing Codespace, update this feature branch without overwriting local changes, run `npm ci` and `npm run dev`, then select **Ports → 3000 → Open in Browser**. Keep the port private. That produces the real Codespaces HTTPS preview URL. Add that exact preview origin to the approved Auth redirect configuration before real-account tests. Secrets remain in ignored environment settings. No production deployment or merge has been performed.
+## Publishing later
 
-Missing approved assets and hosted launch blockers are documented in [Final launch report](FINAL-LAUNCH-REPORT.md). Screenshots are suitable for design review, not proof of hosted operational readiness.
+No production deployment was approved or performed. Publishing needs authorized
+hosting/domain access, HTTPS environment configuration, exact Supabase Auth redirect
+URLs, genuine business configuration and real-role acceptance. Booking emails need
+verified recovery plus separately approved **010 → 012** and a separate test-send
+approval. Do not apply 011 as part of email setup.
+
+## Email and recovery status for this review
+
+The developer reports encrypted archive integrity passed and both archive/key were
+retained on their Mac. Full compatible restore remains blocked by missing `pg_cron`
+in plain PostgreSQL 17; this sprint did not retry or resolve that restore. Use a
+compatible Supabase restore environment and preserve ownership/ACLs, not a skipped
+extension or ignored restore errors. This does not block a safe public UI review.
+010/012 remain prepared but unexecuted; 011 is not needed for booking emails.
+The exact single standalone test draft is available through the offline
+`npm run check:booking-email`; sending still requires separate approval.
+
+## Sprint verification
+
+112 unit tests, 223 disposable database assertions in both database suites,
+82 desktop/mobile browser tests, TypeScript, ESLint and production build passed.
+A fresh `npm run dev` smoke test returned 200 for the homepage, fleet, booking and
+login pages; `/book` showed its honest unavailable message. All three protected
+portals redirected anonymous visitors to login. The local smoke server was stopped;
+no external preview URL, real account login or provider delivery was verified here.

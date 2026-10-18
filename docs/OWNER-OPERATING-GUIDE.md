@@ -1,8 +1,21 @@
 # HAMDI TOURISM — Hamid Shah's operating guide
 
 This guide describes the existing application **after approved database setup and
-live acceptance**. Access has not yet been activated for Hamid Shah. No default
+live acceptance**. Current Owner access must be verified privately on the actual serving host; this guide does not activate or change an account. No default
 password, automatic Owner role or developer Admin account is provided.
+
+## Start with a client-review session
+
+Open the private Codespaces link using [Preview instructions](PREVIEW.md).
+The homepage, marketing categories, login forms and honest unavailable states can
+be reviewed now. Admin setup below requires the client's genuine authorized Owner
+session. Do not promise booking, email, AI or tracking acceptance from this review.
+
+First-time setup order: **Business Settings → Locations → Vehicles → Drivers →
+Routes → Route pricing → Passenger booking configuration**. Use the navigation in
+`/admin`; publish only genuine, client-approved records. Staff invitations send real
+email and record creation changes production: this sprint did not authorize or
+perform them. The client/operator must approve those actual setup operations.
 
 ## Sign in and protect access
 
