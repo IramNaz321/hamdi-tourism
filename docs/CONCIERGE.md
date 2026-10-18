@@ -91,3 +91,33 @@ typing remains the fallback.
 Real OpenAI answer quality/declines in each language and actual authenticated booking
 RLS acceptance remain unverified until provider acceptance and genuine passenger
 sessions are tested. Do not describe the concierge as fully operational yet.
+
+### GPT-OSS multilingual diagnostic
+
+Set `GROQ_MODEL=openai/gpt-oss-20b` only if that model is available to your account.
+The application and diagnostic share completion settings: GPT-OSS uses low reasoning
+effort, excludes reasoning from the response, and has a bounded 2,048-token budget
+that includes reasoning. Visible answers remain limited by the concise system prompt
+and response validator. There are no automatic provider retries or model fallbacks.
+The former 80-token diagnostic budget could exhaust before producing a visible Urdu
+answer; the former generic `groq_response_ur` error did not distinguish that from
+HTTP errors, invalid responses or a different output script. The original live
+response is unavailable here, so token exhaustion is a diagnosis to confirm, not a
+claimed observation of that response.
+
+With the public chatbot still disabled, run `npm run check:concierge -- --live` in
+the configured Codespace. This makes at most four completion requests (English,
+native-script Urdu, Arabic, Roman Urdu), checks public read-only grounding, and
+never enables chat or writes database records. It reports only allowlisted HTTP,
+finish-reason and token metadata on failure, retaining earlier script-check passes.
+A `completion_budget_exhausted` reason identifies a truncated provider response;
+`requested_script_not_verified` identifies a script mismatch. Script checks do not
+prove semantic translation quality: human review and real CAPTCHA, quota and
+passenger-privacy acceptance remain required before enabling public chat.
+
+This Codex environment has no Groq key and its GitHub integration cannot access
+Codespaces (HTTP 403). English/Urdu/Arabic/Roman Urdu live provider tests therefore
+remain BLOCKED here; local provider fixtures are not live acceptance results.
+API parameter reference: the official Groq TypeScript SDK,
+https://github.com/groq/groq-typescript/blob/main/src/resources/chat/completions.ts
+(`reasoning_effort`, `include_reasoning`, `max_completion_tokens`).

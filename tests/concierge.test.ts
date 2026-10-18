@@ -163,7 +163,7 @@ test("concierge API fails closed on missing configuration, unauthorized bookings
     assert.equal(reply.status, 200);
     assert.equal(reply.headers.get("Cache-Control"), "private, no-store");
     assert.ok(Array.isArray(state.aiBody?.messages));
-    assert.equal(state.aiBody?.max_completion_tokens, 220);
+    assert.equal(state.aiBody?.max_completion_tokens, 512);
     const body = JSON.stringify(state.aiBody);
     assert.ok(body.includes("untrusted history"));
     assert.ok(!body.includes('"email"'));

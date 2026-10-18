@@ -2,7 +2,12 @@ import { readLimitedBody } from "@/lib/bounded-body";
 import { NextResponse } from "next/server";
 import { createHmac } from "node:crypto";
 import { conciergeInput } from "@/lib/passenger-validation";
-import { conciergeSystem, conciergeBookingProjection, extractGroqResponse } from "@/lib/concierge";
+import {
+  conciergeSystem,
+  conciergeBookingProjection,
+  extractGroqResponse,
+  groqCompletionOptions,
+} from "@/lib/concierge";
 import { createClient, isConfigured } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/admin";
 import { publicBusinessId } from "@/lib/website";
@@ -12,7 +17,7 @@ function result(data: object, status = 200) {
   return NextResponse.json(data, { status, headers: { "Cache-Control": "private, no-store" } });
 }
 export async function POST(request: Request) {
-  const model = (process.env.GROQ_MODEL || "llama-3.3-70b-versatile").trim();
+  const model = (process.env.GROQ_MODEL || "").trim();
   if (
     process.env.GROQ_CONCIERGE_ENABLED !== "true" ||
     !process.env.GROQ_API_KEY ||
@@ -117,7 +122,7 @@ export async function POST(request: Request) {
       },
       body: JSON.stringify({
         model,
-        max_completion_tokens: 220,
+        ...groqCompletionOptions(model),
         messages: [
           { role: "system", content: conciergeSystem },
           {

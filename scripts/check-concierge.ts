@@ -2,7 +2,12 @@
 import { createClient } from "@supabase/supabase-js";
 import { publicSupabaseConfig } from "../src/lib/supabase/config";
 import { configuredSiteOrigin } from "../src/lib/site-origin";
-import { conciergeSystem, extractGroqResponse } from "../src/lib/concierge";
+import {
+  conciergeSystem,
+  extractGroqResponse,
+  groqCompletionOptions,
+  groqResponseMetadata,
+} from "../src/lib/concierge";
 import { z } from "zod";
 try {
   process.loadEnvFile(".env.local");
@@ -10,6 +15,9 @@ try {
   /* Runtime secret injection is also supported. */
 }
 let probeStage = "configuration";
+let failureReason = "network_or_response_error";
+let responseMetadata: Record<string, unknown> = {};
+const checks: { language: string; providerResponse: boolean; scriptMatches: boolean }[] = [];
 async function main() {
   const keys = [
     "GROQ_API_KEY",
@@ -81,9 +89,10 @@ async function main() {
     : { public: null, fares: [] };
   if (JSON.stringify(records).length > 16000)
     throw Error("Grounding exceeds diagnostic input limit");
-  const checks = [];
-  for (const language of ["en", "ur", "ar"]) {
+  for (const language of ["en", "ur", "ar", "ur-Latn"]) {
     probeStage = `groq_response_${language}`;
+    failureReason = "network_or_timeout";
+    responseMetadata = {};
     const r = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -92,13 +101,20 @@ async function main() {
       },
       body: JSON.stringify({
         model,
-        max_completion_tokens: 80,
+        ...groqCompletionOptions(model),
         messages: [
           { role: "system", content: conciergeSystem },
           {
             role: "user",
             content: JSON.stringify({
-              language,
+              language:
+                language === "ur-Latn"
+                  ? "Urdu in Latin script (Roman Urdu)"
+                  : language === "ur"
+                    ? "Urdu in Urdu script"
+                    : language === "ar"
+                      ? "Arabic in Arabic script"
+                      : "English",
               question:
                 "In one short sentence, explain how a visitor can request a transfer. Do not quote prices or claim availability.",
               records,
@@ -106,15 +122,26 @@ async function main() {
           },
         ],
       }),
-      signal: AbortSignal.timeout(25000),
+      signal: AbortSignal.timeout(45000),
     });
-    if (!r.ok)
-      throw Error(
-        r.status === 429 ? "Groq quota reached; no retries attempted" : "Groq probe unavailable",
-      );
-    const answer = extractGroqResponse(await r.json());
+    responseMetadata = { httpStatus: r.status };
+    if (!r.ok) {
+      failureReason = r.status === 429 ? "provider_rate_limited_no_retry" : "provider_http_error";
+      throw Error("Provider request failed");
+    }
+    failureReason = "invalid_provider_json";
+    const payload: unknown = await r.json();
+    responseMetadata = { ...responseMetadata, ...groqResponseMetadata(payload) };
+    failureReason =
+      responseMetadata.finishReason === "length"
+        ? "completion_budget_exhausted"
+        : "incomplete_or_invalid_assistant_response";
+    const answer = extractGroqResponse(payload);
     const scriptMatches =
-      language === "en" ? /[a-z]/i.test(answer) : /[\u0600-\u06ff]/.test(answer);
+      language === "en" || language === "ur-Latn"
+        ? /[a-z]/i.test(answer) && !/[\u0600-\u06ff]/.test(answer)
+        : /[\u0600-\u06ff]/.test(answer);
+    failureReason = "requested_script_not_verified";
     if (!scriptMatches) throw Error("Requested language script not verified");
     checks.push({ language, providerResponse: true, scriptMatches });
   }
@@ -131,6 +158,10 @@ void main().catch(() => {
     JSON.stringify({
       status: "BLOCKED",
       stage: probeStage,
+      reason: failureReason,
+      response: responseMetadata,
+      languageChecks: checks,
+      semanticLanguageVerification: "requires human acceptance; script checks only",
       credentialsDisplayed: false,
       enablementChanged: false,
       databaseWrites: false,
