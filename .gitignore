@@ -28,3 +28,6 @@ backups/
 
 # Local TLS certificates; never commit.
 .certs/
+
+# Codespace backup archives and recovery material must never enter Git.
+.local-backups/

@@ -5,7 +5,8 @@ test("booking email draft is harmless, single-recipient and requires approval", 
   const result = bookingEmailReadiness({});
   assert.equal(result.status, "BLOCKED");
   assert.deepEqual(result.testEmailDraft.to, ["Hamid.shah@mail.ru"]);
-  assert.equal(result.testEmailDraft.subject, "TEST — Not a Real Booking");
+  assert.equal(result.testEmailDraft.subject, "TEST — HAMDI TOURISM Booking Notification");
+  assert.equal(result.testEmailDraft.text, "This is a system test, NOT a real booking.");
   assert.equal(result.emailsSent, false);
   assert.equal(result.databaseWrites, false);
   assert.equal(result.sendingRequiresSeparateExplicitApproval, true);

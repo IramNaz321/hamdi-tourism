@@ -72,3 +72,20 @@ https://github.com/getbrevo/brevo-node/blob/main/src/api/resources/transactional
 and https://developers.brevo.com/docs/heterogeneous-versions-of-email-sending-api.
 No real provider requests, production SQL, emails, deployment or Auth changes are
 part of this implementation.
+
+## Exact standalone test draft — prepared, not authorized to send
+
+- To: `Hamid.shah@mail.ru` only
+- Subject: `TEST — HAMDI TOURISM Booking Notification`
+- Body: `This is a system test, NOT a real booking.`
+
+`npm run check:booking-email` prepares this exact draft offline. No database booking,
+passenger record or outbox fixture should be created for it. The draft is not itself
+approval to send. After successful current encrypted backup, retained recovery key
+and isolated restore verification, request approval for 010 then 012; do not include 011. Request separate approval for exactly one standalone email. Confirm Brevo
+message/delivery evidence and private client inbox receipt after that approval.
+The existing Codespace and `.local-backups` are not accessible to this Codex
+integration (HTTP 403); never replace an unseen existing recovery key. Verify the
+actual serving worker is paused before rollout; an absent matching database cron
+job or a local disabled flag is not sufficient evidence. Archive/key retention must
+be confirmed in client-controlled storage outside the ephemeral Codespace.

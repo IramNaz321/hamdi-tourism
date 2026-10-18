@@ -17,8 +17,8 @@ export function bookingEmailReadiness(env: Record<string, string | undefined>) {
     checks,
     testEmailDraft: {
       to: [ownerBookingNotificationRecipient],
-      subject: "TEST — Not a Real Booking",
-      text: "HAMDI TOURISM transactional email delivery test. This is not a booking, confirmation or passenger request. No booking or passenger data is included. Please confirm receipt privately.",
+      subject: "TEST — HAMDI TOURISM Booking Notification",
+      text: "This is a system test, NOT a real booking.",
     },
     emailsSent: false,
     databaseWrites: false,
