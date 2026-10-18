@@ -40,6 +40,7 @@ export default async function BookPage({
         Reservations require confirmation from our team.
       </p>
       <nav className="flex gap-5">
+        <Link href="/">Home</Link>
         <Link href="/passenger">Your account</Link>
         <Link href="/#transfers">Transfer enquiry</Link>
       </nav>

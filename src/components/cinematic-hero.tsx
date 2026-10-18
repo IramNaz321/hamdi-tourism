@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Play, MapPin, ShieldCheck, Clock3, Radio } from "lucide-react";
-import { JourneyArt } from "./journey-art";
+import { ArrowRight, ArrowUpRight, MapPin, ShieldCheck, Clock3, Radio } from "lucide-react";
 import { homeCopy, type HomeLanguage } from "@/lib/home-language";
 function RouteGlow({ mini = false }: { mini?: boolean }) {
   return (
@@ -23,13 +22,7 @@ function RouteGlow({ mini = false }: { mini?: boolean }) {
     </svg>
   );
 }
-export function CinematicHero({
-  language,
-  bookingAvailable,
-}: {
-  language: HomeLanguage;
-  bookingAvailable: boolean;
-}) {
+export function CinematicHero({ language }: { language: HomeLanguage }) {
   const copy = homeCopy[language];
   return (
     <section className="cinematic-hero" aria-label="Dubai sunset marketing showcase">
@@ -62,19 +55,12 @@ export function CinematicHero({
           </Link>
           <Link href="#services" className="service-preview-link">
             <span>
-              <Play size={17} />
+              <ArrowUpRight size={17} />
             </span>
-            {copy.video}
+            {copy.services}
           </Link>
         </div>
-        {!bookingAvailable && (
-          <p className="cinematic-booking-state" role="status">
-            Online booking is currently unavailable. Published vehicles, routes and fares are
-            required before accepting a reservation.
-          </p>
-        )}
       </div>
-      <JourneyArt scene />
       <div className="cinematic-route-label">
         <MapPin size={16} /> UAE journeys <span>Visual preview</span>
       </div>

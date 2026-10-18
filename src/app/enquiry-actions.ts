@@ -5,6 +5,7 @@ import { createServiceClient } from "@/lib/supabase/admin";
 import { publicBusinessId, enquiriesConfigured } from "@/lib/website";
 import { journeySchema, journeyData, type Quote } from "@/lib/booking-validation";
 import { siteOrigin } from "@/lib/auth";
+import { publishedFleetCapacityError } from "@/lib/fleet-capacity";
 export type EnquiryState = { error?: string; quote?: Quote; reference?: string };
 const safeErrors = [
   "Online enquiries are unavailable",
@@ -16,11 +17,42 @@ const safeErrors = [
   "Check your pickup and return times",
   "Please contact our team to continue your enquiry",
   "Pricing changed. Please request a fresh quote",
+  "No vehicles are published for online transfer enquiries.",
+  "No published vehicle in this category can carry the selected passengers and luggage.",
+  "Published vehicle information is unavailable. Please contact our team.",
 ];
 function publicError(message: string) {
   return safeErrors.includes(message)
     ? message
     : "We could not complete your enquiry. Please try again or contact our team.";
+}
+async function publishedVehicleError(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  journey: z.infer<typeof journeySchema>,
+) {
+  const { data, error } = await supabase.rpc("website_content", {
+    business_id: publicBusinessId(),
+  });
+  if (error) {
+    console.error("Unable to verify published vehicle capacity", { code: error.code });
+    return "Published vehicle information is unavailable. Please contact our team.";
+  }
+  const parsed = z
+    .object({
+      fleet: z.array(
+        z.object({
+          category: z.enum(["sedan", "suv", "van", "luxury"]),
+          capacity: z.number().int().min(1).max(1000),
+          luggage_capacity: z.number().int().min(0).max(1000).nullable(),
+        }),
+      ),
+    })
+    .safeParse(data);
+  if (!parsed.success) {
+    console.error("Published vehicle information is unavailable or malformed");
+    return "Published vehicle information is unavailable. Please contact our team.";
+  }
+  return publishedFleetCapacityError(parsed.data.fleet, journey);
 }
 export async function quoteTransfer(_: EnquiryState, form: FormData): Promise<EnquiryState> {
   if (!publicBusinessId())
@@ -42,6 +74,8 @@ export async function quoteTransfer(_: EnquiryState, form: FormData): Promise<En
   }
   try {
     const supabase = await createClient();
+    const vehicleError = await publishedVehicleError(supabase, journey);
+    if (vehicleError) return { error: vehicleError };
     const { data, error } = await supabase.rpc("calculate_transfer_quote", {
       business_id: publicBusinessId(),
       pickup_id: journey.pickup_id,
@@ -96,6 +130,9 @@ export async function submitEnquiry(_: EnquiryState, form: FormData): Promise<En
     };
   }
   try {
+    const supabase = await createClient();
+    const vehicleError = await publishedVehicleError(supabase, journey);
+    if (vehicleError) return { error: vehicleError };
     const response = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
       method: "POST",
       headers: { "Content-Type": "application/json" },

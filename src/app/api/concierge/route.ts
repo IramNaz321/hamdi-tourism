@@ -68,21 +68,32 @@ export async function POST(request: Request) {
       subject,
       business_id: publicBusinessId(),
     });
-    if (rateError)
+    if (rateError) {
+      console.error("Concierge rate limit RPC failed", { code: rateError.code ?? "unknown" });
       return result(
         { error: "Travel concierge is currently unavailable. Please contact our team." },
         503,
       );
+    }
     if (!allowed)
       return result({ error: "Concierge limit reached. Please contact our team." }, 429);
     const { data: context, error } = await client.rpc("concierge_context", {
       business_id: publicBusinessId(),
     });
-    if (error || !context?.public)
+    if (error) {
+      console.error("Concierge context RPC failed", { code: error.code ?? "unknown" });
       return result(
         { error: "Published business information is unavailable. Please contact our team." },
         503,
       );
+    }
+    if (!context?.public) {
+      console.error("Concierge has no published business context");
+      return result(
+        { error: "Published business information is unavailable. Please contact our team." },
+        503,
+      );
+    }
     // Bound input cost without exposing unpublished or private data.
     const grounded = {
       ...context,
@@ -124,13 +135,18 @@ export async function POST(request: Request) {
       }),
       signal: AbortSignal.timeout(25000),
     });
-    if (!response.ok)
+    if (!response.ok) {
+      console.error("Concierge provider request failed", { status: response.status });
       return result(
         { error: "Travel concierge is temporarily unavailable. Contact our team." },
         503,
       );
+    }
     return result({ answer: extractConciergeResponse(await response.json()) });
-  } catch {
+  } catch (error) {
+    console.error("Concierge request failed", {
+      error: error instanceof Error ? error.name : "unknown",
+    });
     return result({ error: "Travel concierge is temporarily unavailable. Contact our team." }, 503);
   }
 }

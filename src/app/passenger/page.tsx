@@ -47,9 +47,14 @@ export default async function PassengerPage({
           <BrandLogo />
           <h1 className="text-3xl font-semibold mt-6">Your journeys</h1>
         </div>
-        <form action={passengerLogout}>
-          <button className="button secondary">Sign out</button>
-        </form>
+        <div className="flex flex-wrap items-center gap-3">
+          <Link className="button secondary" href="/">
+            Home
+          </Link>
+          <form action={passengerLogout}>
+            <button className="button secondary">Sign out</button>
+          </form>
+        </div>
       </header>
       <Link href="/book" className="button">
         Book a transfer

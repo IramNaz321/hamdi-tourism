@@ -245,44 +245,6 @@ section[id] {
 .hero-copy button {
   pointer-events: auto;
 }
-.car-interaction {
-  transform-box: fill-box;
-  transform-origin: center bottom;
-}
-.car-interaction:focus-visible {
-  outline: 2px solid #f0ddac;
-  outline-offset: 6px;
-}
-[data-car-revving="true"] .car-interaction {
-  animation: car-rev 3200ms cubic-bezier(0.42, 0, 0.25, 1) both;
-}
-@keyframes car-rev {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0);
-  }
-  8% {
-    transform: translate3d(0, -1px, 0) rotate(-0.08deg);
-  }
-  18% {
-    transform: translate3d(0, 0, 0);
-  }
-  30% {
-    transform: translate3d(1px, -1px, 0);
-  }
-  65% {
-    transform: translate3d(16px, -2px, 0);
-  }
-  78% {
-    transform: translate3d(22px, -2px, 0);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  [data-car-revving="true"] .car-interaction {
-    animation: none;
-  }
-}
-
 .live-car-marker {
   font-size: 26px;
   transition: transform 220ms linear;
@@ -548,13 +510,6 @@ svg {
   margin-top: 24px;
   color: #f8f6f1dd;
 }
-.cinematic-booking-state {
-  margin-top: 24px;
-  font-size: 12px;
-  line-height: 1.6;
-  color: #f8f6f1dd;
-  max-width: 450px;
-}
 .service-preview-link {
   display: inline-flex;
   align-items: center;
@@ -679,32 +634,6 @@ svg {
 .navigation-features svg {
   color: var(--brand);
 }
-.cinematic-engine {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-.cinematic-car-hotspot {
-  position: absolute;
-  z-index: 2;
-  left: 55%;
-  top: 44%;
-  width: 44%;
-  height: 39%;
-  background: transparent;
-  pointer-events: auto;
-  border-radius: 20px;
-}
-.cinematic-car-hotspot:focus-visible {
-  outline: 2px solid var(--brand);
-  outline-offset: -10px;
-}
-.cinematic-engine .car-controls {
-  position: absolute;
-  z-index: 5;
-  bottom: 60px;
-  right: 30px;
-}
 .cinematic-disclosure {
   position: absolute;
   z-index: 4;
@@ -749,17 +678,6 @@ svg {
     top: 600px;
     left: 20px;
     max-width: calc(100% - 40px);
-  }
-  .cinematic-car-hotspot {
-    top: 610px;
-    left: 8%;
-    width: 88%;
-    height: 215px;
-  }
-  .cinematic-engine .car-controls {
-    top: 810px;
-    bottom: auto;
-    right: 22px;
   }
   .cinematic-navigation {
     position: relative;
@@ -1006,42 +924,5 @@ svg {
   .brand .brand-subtitle {
     font-size: 9px;
     margin-top: 5px;
-  }
-}
-
-/* The approved car is baked into a flat scene: move that exact photograph,
-   never fake isolated wheels or replace it with a different vehicle. */
-@media (prefers-reduced-motion: no-preference) {
-  .cinematic-hero:has(.cinematic-engine[data-car-revving="true"]) .cinematic-backdrop img {
-    transform-origin: center;
-    animation: hamdi-scene-drive 3200ms cubic-bezier(0.42, 0, 0.25, 1) both;
-    will-change: transform;
-  }
-}
-@keyframes hamdi-scene-drive {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  8% {
-    transform: translate3d(0, -0.3px, 0) scale(1.001);
-  }
-  18% {
-    transform: translate3d(0, 0.2px, 0) scale(1.002);
-  }
-  30% {
-    transform: translate3d(-0.1%, -0.03%, 0) scale(1.004);
-  }
-  55% {
-    transform: translate3d(-0.8%, -0.3%, 0) scale(1.025);
-  }
-  70% {
-    transform: translate3d(-1.6%, -0.55%, 0) scale(1.04);
-  }
-  78% {
-    transform: translate3d(-2%, -0.7%, 0) scale(1.045);
-  }
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
   }
 }

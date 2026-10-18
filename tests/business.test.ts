@@ -4,6 +4,7 @@ import sharp from "sharp";
 import { uaeDateTime, journeySchema } from "../src/lib/booking-validation";
 import { settingsSchema } from "../src/lib/settings-validation";
 import { prepareImage } from "../src/lib/image-validation";
+import { publishedFleetCapacityError } from "../src/lib/fleet-capacity";
 const pickup = "10000000-0000-4000-8000-000000000001";
 const dropoff = "10000000-0000-4000-8000-000000000002";
 const inputTime = (days: number) =>
@@ -43,6 +44,36 @@ test("return enquiry requires a later real return pickup and unique optional ext
 test("UAE dates are host-timezone independent and invalid dates do not normalize silently", () => {
   assert.equal(uaeDateTime("2027-01-01T10:00"), "2027-01-01T06:00:00.000Z");
   assert.throws(() => uaeDateTime("2027-02-30T10:00"));
+});
+test("transfer vehicle checks require a published category with sufficient real capacity", () => {
+  const fleet = [
+    { category: "sedan", capacity: 3, luggage_capacity: 2 },
+    { category: "van", capacity: 7, luggage_capacity: 5 },
+  ];
+  assert.equal(
+    publishedFleetCapacityError(fleet, { category: "sedan", passengers: 3, luggage: 2 }),
+    undefined,
+  );
+  assert.match(
+    publishedFleetCapacityError(fleet, { category: "sedan", passengers: 4, luggage: 2 }) ?? "",
+    /can carry/,
+  );
+  assert.match(
+    publishedFleetCapacityError(fleet, { category: "van", passengers: 5, luggage: 6 }) ?? "",
+    /can carry/,
+  );
+  assert.match(
+    publishedFleetCapacityError([], { category: "sedan", passengers: 1, luggage: 0 }) ?? "",
+    /No vehicles/,
+  );
+  assert.match(
+    publishedFleetCapacityError([{ category: "sedan", capacity: 3, luggage_capacity: null }], {
+      category: "sedan",
+      passengers: 1,
+      luggage: 1,
+    }) ?? "",
+    /can carry/,
+  );
 });
 test("settings reject CSS injection, malformed WhatsApp and unsupported currencies", () => {
   const input = {

@@ -44,9 +44,14 @@ export default async function DriverAccount({
           <h1 className="text-3xl font-semibold mt-3">{driverText.title}</h1>
           <p className="text-muted mt-2">{member.display_name}</p>
         </div>
-        <form action={logout}>
-          <button className="button secondary">Sign out</button>
-        </form>
+        <div className="flex flex-wrap items-center gap-3">
+          <Link className="button secondary" href="/">
+            Home
+          </Link>
+          <form action={logout}>
+            <button className="button secondary">Sign out</button>
+          </form>
+        </div>
       </div>
       <div className="flex flex-wrap gap-4">
         <DriverRefresh />

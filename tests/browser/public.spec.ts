@@ -32,7 +32,12 @@ test("public website renders the required sections without fictional fleet or fa
   await page.getByRole("link", { name: "Request a transfer enquiry", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Plan your transfer" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Get a route quote" })).toBeDisabled();
-  await expect(page.locator('select[name="pickup_id"] option')).toHaveCount(1);
+  await expect(page.getByLabel("Pickup location")).toBeDisabled();
+  await expect(
+    page.getByText("Online transfer enquiries are not set up yet", { exact: false }),
+  ).toBeVisible();
+  await page.getByRole("link", { name: "Back to homepage" }).click();
+  await expect(page).toHaveURL("/");
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
     true,
   );

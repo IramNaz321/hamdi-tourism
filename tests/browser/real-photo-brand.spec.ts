@@ -50,7 +50,10 @@ test("four local showcase photos load without Supabase inventory and keep bookin
       .poll(() => photo.evaluate((node) => (node as HTMLImageElement).naturalWidth))
       .toBeGreaterThan(0);
   }
-  await expect(page.locator(".cinematic-booking-state")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Get a route quote" })).toBeDisabled();
+  await expect(
+    page.getByText("Online transfer enquiries are not set up yet", { exact: false }),
+  ).toBeVisible();
   const notes = categories.locator("details");
   await expect(notes).not.toHaveAttribute("open");
   const disclosure = notes.locator("summary");

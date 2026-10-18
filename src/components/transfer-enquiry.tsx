@@ -2,11 +2,13 @@
 import { useActionState, useState, useRef, useEffect } from "react";
 import { vehicleCategories } from "@/lib/vehicle-categories";
 import Script from "next/script";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { quoteTransfer, submitEnquiry } from "@/app/enquiry-actions";
 import { money } from "@/lib/entities";
-import type { PublicLocation } from "@/lib/website";
+import type { PublicLocation, PublicVehicle } from "@/lib/website";
+import { LocationPicker } from "@/components/location-picker";
 type TurnstileAPI = {
   render: (node: HTMLElement, options: Record<string, unknown>) => string;
   reset: (id: string) => void;
@@ -14,22 +16,37 @@ type TurnstileAPI = {
 };
 export function TransferEnquiry({
   locations,
+  fleet,
   enabled,
   canSubmit,
 }: {
   locations: PublicLocation[];
+  fleet: PublicVehicle[];
   enabled: boolean;
   canSubmit: boolean;
 }) {
   const [quoteState, quoteAction, quoting] = useActionState(quoteTransfer, {});
   const [submitState, submitAction, sending] = useActionState(submitEnquiry, {});
   const [transfer, setTransfer] = useState("one_way");
+  const [category, setCategory] = useState("");
   const [dirty, setDirty] = useState(false);
   const [token, setToken] = useState("");
   const [captchaReady, setCaptchaReady] = useState(false);
   const [captchaError, setCaptchaError] = useState("");
   const captcha = useRef<HTMLDivElement>(null);
   const quote = dirty || quoting ? undefined : quoteState.quote;
+  const categories = vehicleCategories.filter((item) =>
+    fleet.some((vehicle) => vehicle.category === item.code),
+  );
+  const selectedCategory = categories.some((item) => item.code === category)
+    ? category
+    : (categories[0]?.code ?? "");
+  const selectedVehicles = fleet.filter((vehicle) => vehicle.category === selectedCategory);
+  const maxPassengers = Math.max(0, ...selectedVehicles.map((vehicle) => vehicle.capacity));
+  const maxLuggage = Math.max(
+    0,
+    ...selectedVehicles.map((vehicle) => vehicle.luggage_capacity ?? 0),
+  );
   useEffect(() => {
     if (!quote || !captchaReady || !captcha.current || !canSubmit) return;
     const api = (window as unknown as { turnstile?: TurnstileAPI }).turnstile;
@@ -62,9 +79,9 @@ export function TransferEnquiry({
           Reference: {submitState.reference}. Our team will review availability and contact you.
           Your transfer is not confirmed yet.
         </p>
-        <Button className="mt-6" onClick={() => window.location.reload()}>
+        <button type="button" className="button mt-6" onClick={() => window.location.reload()}>
           Plan another journey
-        </Button>
+        </button>
       </div>
     );
   return (
@@ -94,35 +111,35 @@ export function TransferEnquiry({
           Pickup times are in UAE time. Availability is confirmed by our team.
         </p>
       </div>
+      <Link href="/" className="inline-flex items-center gap-2 text-sm text-muted mb-6">
+        <ArrowLeft size={16} />
+        Back to homepage
+      </Link>
       {!enabled && (
         <p className="notice mb-6">
-          Online transfer enquiries are currently unavailable. Please contact our team to plan your
-          journey.
+          {!locations.length
+            ? "Online transfer enquiries are not set up yet. The business owner needs to publish real pickup and drop-off locations."
+            : locations.length < 2
+              ? "At least two owner-verified locations must be published before a route can be quoted."
+              : !fleet.length
+                ? "No real vehicles are published for online transfer enquiries yet."
+                : "Online transfer enquiries have not been enabled by the business owner."}{" "}
+          Online quotes also require an active, published route and fare.
         </p>
       )}
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <label className="field">
-          Pickup location
-          <select name="pickup_id" required disabled={!enabled}>
-            <option value="">Select pickup</option>
-            {locations.map((l) => (
-              <option key={l.id} value={l.id}>
-                {l.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="field">
-          Drop-off location
-          <select name="dropoff_id" required disabled={!enabled}>
-            <option value="">Select destination</option>
-            {locations.map((l) => (
-              <option key={l.id} value={l.id}>
-                {l.name}
-              </option>
-            ))}
-          </select>
-        </label>
+        <LocationPicker
+          label="Pickup location"
+          name="pickup_id"
+          locations={locations}
+          disabled={!enabled}
+        />
+        <LocationPicker
+          label="Drop-off location"
+          name="dropoff_id"
+          locations={locations}
+          disabled={!enabled}
+        />
         <label className="field">
           Pickup date
           <input name="pickup_date" type="date" required />
@@ -133,11 +150,17 @@ export function TransferEnquiry({
         </label>
         <label className="field">
           Passengers
-          <input name="passengers" type="number" min={1} max={1000} required />
+          <input name="passengers" type="number" min={1} max={maxPassengers || 1000} required />
         </label>
         <label className="field">
           Luggage
-          <input name="luggage" type="number" min={0} max={1000} required />
+          <input
+            name="luggage"
+            type="number"
+            min={0}
+            max={selectedVehicles.length ? maxLuggage : 1000}
+            required
+          />
         </label>
         <label className="field">
           Transfer type
@@ -152,10 +175,19 @@ export function TransferEnquiry({
         </label>
         <label className="field">
           Vehicle category
-          <select name="category">
-            {vehicleCategories.map((category) => (
-              <option key={category.code} value={category.code}>
-                {category.name} · {category.capacity}
+          <select
+            name="category"
+            value={selectedCategory}
+            onChange={(event) => {
+              setCategory(event.target.value);
+              setDirty(true);
+            }}
+            required
+            disabled={!enabled || categories.length === 0}
+          >
+            {categories.map((item) => (
+              <option key={item.code} value={item.code}>
+                {item.name}
               </option>
             ))}
           </select>

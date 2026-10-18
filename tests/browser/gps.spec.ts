@@ -91,6 +91,8 @@ test("driver-only geolocation header and unavailable passenger tracking preserve
   await expect(
     page.getByRole("heading", { name: "Tracking unavailable", exact: true }),
   ).toBeVisible();
+  await expect(page.getByRole("link", { name: "Your journeys" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Home", exact: true })).toBeVisible();
   const response = await request.get("/track/10000000-0000-4000-8000-000000000001");
   expect(response.headers()["cache-control"]).toContain("no-store");
   expect(response.headers()["referrer-policy"]).toBe("no-referrer");

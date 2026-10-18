@@ -8,7 +8,6 @@ import {
   ArrowUpRight,
   Plane,
   CarFront,
-  BriefcaseBusiness,
   MapPin,
   Clock3,
   Users,
@@ -44,14 +43,15 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ l
       <TravelConcierge />
       <PublicNav name={name} logo={logo_url} language={language} />
       <main>
-        <CinematicHero language={language} bookingAvailable={fleet.length > 0} />
+        <CinematicHero language={language} />
         <section
           id="transfers"
           className="max-w-7xl mx-auto px-5 lg:px-10 relative z-20 -mt-10 pb-20"
         >
           <TransferEnquiry
             locations={locations}
-            enabled={!!settings?.enquiries_enabled && locations.length >= 2}
+            fleet={fleet}
+            enabled={!!settings?.enquiries_enabled && locations.length >= 2 && fleet.length > 0}
             canSubmit={enquiriesConfigured()}
           />
         </section>
@@ -67,25 +67,19 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ l
                 arrangements.
               </p>
             </div>
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-2 max-w-4xl gap-6">
               {[
                 {
                   icon: Plane,
                   title: "Airport Transfers",
-                  text: "Plan your arrival or departure with a pickup and destination agreed in advance.",
+                  text: "Request an airport pickup or drop-off. The team confirms availability and journey details before accepting a transfer.",
                   tag: "FROM ARRIVAL TO DESTINATION",
                 },
                 {
                   icon: CarFront,
                   title: "Private Chauffeur Services",
-                  text: "Arrange a chauffeur for your appointments, city visits and private travel plans.",
+                  text: "Ask about a private chauffeur journey. Availability and arrangements are confirmed by the team.",
                   tag: "YOUR DAY, YOUR PACE",
-                },
-                {
-                  icon: BriefcaseBusiness,
-                  title: "Business Travel",
-                  text: "Coordinate transfers for colleagues, visitors and business appointments.",
-                  tag: "KEEP YOUR PLANS CONNECTED",
                 },
               ].map(({ icon: Icon, title, text, tag }) => (
                 <Card className="p-8 bg-canvas!" key={title}>

@@ -41,9 +41,14 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       </aside>
       <div className="min-w-0 flex-1">
         <header className="bg-white border-b border-stone-200 px-6 lg:px-10 py-5 flex items-center justify-between gap-4">
-          <div>
-            <p className="text-sm font-semibold">{member.display_name}</p>
-            <p className="text-xs text-muted capitalize mt-1">{member.role}</p>
+          <div className="flex flex-wrap items-center gap-4">
+            <Link className="button secondary py-2! text-xs" href="/admin">
+              Dashboard
+            </Link>
+            <div>
+              <p className="text-sm font-semibold">{member.display_name}</p>
+              <p className="text-xs text-muted capitalize mt-1">{member.role}</p>
+            </div>
           </div>
           <form action={logout}>
             <button className="button secondary py-2! text-xs">

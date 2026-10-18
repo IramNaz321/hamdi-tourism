@@ -3,16 +3,17 @@ test("cinematic showcase is labelled decorative, track navigation works and lang
   page,
 }) => {
   await page.goto("/");
-  await expect(
-    page.getByRole("heading", { name: "Luxury in Every Journey" }),
-  ).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Luxury in Every Journey" })).toBeVisible();
   await expect(page.getByRole("complementary", { name: "Journey visual preview" })).toContainText(
     "No active trip shown",
   );
   await expect(page.getByText("45 min / 32 km")).toHaveCount(0);
   await expect(page.getByRole("link", { name: "Watch Video" })).toHaveCount(0);
-  await page.getByRole("link", { name: "Discover our service" }).click();
+  await page.getByRole("link", { name: "Discover our services" }).click();
   await expect(page).toHaveURL(/#services$/);
+  await expect(page.getByRole("heading", { name: "Airport Transfers" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Private Chauffeur Services" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Desert Safari" })).toHaveCount(0);
   await page.goto("/track");
   await expect(page.getByRole("heading", { name: "Track Your Ride" })).toBeVisible();
   await page.getByLabel("Booking tracking ID").fill("invalid");
@@ -22,6 +23,25 @@ test("cinematic showcase is labelled decorative, track navigation works and lang
   await page.getByLabel("Website language").selectOption("ar");
   await expect(page.getByRole("heading", { name: "رحلتك، بتواصل رائع" })).toBeVisible();
   await expect(page.locator(".cinematic-copy")).toHaveAttribute("dir", "rtl");
+});
+test("desktop and mobile contact links reach the real contact section", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/");
+  await page
+    .getByRole("navigation", { name: "Main navigation" })
+    .getByRole("link", { name: "Contact" })
+    .click();
+  await expect(page).toHaveURL(/#contact$/);
+  await expect(page.locator("#contact")).toBeVisible();
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Open navigation" }).click();
+  const menu = page.getByRole("dialog");
+  await menu.getByRole("link", { name: "Contact", exact: true }).click();
+  await expect(page).toHaveURL(/#contact$/);
+  await expect(menu).toHaveCount(0);
+  await expect(page.locator("#contact")).toBeVisible();
 });
 test("routing endpoint never provides sample ETA or coordinates without configured authorized tracking", async ({
   request,

@@ -1,7 +1,7 @@
 # Travel concierge — implementation and live acceptance
 
-The existing concierge was extended without changing the homepage, fleet, branding,
-login or booking routes. UI styles are scoped to the widget. Production migrations
+The existing concierge uses the current homepage, fleet, branding, login and booking
+routes. UI styles are scoped to the widget. Production migrations
 001–009, including the Passenger RPCs and rate-limit storage used here, have been
 applied and verified. This concierge work made no production database, account,
 provider or deployment changes.
@@ -42,6 +42,21 @@ replay historical migrations or apply another production migration as part of
 concierge testing. Published business settings, genuine fleet, routes/fares and
 policies still need Owner verification before the model can provide useful
 business-specific answers.
+
+### Read-only production check (2026-10-18)
+
+The configured HAMDI TOURISM organization and an active owner membership exist. The
+organization has no active locations, published fleet, active routes, published route
+prices or published business settings. The `website_content` and `concierge_context`
+RPCs are present, but return no public business context or fares. Once server-side
+provider gates are satisfied, the missing published business context itself causes
+the concierge's 503 response; there is no real catalog data to ground answers.
+
+Required local environment variable names were checked for presence only. Secret
+values were not inspected, and no OpenAI request was made. Vercel's server environment,
+provider connectivity, model access and billing remain unverified. Turnstile variables
+are absent locally, so public enquiry submission also needs owner setup. No production
+migration or data write was performed.
 
 The Codespaces Next.js runtime loads the server-only OpenAI key, model, rate-limit
 secret and enable flag from ignored `.env.local`; Next.js environment loading was

@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-test("four approved service categories appear in homepage, enquiry and booking without inventing fleet", async ({
+test("marketing categories do not become selectable before the owner publishes real vehicles", async ({
   page,
 }) => {
   await page.goto("/");
@@ -7,7 +7,8 @@ test("four approved service categories appear in homepage, enquiry and booking w
   await expect(categories.getByRole("heading")).toHaveCount(4);
   for (const name of ["Normal Sedan", "Luxury Sedan", "7-Seater", "5-Passenger Vehicle"])
     await expect(categories.getByRole("heading", { name, exact: true })).toBeVisible();
-  await expect(page.locator('select[name="category"] option')).toHaveCount(4);
+  await expect(page.locator('select[name="category"] option')).toHaveCount(0);
+  await expect(page.locator('select[name="category"]')).toBeDisabled();
   await page.goto("/book");
   await expect(
     page.getByRole("region", { name: "Vehicle categories" }).getByRole("heading"),
