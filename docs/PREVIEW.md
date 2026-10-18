@@ -25,6 +25,9 @@ GROQ_CONCIERGE_ENABLED=false NOTIFICATION_EMAIL_ENABLED=false STRIPE_LIVE_PAYMEN
 ```
 
 These flags affect only this preview process; they do not edit private configuration.
+The AI flag intentionally disables chat replies even if `.env.local` enables them.
+For AI diagnostics and acceptance gates, see [Concierge](CONCIERGE.md). Do not
+remove the disabled override until genuine grounding, CAPTCHA and live tests pass.
 Confirm the terminal reports port **3000**. If it offers 3001 because 3000 is in use,
 open the existing 3000 service rather than starting duplicate servers. Codespaces
 provides the exact HTTPS browser URL; do not substitute localhost or invent a URL.

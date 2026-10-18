@@ -121,3 +121,50 @@ remain BLOCKED here; local provider fixtures are not live acceptance results.
 API parameter reference: the official Groq TypeScript SDK,
 https://github.com/groq/groq-typescript/blob/main/src/resources/chat/completions.ts
 (`reasoning_effort`, `include_reasoning`, `max_completion_tokens`).
+
+### Preview unavailable: confirmed configuration blockers
+
+The safe preview command in `docs/PREVIEW.md` explicitly sets
+`GROQ_CONCIERGE_ENABLED=false`. That process setting overrides `.env.local`;
+`/api/concierge` returns HTTP 503, `configuration_required`, reason `disabled`.
+This is intentional fail-closed behavior, not an invalid Groq password or model
+response. The Codespace server logs are not accessible through this integration;
+its other private settings cannot be inferred from this Codex environment.
+
+A fresh read-only hosted metadata check confirmed `concierge_context` and
+`concierge_consume` exist, but no published business settings exist for the actual
+organization. Even with valid credentials and the flag enabled, that missing
+verified public information blocks grounded replies. Do not seed or publish fake
+information to bypass this requirement. The authorized client must enter and
+publish genuine business settings through `/admin/settings`.
+
+Run `npm run check:concierge -- --grounding-only` in the actual configured
+Codespace to check public grounding while the provider stays disabled. This mode
+calls only the public read-only `concierge_context` RPC; it makes zero Groq calls,
+does not invoke `concierge_consume`, never consumes quotas or changes flags, and
+prints no raw business records or credentials. It does not certify CAPTCHA,
+provider availability, semantic language quality or browser acceptance.
+
+API diagnosis is now explicit and safe: `configuration_required` with `disabled`
+or `configuration_missing_or_invalid`; `origin_mismatch`;
+`security_check_required`; `rate_limit_unavailable`; `usage_limit_reached`;
+`grounding_unavailable`; `provider_rate_limited`; or `provider_unavailable`.
+Server logs include only stage/reason, safe status/error codes or error class names,
+never keys, questions, answers or internal model reasoning.
+
+Once genuine published context exists, use the configured Codespace to verify the
+exact trusted preview origin/Turnstile hostname and action `travel_concierge`,
+model access to `openai/gpt-oss-20b`, rate limits and authorized booking privacy.
+Then separately run the bounded `--live` provider diagnostic and live browser
+acceptance in English, native Urdu, Roman Urdu and Arabic. Leave the chatbot
+OFF until those gates pass; no enablement was performed in this fix.
+
+Verification for this fix: 114 unit tests; all 84 browser cases passed (82 in the
+full run plus the two corrected scoped-error checks on targeted rerun); TypeScript,
+ESLint and production build passed. English/native Urdu/Roman Urdu/Arabic rendering
+and failure messages use explicit offline fixtures, not live AI answers. A running
+local API returned HTTP 503 `configuration_required` / `disabled` for all four
+question forms, confirmed in safe server logs. The real public read-only grounding
+probe returned `blocked_no_published_business_information`, zero provider requests,
+zero database writes and `previewEnablementAllowed=false`. Live provider, CAPTCHA,
+semantic language and hosted browser acceptance remain BLOCKED.

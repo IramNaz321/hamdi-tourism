@@ -18,22 +18,27 @@ function result(data: object, status = 200) {
 }
 export async function POST(request: Request) {
   const model = (process.env.GROQ_MODEL || "").trim();
-  if (
-    process.env.GROQ_CONCIERGE_ENABLED !== "true" ||
-    !process.env.GROQ_API_KEY ||
-    !/^[a-zA-Z0-9._/-]{1,100}$/.test(model) ||
-    (process.env.AI_RATE_LIMIT_SECRET?.trim().length ?? 0) < 32 ||
-    !isConfigured() ||
-    !publicBusinessId()
-  )
+  const enabled = process.env.GROQ_CONCIERGE_ENABLED === "true";
+  const configured =
+    !!process.env.GROQ_API_KEY &&
+    /^[a-zA-Z0-9._/-]{1,100}$/.test(model) &&
+    (process.env.AI_RATE_LIMIT_SECRET?.trim().length ?? 0) >= 32 &&
+    isConfigured() &&
+    !!publicBusinessId();
+  if (!enabled || !configured) {
+    const reason = !enabled ? "disabled" : "configuration_missing_or_invalid";
+    console.warn("Concierge unavailable", { stage: "configuration", reason });
     return result(
       {
         error: "Travel concierge is currently unavailable. Please contact our team.",
         code: "configuration_required",
+        reason,
       },
       503,
     );
-  if (!sameOrigin(request)) return result({ error: "Request unavailable" }, 403);
+  }
+  if (!sameOrigin(request))
+    return result({ error: "Request unavailable", code: "origin_mismatch" }, 403);
   if (Number(request.headers.get("content-length") ?? 0) > 32768)
     return result({ error: "Message too long" }, 413);
   let input;
@@ -44,13 +49,21 @@ export async function POST(request: Request) {
   } catch {
     return result({ error: "Check your message and language" }, 400);
   }
+  let stage = "session";
   try {
     const client = await createClient();
     const {
       data: { user },
     } = await client.auth.getUser();
+    stage = "captcha";
     if (!user?.email_confirmed_at && !(await verifyChallenge(input.token, "travel_concierge")))
-      return result({ error: "Complete the security check or sign in to continue." }, 403);
+      return result(
+        {
+          error: "Complete the security check or sign in to continue.",
+          code: "security_check_required",
+        },
+        403,
+      );
     let booking: object | undefined;
     if (input.bookingId) {
       if (!user?.email_confirmed_at)
@@ -66,6 +79,7 @@ export async function POST(request: Request) {
     const subject = createHmac("sha256", process.env.AI_RATE_LIMIT_SECRET!)
       .update(user?.id ?? input.token ?? "")
       .digest("hex");
+    stage = "rate_limit";
     const service = createServiceClient();
     const { data: allowed, error: rateError } = await service.rpc("concierge_consume", {
       subject,
@@ -76,26 +90,39 @@ export async function POST(request: Request) {
         code: rateError?.code ?? "invalid_result",
       });
       return result(
-        { error: "Travel concierge is currently unavailable. Please contact our team." },
+        {
+          error: "Travel concierge is currently unavailable. Please contact our team.",
+          code: "rate_limit_unavailable",
+        },
         503,
       );
     }
     if (!allowed)
-      return result({ error: "Concierge limit reached. Please contact our team." }, 429);
+      return result(
+        { error: "Concierge limit reached. Please contact our team.", code: "usage_limit_reached" },
+        429,
+      );
+    stage = "public_grounding";
     const { data: context, error } = await client.rpc("concierge_context", {
       business_id: publicBusinessId(),
     });
     if (error) {
       console.error("Concierge context RPC failed", { code: error.code ?? "unknown" });
       return result(
-        { error: "Published business information is unavailable. Please contact our team." },
+        {
+          error: "Published business information is unavailable. Please contact our team.",
+          code: "grounding_unavailable",
+        },
         503,
       );
     }
     if (!context?.public) {
       console.error("Concierge has no published business context");
       return result(
-        { error: "Published business information is unavailable. Please contact our team." },
+        {
+          error: "Published business information is unavailable. Please contact our team.",
+          code: "grounding_unavailable",
+        },
         503,
       );
     }
@@ -114,6 +141,7 @@ export async function POST(request: Request) {
         { error: "Business information requires a human response. Please contact our team." },
         503,
       );
+    stage = "provider";
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -166,6 +194,7 @@ export async function POST(request: Request) {
     return result({ answer: extractGroqResponse(await response.json()) });
   } catch (error) {
     console.error("Concierge request failed", {
+      stage,
       error: error instanceof Error ? error.name : "unknown",
     });
     return result({ error: "Travel concierge is temporarily unavailable. Contact our team." }, 503);

@@ -124,7 +124,9 @@ test("concierge API fails closed on missing configuration, unauthorized bookings
     process.env.GROQ_CONCIERGE_ENABLED = "false";
     const unavailable = await request();
     assert.equal(unavailable.status, 503);
-    assert.equal((await unavailable.json()).code, "configuration_required");
+    const unavailableBody = await unavailable.json();
+    assert.equal(unavailableBody.code, "configuration_required");
+    assert.equal(unavailableBody.reason, "disabled");
     assert.equal(state.calls, 0);
     Object.assign(process.env, {
       GROQ_CONCIERGE_ENABLED: "true",
@@ -132,8 +134,13 @@ test("concierge API fails closed on missing configuration, unauthorized bookings
       GROQ_MODEL: "offline-model",
       AI_RATE_LIMIT_SECRET: "offline-test-only-at-least-32-characters",
     });
+    delete process.env.GROQ_API_KEY;
+    const missingConfig = await request();
+    assert.equal(missingConfig.status, 503);
+    assert.equal((await missingConfig.json()).reason, "configuration_missing_or_invalid");
+    process.env.GROQ_API_KEY = "offline-test-only";
     state.origin = false;
-    assert.equal((await request()).status, 403);
+    assert.equal((await (await request()).json()).code, "origin_mismatch");
     state.origin = true;
     assert.equal((await request({ ...input, tools: [] })).status, 400);
     state.user = false;
@@ -146,13 +153,17 @@ test("concierge API fails closed on missing configuration, unauthorized bookings
     );
     state.bookingDenied = false;
     state.rateError = true;
-    assert.equal((await request()).status, 503);
+    const quotaUnavailable = await request();
+    assert.equal(quotaUnavailable.status, 503);
+    assert.equal((await quotaUnavailable.json()).code, "rate_limit_unavailable");
     state.rateError = false;
     state.rate = false;
     assert.equal((await request()).status, 429);
     state.rate = true;
     state.context = false;
-    assert.equal((await request()).status, 503);
+    const groundingUnavailable = await request();
+    assert.equal(groundingUnavailable.status, 503);
+    assert.equal((await groundingUnavailable.json()).code, "grounding_unavailable");
     state.context = true;
     assert.equal(state.calls, 0);
     const reply = await request({

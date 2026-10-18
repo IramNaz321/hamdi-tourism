@@ -91,7 +91,7 @@ test("microphone denial is explicit and does not send questions", async ({ page 
   await expect(page.getByLabel("Your question")).toHaveValue("");
 });
 
-test("offline AI fixture: session history, loading and English/Arabic/Urdu rendering remain bounded and plain text", async ({
+test("offline AI fixture: session history, loading and English/Arabic/Urdu/Roman Urdu rendering remain bounded and plain text", async ({
   page,
 }) => {
   await page.addInitScript(() =>
@@ -112,7 +112,9 @@ test("offline AI fixture: session history, loading and English/Arabic/Urdu rende
           body.language === "ar"
             ? "راجع صفحة الحجز لمعرفة الخيارات المنشورة."
             : body.language === "ur"
-              ? "دستیاب معلومات کے لیے بکنگ صفحہ دیکھیں۔"
+              ? body.message.includes("kaise")
+                ? "Booking page par maloomat dekhein."
+                : "دستیاب معلومات کے لیے بکنگ صفحہ دیکھیں۔"
               : "Review published options on the booking page.",
       },
     });
@@ -128,6 +130,12 @@ test("offline AI fixture: session history, loading and English/Arabic/Urdu rende
   await expect.poll(() => questions.length).toBe(1);
   release!();
   await expect(page.getByRole("log")).toContainText("دستیاب معلومات");
+  await expect(
+    page
+      .getByRole("log")
+      .locator("p")
+      .filter({ hasText: "دستیاب معلومات کے لیے بکنگ صفحہ دیکھیں۔" }),
+  ).toHaveCSS("direction", "rtl");
   for (const language of ["ar", "en"]) {
     await page.getByLabel("Language", { exact: true }).selectOption(language);
     await expect(window).toHaveAttribute("dir", language === "ar" ? "rtl" : "ltr");
@@ -136,6 +144,17 @@ test("offline AI fixture: session history, loading and English/Arabic/Urdu rende
     await expect(page.getByLabel("Your question")).toHaveValue("");
   }
   expect(questions[2].history).toHaveLength(4);
+  await page.getByLabel("Language", { exact: true }).selectOption("ur");
+  await page.getByLabel("Your question").fill("Transfer kaise book karoon?");
+  await expect(page.getByLabel("Your question")).toHaveCSS("direction", "ltr");
+  await page.getByRole("button", { name: "Ask concierge", exact: true }).click();
+  const roman = page
+    .getByRole("log")
+    .locator("p")
+    .filter({ hasText: "Booking page par maloomat dekhein." });
+  await expect(roman).toBeVisible();
+  await expect(roman).toHaveCSS("direction", "ltr");
+
   await page.getByRole("button", { name: "Close travel concierge" }).click();
   await expect(page.getByRole("button", { name: "Travel concierge", exact: true })).toBeFocused();
   await page.getByRole("button", { name: "Travel concierge", exact: true }).click();
@@ -248,6 +267,7 @@ test("unsupported speech, provider setup and HTTP errors preserve usable text an
       status,
       json: {
         code: status === 503 ? "configuration_required" : undefined,
+        reason: status === 503 ? "disabled" : undefined,
         error: "private provider detail",
       },
     }),
@@ -322,4 +342,27 @@ test("stopping speech rejects late transcripts and closing cancels an in-flight 
     page.getByRole("complementary", { name: "Travel concierge" }).getByRole("alert"),
   ).toContainText("Response stopped");
   await expect(page.getByRole("log")).not.toContainText("late response must not appear");
+});
+
+test("offline failure fixtures distinguish disabled, missing grounding and preview origin without fake replies", async ({
+  page,
+}) => {
+  let response = { code: "configuration_required", reason: "disabled" };
+  await page.route("**/api/concierge", (route) =>
+    route.fulfill({ status: response.code === "origin_mismatch" ? 403 : 503, json: response }),
+  );
+  await page.goto("/");
+  await page.getByRole("button", { name: "Travel concierge", exact: true }).click();
+  const concierge = page.getByRole("complementary", { name: "Travel concierge" });
+  for (const [code, reason, expected] of [
+    ["configuration_required", "disabled", "AI assistance has not been enabled yet"],
+    ["grounding_unavailable", "", "Our published business information is not available yet"],
+    ["origin_mismatch", "", "This website address could not be verified"],
+  ]) {
+    response = { code, reason };
+    await page.getByLabel("Your question").fill("How do I request a transfer?");
+    await page.getByRole("button", { name: "Ask concierge", exact: true }).click();
+    await expect(concierge.getByRole("alert")).toContainText(expected);
+    await expect(concierge.getByRole("log")).not.toContainText("HAMDI TOURISM");
+  }
 });

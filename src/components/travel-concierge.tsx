@@ -9,6 +9,7 @@ import {
   preferredConciergeLanguage,
 } from "@/lib/concierge-languages";
 import Link from "next/link";
+import { conciergeErrorMessage } from "@/lib/concierge-errors";
 import styles from "./travel-concierge.module.css";
 type Turn = { id: number; role: "user" | "assistant"; content: string; language: string };
 export function TravelConcierge({ bookingId }: { bookingId?: string } = {}) {
@@ -118,7 +119,7 @@ export function TravelConcierge({ bookingId }: { bookingId?: string } = {}) {
                   dir="auto"
                 >
                   <span>{turn.role === "user" ? "You" : "HAMDI TOURISM"}</span>
-                  <p>{turn.content}</p>
+                  <p dir="auto">{turn.content}</p>
                 </div>
               ))}
               {busy && (
@@ -169,17 +170,7 @@ export function TravelConcierge({ bookingId }: { bookingId?: string } = {}) {
                   const data = await response.json();
                   if (sequence.current !== run) return;
                   if (!response.ok) {
-                    setError(
-                      data.code === "configuration_required"
-                        ? "Travel concierge is currently unavailable. AI assistance has not been enabled yet. Please contact our team or plan a transfer."
-                        : data.code === "provider_unavailable"
-                          ? "AI assistance is temporarily at capacity. Please use the published website information or contact our team; no price or availability can be confirmed here."
-                        : response.status === 429
-                          ? "Concierge limit reached. Please wait or contact our team."
-                          : response.status === 403
-                            ? "Complete the security check or sign in to continue."
-                            : "Travel concierge is currently unavailable. Please contact our team.",
-                    );
+                    setError(conciergeErrorMessage(data.code, response.status, data.reason));
                   } else if (
                     typeof data.answer !== "string" ||
                     !data.answer.trim() ||
@@ -228,7 +219,7 @@ export function TravelConcierge({ bookingId }: { bookingId?: string } = {}) {
                   maxLength={1500}
                   rows={2}
                   lang={language}
-                  dir={conciergeLocale(language).direction}
+                  dir="auto"
                   disabled={busy}
                 />
               </label>

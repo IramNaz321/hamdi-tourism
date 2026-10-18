@@ -25,10 +25,6 @@ async function main() {
     "AI_RATE_LIMIT_SECRET",
     "NEXT_PUBLIC_TURNSTILE_SITE_KEY",
     "TURNSTILE_SECRET_KEY",
-    "RESEND_API_KEY",
-    "RESEND_WEBHOOK_SECRET",
-    "NOTIFICATION_FROM",
-    "NOTIFICATION_WORKER_SECRET",
   ];
   const present = Object.fromEntries(keys.map((key) => [key, !!process.env[key]?.trim()]));
   const config = publicSupabaseConfig(
@@ -58,6 +54,38 @@ async function main() {
     databaseWrites: false,
     productionReady: false,
   };
+  // Safe preview troubleshooting without calling Groq or consuming a quota.
+  if (process.argv.includes("--grounding-only")) {
+    probeStage = "published_supabase_grounding";
+    if (!config || !z.uuid().safeParse(process.env.HAMDI_ORGANIZATION_ID).success) {
+      report.liveProbe = "blocked_public_database_configuration";
+      report.providerRequests = 0;
+      console.log(JSON.stringify(report, null, 2));
+      process.exitCode = 2;
+      return;
+    }
+    const client = createClient(config.url, config.key, {
+      auth: { persistSession: false, autoRefreshToken: false },
+      global: {
+        fetch: (input, init) => fetch(input, { ...init, signal: AbortSignal.timeout(15000) }),
+      },
+    });
+    const { data, error } = await client.rpc("concierge_context", {
+      business_id: process.env.HAMDI_ORGANIZATION_ID,
+    });
+    report.publicGroundingVerified = !error && !!data?.public;
+    report.liveProbe = error
+      ? "blocked_grounding_rpc"
+      : data?.public
+        ? "public_grounding_pass_provider_not_tested"
+        : "blocked_no_published_business_information";
+    report.providerRequests = 0;
+    report.rateLimitConsumption = false;
+    report.previewEnablementAllowed = false;
+    console.log(JSON.stringify(report, null, 2));
+    if (!report.publicGroundingVerified) process.exitCode = 2;
+    return;
+  }
   if (!ready || !process.argv.includes("--live")) {
     report.liveProbe = ready ? "not requested" : "blocked_missing_or_invalid_configuration";
     console.log(JSON.stringify(report, null, 2));
