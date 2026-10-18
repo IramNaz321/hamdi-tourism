@@ -29,7 +29,7 @@ const booking = () =>
   });
 
 test("owner booking notice has a fixed recipient and only operational booking details", () => {
-  assert.equal(ownerBookingNotificationRecipient, "hamdi.tourism@mail.ru");
+  assert.equal(ownerBookingNotificationRecipient, "Hamid.shah@mail.ru");
   assert.equal(ownerBookingNotificationSubject("HAMDI-123"), "New booking request · HAMDI-123");
   const text = ownerBookingNotificationText(booking());
   assert.match(text, /Booking reference: HAMDI-123/);

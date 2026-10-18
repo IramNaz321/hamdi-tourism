@@ -63,7 +63,7 @@ hostname are not evidence that its provider allowlist is correct. Optional voice
 permission/playback/fallback passes browser emulation; actual device/service
 compatibility remains unverified.
 
-Owner email remains fixed at `hamdi.tourism@mail.ru`. Local outbox/retry/privacy,
+Owner email remains fixed at `Hamid.shah@mail.ru`. Local outbox/retry/privacy,
 idempotency and webhook tests pass. Live delivery requires approved migration
 010, Resend free-plan credentials, verified sender domain, worker scheduler and
 signed webhook configuration; no real delivery is claimed. Do not use mail.ru as
@@ -93,3 +93,20 @@ production build. The independent handover gate remains NOT READY, as expected,
 for missing live environment/acceptance evidence. Browser speech/provider tests
 use labelled fixtures and do not certify actual microphone services or live AI.
 No paid service or public hosting deployment was activated.
+
+
+### Booking notification recipient update
+
+New owner-facing booking notifications go only to `Hamid.shah@mail.ru`, through
+the fixed server-side recipient. This delivery address is independent of Owner
+login identity; no Auth users, memberships, passwords or Owner bindings change.
+Passenger transactional notices retain their existing authorized recipients.
+Retries, lease checks, strict payload validation and stable idempotency keys are
+unchanged. Previously delivered mail is not resent by this code change.
+
+Delivery is not live-verified: this Codex runtime has no `RESEND_API_KEY`,
+`NOTIFICATION_FROM`, `NOTIFICATION_WORKER_SECRET` or `RESEND_WEBHOOK_SECRET`.
+A Resend-verified sender/domain, secure runtime configuration and the separately
+approved notification infrastructure are still required before live acceptance.
+The recipient mailbox is not automatically an authorized sending address. No
+real emails, production migrations or deployment were performed for this update.

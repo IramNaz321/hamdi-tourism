@@ -95,7 +95,7 @@ production recovery point and approved maintenance window before any write.
 
 ## Owner email readiness and disposable verification
 
-The server-side worker has a fixed recipient (`hamdi.tourism@mail.ru`), Resend
+The server-side worker has a fixed recipient (`Hamid.shah@mail.ru`), Resend
 idempotency key, five-attempt lease/retry policy, minimal booking snapshot, and
 signed delivery-event recording. Credentials/configuration remain disabled in
 the current handover configuration; do not report the email as operational until

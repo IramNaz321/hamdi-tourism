@@ -106,7 +106,9 @@ test("notification worker authenticates, uses fixed owner recipient and retries 
     assert.equal(state.calls.length, 0);
     assert.equal(sent.length, 0);
     assert.equal((await req()).status, 200);
-    assert.deepEqual(sent[0].body.to, ["hamdi.tourism@mail.ru"]);
+    assert.deepEqual(sent[0].body.to, ["Hamid.shah@mail.ru"]);
+    assert.equal(sent[0].body.cc, undefined);
+    assert.equal(sent[0].body.bcc, undefined);
     assert.ok(String(sent[0].body.text).includes("TEST-ONLY"));
     assert.equal(state.calls.at(-1)?.args.was_accepted, true);
     state.status = 429;

@@ -16,7 +16,7 @@ The earlier workspace's uncommitted changes remain untouched in its checkout.
   produces a bounded Retry-After and unavailable/limit UI, never a fabricated reply.
   Incomplete/tool output is rejected. Supabase grounding, CAPTCHA/confirmed user,
   persistent quotas, request cancellation and booking-ID checks remain required.
-- Owner booking notification recipient is fixed at `hamdi.tourism@mail.ru`.
+- Owner booking notification recipient is fixed at `Hamid.shah@mail.ru`.
   Claimed records are strictly parsed; only verified outbox booking fields are
   emailed. Stable Resend idempotency keys and leases support retries. A response
   ID from a failed HTTP request is never treated as accepted. Signed webhook

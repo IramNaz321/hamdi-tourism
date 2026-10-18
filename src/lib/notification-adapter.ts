@@ -39,7 +39,7 @@ export function verifyNotificationEvent(
     .parse(JSON.parse(body));
 }
 export const notificationSubject = (kind: string) => `Hamdi Tourism · ${kind.replaceAll("_", " ")}`;
-export const ownerBookingNotificationRecipient = "hamdi.tourism@mail.ru";
+export const ownerBookingNotificationRecipient = "Hamid.shah@mail.ru";
 export function parseOwnerBookingNotification(value: unknown): OwnerBookingNotification {
   return ownerBookingNotificationSchema.parse(value);
 }
