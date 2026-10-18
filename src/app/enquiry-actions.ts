@@ -119,15 +119,14 @@ export async function submitEnquiry(_: EnquiryState, form: FormData): Promise<En
         pickup_address: z.string().trim().max(500),
         dropoff_address: z.string().trim().max(500),
         token: z.string().min(1).max(2048),
-        expected: z
-          .union([
-            z.literal("").transform(() => null),
-            z
-              .string()
-              .regex(/^\d+(\.\d{1,2})?$/)
-              .transform(Number)
-              .pipe(z.number().finite().min(0).max(1000000000)),
-          ]),
+        expected: z.union([
+          z.literal("").transform(() => null),
+          z
+            .string()
+            .regex(/^\d+(\.\d{1,2})?$/)
+            .transform(Number)
+            .pipe(z.number().finite().min(0).max(1000000000)),
+        ]),
       })
       .parse({
         name: form.get("name"),
@@ -204,7 +203,17 @@ export async function submitEnquiry(_: EnquiryState, form: FormData): Promise<En
         customer_notes: contact.notes,
       });
       if (error) return { error: publicError(error.message) };
-      return { reference: String(data), manual: true };
+      if (
+        !z
+          .string()
+          .regex(/^HM-[A-F0-9]{12}$/)
+          .safeParse(data).success
+      )
+        return {
+          error:
+            "The enquiry result could not be confirmed. Contact our team before submitting again.",
+        };
+      return { reference: data, manual: true };
     }
     const { data, error } = await service.rpc("submit_booking_enquiry", {
       business_id: publicBusinessId(),
@@ -225,7 +234,17 @@ export async function submitEnquiry(_: EnquiryState, form: FormData): Promise<En
       expected_total: contact.expected,
     });
     if (error) return { error: publicError(error.message) };
-    return { reference: String(data) };
+    if (
+      !z
+        .string()
+        .regex(/^HE-[A-F0-9]{12}$/)
+        .safeParse(data).success
+    )
+      return {
+        error:
+          "The enquiry result could not be confirmed. Contact our team before submitting again.",
+      };
+    return { reference: data };
   } catch {
     return { error: "Online enquiries are temporarily unavailable. Please contact our team." };
   }

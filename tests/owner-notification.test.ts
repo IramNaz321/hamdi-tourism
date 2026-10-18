@@ -48,6 +48,11 @@ test("owner booking notice has a fixed recipient and only operational booking de
 });
 
 test("owner booking notification validation rejects extra private fields and line-break injection", () => {
-  assert.throws(() => parseOwnerBookingNotification({ ...booking(), customer_email: "private@example.test" }));
-  assert.equal(ownerBookingNotificationSubject("HAMDI-123\nForged"), "New booking request · HAMDI-123 Forged");
+  assert.throws(() =>
+    parseOwnerBookingNotification({ ...booking(), private_notes: "Must never be delivered" }),
+  );
+  assert.equal(
+    ownerBookingNotificationSubject("HAMDI-123\nForged"),
+    "New booking request · HAMDI-123 Forged",
+  );
 });

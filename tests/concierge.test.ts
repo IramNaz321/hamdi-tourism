@@ -45,6 +45,7 @@ test("concierge API fails closed on missing configuration, unauthorized bookings
     bookingDenied: false,
     context: true,
     provider: true,
+    providerStatus: 200,
     calls: 0,
     aiBody: null as Record<string, unknown> | null,
   };
@@ -63,7 +64,7 @@ test("concierge API fails closed on missing configuration, unauthorized bookings
           const mocks: Record<string, string> = {
             "next/server":
               "export const NextResponse={json:(body,{status=200,headers={}}={})=>new Response(JSON.stringify(body),{status,headers})}",
-            "@/lib/supabase/server": `export const isConfigured=()=>true;export const createClient=async()=>({auth:{getUser:async()=>({data:{user:globalThis.__conciergeRoute.user?{id:'local-only',email_confirmed_at:'confirmed'}:null}})},rpc:async(name)=> name==='passenger_booking_detail'?{data:{reference:'local projection',status:'pending',email:'private',latitude:25,driver:'Assigned driver'},error:globalThis.__conciergeRoute.bookingDenied?{}:null}:{data:globalThis.__conciergeRoute.context?{public:{locations:[],fleet:[]},fares:[]}:null,error:null}});`,
+            "@/lib/supabase/server": `export const isConfigured=()=>true;export const createClient=async()=>({auth:{getUser:async()=>({data:{user:globalThis.__conciergeRoute.user?{id:'local-only',email_confirmed_at:'confirmed'}:null}})},rpc:async(name,args)=> name==='passenger_booking_detail'?{data:{id:args.trip_id,reference:'local projection',status:'pending',email:'private',latitude:25,driver:'Assigned driver'},error:globalThis.__conciergeRoute.bookingDenied?{}:null}:{data:globalThis.__conciergeRoute.context?{public:{locations:[],fleet:[]},fares:[]}:null,error:null}});`,
             "@/lib/supabase/admin":
               "export const createServiceClient=()=>({rpc:async()=>({data:globalThis.__conciergeRoute.rate,error:globalThis.__conciergeRoute.rateError?{}:null})})",
             "@/lib/website": "export const publicBusinessId=()=> 'local-business'",
@@ -87,35 +88,28 @@ test("concierge API fails closed on missing configuration, unauthorized bookings
     routeModule,
     routeModule.exports,
   );
-  const keys = [
-    "GROQ_CONCIERGE_ENABLED",
-    "GROQ_API_KEY",
-    "GROQ_MODEL",
-    "AI_RATE_LIMIT_SECRET",
-  ];
+  const keys = ["GROQ_CONCIERGE_ENABLED", "GROQ_API_KEY", "GROQ_MODEL", "AI_RATE_LIMIT_SECRET"];
   const previous = Object.fromEntries(keys.map((k) => [k, process.env[k]]));
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async (url, init) => {
-    assert.equal(url, "https://api.groq.com/openai/v1/responses");
+    assert.equal(url, "https://api.groq.com/openai/v1/chat/completions");
     state.calls++;
     state.aiBody = JSON.parse(String(init?.body));
     return new Response(
       JSON.stringify({
-        output: state.provider
+        choices: state.provider
           ? [
               {
-                type: "message",
-                content: [
-                  {
-                    type: "output_text",
-                    text: "Use the booking page to review published options.",
-                  },
-                ],
+                finish_reason: "stop",
+                message: {
+                  role: "assistant",
+                  content: "Use the booking page to review published options.",
+                },
               },
             ]
           : [],
       }),
-      { status: 200 },
+      { status: state.providerStatus, headers: { "Retry-After": "120" } },
     );
   };
   const input = { message: "How do I book?", language: "en" };
@@ -136,7 +130,7 @@ test("concierge API fails closed on missing configuration, unauthorized bookings
       GROQ_CONCIERGE_ENABLED: "true",
       GROQ_API_KEY: "offline-test-only",
       GROQ_MODEL: "offline-model",
-      AI_RATE_LIMIT_SECRET: "offline-test-only",
+      AI_RATE_LIMIT_SECRET: "offline-test-only-at-least-32-characters",
     });
     state.origin = false;
     assert.equal((await request()).status, 403);
@@ -168,13 +162,19 @@ test("concierge API fails closed on missing configuration, unauthorized bookings
     });
     assert.equal(reply.status, 200);
     assert.equal(reply.headers.get("Cache-Control"), "private, no-store");
-    assert.equal(state.aiBody?.store, false);
+    assert.ok(Array.isArray(state.aiBody?.messages));
+    assert.equal(state.aiBody?.max_completion_tokens, 220);
     const body = JSON.stringify(state.aiBody);
     assert.ok(body.includes("untrusted history"));
     assert.ok(!body.includes('"email"'));
     assert.ok(!body.includes('"latitude"'));
     state.provider = false;
     assert.equal((await request()).status, 503);
+    state.providerStatus = 429;
+    const limited = await request();
+    assert.equal(limited.status, 429);
+    assert.equal(limited.headers.get("Retry-After"), "120");
+    assert.equal((await limited.json()).code, "provider_rate_limited");
   } finally {
     globalThis.fetch = originalFetch;
     delete globals.__conciergeRoute;

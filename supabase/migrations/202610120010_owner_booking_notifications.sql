@@ -12,9 +12,9 @@ create table public.owner_booking_notification_outbox (
  reference text not null,
  pickup_name text not null,
  dropoff_name text not null,
- customer_name text not null,
+ customer_name text,
  customer_email text,
- customer_phone text not null,
+ customer_phone text,
  pickup_at timestamptz not null,
  passengers integer not null check(passengers between 1 and 1000),
  luggage integer check(luggage between 0 and 1000),
@@ -25,11 +25,13 @@ create table public.owner_booking_notification_outbox (
  status text not null default 'queued' check(status in ('queued','sending','accepted','delivered','failed')),
  attempts integer not null default 0 check(attempts between 0 and 5),
  next_attempt_at timestamptz not null default now(),
+ first_attempt_at timestamptz,
  leased_until timestamptz,
  lease_token uuid,
  provider_id text unique,
  created_at timestamptz not null default now(),
- delivered_at timestamptz
+ delivered_at timestamptz,
+ check (status not in ('queued','sending') or (customer_name is not null and customer_phone is not null))
 );
 create index owner_booking_notification_due on public.owner_booking_notification_outbox(next_attempt_at)
  where status in ('queued','sending');
@@ -58,6 +60,11 @@ revoke all on function private.owner_booking_notice() from public,anon,authentic
 
 create function public.owner_notification_claim() returns jsonb language plpgsql security definer set search_path='' as $$
 declare result jsonb;begin
+ -- Expired final leases must terminate and purge contacts, rather than strand sending rows.
+ update public.owner_booking_notification_outbox set status='failed',leased_until=null,
+  customer_name=null,customer_email=null,customer_phone=null
+ where status in ('queued','sending') and (attempts>=5 or first_attempt_at<=now()-interval '23 hours')
+  and (leased_until is null or leased_until<now());
  with due as (
   select n.booking_id from public.owner_booking_notification_outbox n
   where n.status in ('queued','sending') and n.attempts<5 and n.next_attempt_at<=now()
@@ -65,7 +72,7 @@ declare result jsonb;begin
   order by n.created_at limit 10 for update skip locked
  ), claimed as (
   update public.owner_booking_notification_outbox n set status='sending',attempts=n.attempts+1,
-   leased_until=now()+interval '5 minutes',lease_token=gen_random_uuid()
+   leased_until=now()+interval '5 minutes',lease_token=gen_random_uuid(),first_attempt_at=coalesce(n.first_attempt_at,now())
   from due where n.booking_id=due.booking_id returning n.*
  )
  select coalesce(jsonb_agg(jsonb_build_object(

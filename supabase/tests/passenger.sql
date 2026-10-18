@@ -92,6 +92,19 @@ select public.test_assert(public.owner_notification_delivered('owner_msg_test','
 select public.owner_notification_result((current_setting('test.owner_claim')::jsonb->1->>'booking_id')::uuid,null,false,(current_setting('test.owner_claim')::jsonb->1->>'lease')::uuid);
 reset role;
 select public.test_assert((select status='queued' and provider_id is null from public.owner_booking_notification_outbox where booking_id=(current_setting('test.owner_claim')::jsonb->1->>'booking_id')::uuid),'transient owner email failure remains retryable without false delivery');
+select public.test_assert((select customer_name is null and customer_email is null and customer_phone is null from public.owner_booking_notification_outbox where booking_id=(current_setting('test.owner_claim')::jsonb->0->>'booking_id')::uuid),'accepted owner notification purges contacts without violating constraints');
+update public.owner_booking_notification_outbox set status='sending',attempts=5,leased_until=now()-interval '1 minute' where booking_id=(current_setting('test.owner_claim')::jsonb->1->>'booking_id')::uuid;
+set local role service_role;
+select public.owner_notification_claim();
+reset role;
+select public.test_assert((select status='failed' and customer_name is null and customer_phone is null from public.owner_booking_notification_outbox where booking_id=(current_setting('test.owner_claim')::jsonb->1->>'booking_id')::uuid),'expired final owner lease terminates safely and purges contacts');
+update public.owner_booking_notification_outbox set status='queued',attempts=1,first_attempt_at=now()-interval '24 hours',leased_until=null,customer_name='Local fixture',customer_phone='1234567' where booking_id=(current_setting('test.owner_claim')::jsonb->1->>'booking_id')::uuid;
+set local role service_role;
+select public.owner_notification_claim();
+reset role;
+select public.test_assert((select status='failed' and customer_name is null from public.owner_booking_notification_outbox where booking_id=(current_setting('test.owner_claim')::jsonb->1->>'booking_id')::uuid),'owner retry outside idempotency horizon is refused rather than risk a duplicate email');
+
+
 set local role service_role;
 select public.test_assert(public.concierge_consume(repeat('a',64),'a0000000-0000-4000-8000-000000000001'),'persistent AI rate limiter consumes authorized server request');
 do $$begin for n in 1..9 loop perform public.concierge_consume(repeat('a',64),'a0000000-0000-4000-8000-000000000001');end loop;end$$;

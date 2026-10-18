@@ -9,7 +9,7 @@
     "202610120007_availability.sql": "190a310a4fba3a8c1ce8955357969cc0ed1d272d53f8d4228a9b88e400f752f5",
     "202610120008_driver_tracking.sql": "b4224e941c97339f67da406dda898dcb7a3ea50f5b6b692e95c8c2eb339fe1e1",
     "202610120009_passenger_platform.sql": "f19619e42e0ec5797afe782e21d45b0f1c6bbc59b1b1013cd76907aff5c2675c",
-    "202610120010_owner_booking_notifications.sql": "03ff53cbc14764bb63241b1d086620f8289b7546d9a29738ab539f516b156921"
+    "202610120010_owner_booking_notifications.sql": "a084fd229f7b0f64a79f9e2ac552f48c5d99d8fadc72d40ee7805685edf1fdd0"
   },
   "catalog": {
     "table:routes": {
@@ -3969,7 +3969,7 @@
           "type": "text",
           "default": null,
           "identity": "",
-          "required": true
+          "required": false
         },
         {
           "name": "customer_email",
@@ -3983,7 +3983,7 @@
           "type": "text",
           "default": null,
           "identity": "",
-          "required": true
+          "required": false
         },
         {
           "name": "pickup_at",
@@ -4056,6 +4056,13 @@
           "required": true
         },
         {
+          "name": "first_attempt_at",
+          "type": "timestamp with time zone",
+          "default": null,
+          "identity": "",
+          "required": false
+        },
+        {
           "name": "leased_until",
           "type": "timestamp with time zone",
           "default": null,
@@ -4105,6 +4112,10 @@
         {
           "name": "owner_booking_notification_outbox_booking_id_fkey",
           "definition": "FOREIGN KEY (booking_id) REFERENCES bookings(id)"
+        },
+        {
+          "name": "owner_booking_notification_outbox_check",
+          "definition": "CHECK (((status <> ALL (ARRAY['queued'::text, 'sending'::text])) OR ((customer_name IS NOT NULL) AND (customer_phone IS NOT NULL))))"
         },
         {
           "name": "owner_booking_notification_outbox_luggage_check",
@@ -4189,7 +4200,7 @@
       "authenticated_execute": true
     },
     "function:public.owner_notification_claim()": {
-      "definition": "CREATE OR REPLACE FUNCTION public.owner_notification_claim()\n RETURNS jsonb\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\ndeclare result jsonb;begin\n with due as (\n  select n.booking_id from public.owner_booking_notification_outbox n\n  where n.status in ('queued','sending') and n.attempts<5 and n.next_attempt_at<=now()\n   and (n.leased_until is null or n.leased_until<now())\n  order by n.created_at limit 10 for update skip locked\n ), claimed as (\n  update public.owner_booking_notification_outbox n set status='sending',attempts=n.attempts+1,\n   leased_until=now()+interval '5 minutes',lease_token=gen_random_uuid()\n  from due where n.booking_id=due.booking_id returning n.*\n )\n select coalesce(jsonb_agg(jsonb_build_object(\n  'id',n.booking_id,'booking_id',n.booking_id,'lease',n.lease_token,'reference',n.reference,\n  'pickup_name',n.pickup_name,'dropoff_name',n.dropoff_name,'pickup_at',n.pickup_at,\n  'customer_name',n.customer_name,'customer_email',n.customer_email,'customer_phone',n.customer_phone,\n  'passengers',n.passengers,'luggage',n.luggage,'vehicle_category',n.vehicle_category,\n  'price_aed',n.price_aed,'payment_status',n.payment_status,\n  'flight_number',n.flight_number,'attempt',n.attempts\n )),'[]'::jsonb) into result from claimed n;\n return result;\nend;$function$\n",
+      "definition": "CREATE OR REPLACE FUNCTION public.owner_notification_claim()\n RETURNS jsonb\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\ndeclare result jsonb;begin\n -- Expired final leases must terminate and purge contacts, rather than strand sending rows.\n update public.owner_booking_notification_outbox set status='failed',leased_until=null,\n  customer_name=null,customer_email=null,customer_phone=null\n where status in ('queued','sending') and (attempts>=5 or first_attempt_at<=now()-interval '23 hours')\n  and (leased_until is null or leased_until<now());\n with due as (\n  select n.booking_id from public.owner_booking_notification_outbox n\n  where n.status in ('queued','sending') and n.attempts<5 and n.next_attempt_at<=now()\n   and (n.leased_until is null or n.leased_until<now())\n  order by n.created_at limit 10 for update skip locked\n ), claimed as (\n  update public.owner_booking_notification_outbox n set status='sending',attempts=n.attempts+1,\n   leased_until=now()+interval '5 minutes',lease_token=gen_random_uuid(),first_attempt_at=coalesce(n.first_attempt_at,now())\n  from due where n.booking_id=due.booking_id returning n.*\n )\n select coalesce(jsonb_agg(jsonb_build_object(\n  'id',n.booking_id,'booking_id',n.booking_id,'lease',n.lease_token,'reference',n.reference,\n  'pickup_name',n.pickup_name,'dropoff_name',n.dropoff_name,'pickup_at',n.pickup_at,\n  'customer_name',n.customer_name,'customer_email',n.customer_email,'customer_phone',n.customer_phone,\n  'passengers',n.passengers,'luggage',n.luggage,'vehicle_category',n.vehicle_category,\n  'price_aed',n.price_aed,'payment_status',n.payment_status,\n  'flight_number',n.flight_number,'attempt',n.attempts\n )),'[]'::jsonb) into result from claimed n;\n return result;\nend;$function$\n",
       "public_execute": false,
       "authenticated_execute": false
     },

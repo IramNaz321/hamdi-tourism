@@ -41,11 +41,13 @@ export default async function FareReview() {
         creates a private draft; it never adds a route or vehicle and never enables customer quotes.
       </p>
       <section className="panel p-6 mb-7">
-        <h2 className="font-semibold mb-3">Dubai DXB competitor reference · 18 Oct 2026</h2>
+        <h2 className="font-semibold mb-3">Dubai DXB comparison notes · approval required</h2>
         <p className="text-xs text-muted mb-4">
-          Transfeero public route pages, converted using the ECB 16 Oct 2026 EUR/USD reference
-          (1.1253) and the UAE dirham&apos;s USD peg (AED 3.6725/USD): approximately AED 4.1327/EUR.
-          Competitor-only, route-specific starting examples; not Hamdi Tourism prices.
+          Previously collected comparison notes, not independently verified in this review. Recheck
+          the linked sources before approval. Figures were converted using the recorded ECB 16 Oct
+          2026 EUR/USD reference (1.1253) and the UAE dirham&apos;s USD peg (AED 3.6725/USD):
+          approximately AED 4.1327/EUR. Competitor-only, route-specific starting examples; not Hamdi
+          Tourism prices.
         </p>
         <div className="overflow-x-auto">
           <table className="admin-table">
@@ -85,23 +87,32 @@ export default async function FareReview() {
         </div>
         <p className="text-xs text-muted mt-4">
           Sources:{" "}
-          <a className="underline" href="https://www.transfeero.com/en/dubai-airport-transfers-dxb/transfer-from-dubai-airport-to-burj-khalifa-building/">
+          <a
+            className="underline"
+            href="https://www.transfeero.com/en/dubai-airport-transfers-dxb/transfer-from-dubai-airport-to-burj-khalifa-building/"
+          >
             Transfeero DXB → Burj Khalifa
           </a>
           ;{" "}
-          <a className="underline" href="https://www.transfeero.com/en/dubai-airport-transfers-dxb/transfer-from-dubai-airport-to-palm-jumeirah-islands/">
+          <a
+            className="underline"
+            href="https://www.transfeero.com/en/dubai-airport-transfers-dxb/transfer-from-dubai-airport-to-palm-jumeirah-islands/"
+          >
             Transfeero DXB → Palm Jumeirah
           </a>
           ;{" "}
-          <a className="underline" href="https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml">
+          <a
+            className="underline"
+            href="https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml"
+          >
             ECB euro reference rates
           </a>
           . Final AED conversions are approximate, not provider checkout quotes.
         </p>
         <p className="text-xs text-muted mt-3">
-          Transfeero states its own DXB airport meet-and-greet includes 60 minutes&apos; arrival wait
-          (15 minutes for other pickups) and its fares include Salik. It describes Salik as AED 4–6
-          per crossing with time/day variation. These are competitor terms only. Before pricing,
+          Transfeero states its own DXB airport meet-and-greet includes 60 minutes&apos; arrival
+          wait (15 minutes for other pickups) and its fares include Salik. It describes Salik as AED
+          4–6 per crossing with time/day variation. These are competitor terms only. Before pricing,
           set your own Salik inclusion/pass-through policy, night-service policy, included wait and
           overtime, luggage limits, child-seat/oversize-bag rules and route-specific hotel access.
         </p>
@@ -113,17 +124,32 @@ export default async function FareReview() {
             {!routes.data?.length && (
               <li>
                 Add only verified pickup/drop-off locations and routes in{" "}
-                <Link className="underline" href="/admin/locations">Locations</Link> and{" "}
-                <Link className="underline" href="/admin/routes">Routes</Link>.
+                <Link className="underline" href="/admin/locations">
+                  Locations
+                </Link>{" "}
+                and{" "}
+                <Link className="underline" href="/admin/routes">
+                  Routes
+                </Link>
+                .
               </li>
             )}
             {!categories.length && (
               <li>
-                Enter the actual fleet and categories in <Link className="underline" href="/admin/vehicles">Vehicles</Link>.
+                Enter the actual fleet and categories in{" "}
+                <Link className="underline" href="/admin/vehicles">
+                  Vehicles
+                </Link>
+                .
               </li>
             )}
-            <li>Decide real vehicle capacity, business costs, fare/toll rules and included waiting.</li>
-            <li>Enter a reviewed fare draft below, then publish only through Route pricing after owner approval.</li>
+            <li>
+              Decide real vehicle capacity, business costs, fare/toll rules and included waiting.
+            </li>
+            <li>
+              Enter a reviewed fare draft below, then publish only through Route pricing after owner
+              approval.
+            </li>
           </ol>
         </section>
       )}

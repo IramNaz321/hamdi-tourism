@@ -1,4 +1,6 @@
 begin;
+create function public.test_assert(ok boolean,label text) returns void language plpgsql as $$ begin if ok is distinct from true then raise exception 'FAILED: %',label;end if;raise notice 'PASS: %',label;end$$;
+create function public.test_reject(command text,expected text[],label text) returns void language plpgsql as $$declare rejected boolean:=false;begin begin execute command;exception when others then if sqlstate=any(expected) then rejected:=true;else raise;end if;end;if not rejected then raise exception 'FAILED: %',label;end if;raise notice 'PASS: %',label;end$$;
 insert into public.organizations(id,name)
  values('a0000000-0000-4000-8000-000000000011','Disposable unpriced enquiry fixture');
 insert into public.business_settings(organization_id,display_name,published,enquiries_enabled)
@@ -41,4 +43,7 @@ select public.test_reject($q$select public.submit_unpriced_transfer_enquiry(
  null,null,now()+interval '2 days',null,2,2,'sedan','one_way',null,null)$q$,
  array['42501'],'anonymous users cannot bypass CAPTCHA workflow with the RPC');
 reset role;
+select public.test_assert(not has_table_privilege('anon','public.unpriced_transfer_enquiries','SELECT'),'anonymous enquiry table privilege explicitly revoked');
+select public.test_assert(not has_column_privilege('authenticated','public.unpriced_transfer_enquiries','name','UPDATE'),'staff grants cannot rewrite passenger personal data');
+select public.test_assert(has_column_privilege('authenticated','public.unpriced_transfer_enquiries','status','UPDATE'),'authorized status workflow retains its explicit column grant');
 rollback;

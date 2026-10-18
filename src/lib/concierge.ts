@@ -39,3 +39,24 @@ export function extractConciergeResponse(data: unknown) {
   if (!text) throw new Error("No response");
   return text.slice(0, 8000);
 }
+
+export function extractGroqResponse(data: unknown) {
+  const parsed = z
+    .object({
+      choices: z
+        .array(
+          z.object({
+            finish_reason: z.literal("stop"),
+            message: z.object({
+              role: z.literal("assistant"),
+              content: z.string().trim().min(1).max(8000),
+              tool_calls: z.undefined().optional(),
+            }),
+          }),
+        )
+        .min(1)
+        .max(1),
+    })
+    .parse(data);
+  return parsed.choices[0].message.content;
+}

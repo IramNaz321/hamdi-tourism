@@ -20,17 +20,23 @@ export async function reviewManualEnquiry(
     !["owner", "manager", "dispatcher"].includes(member.role)
   )
     return { error: "Not permitted." };
-  const { data, error } = await supabase
-    .from("unpriced_transfer_enquiries")
-    .update({ status: status.data })
-    .eq("organization_id", member.organization_id)
-    .eq("id", id)
-    .eq("updated_at", version.data)
-    .eq("archived", false)
-    .select("id")
-    .maybeSingle();
-  if (error || !data)
-    return { error: "This request changed or could not be updated. Refresh and try again." };
-  revalidatePath("/admin/manual-enquiries", "layout");
-  return { success: "Request updated." };
+  try {
+    const { data, error } = await supabase
+      .from("unpriced_transfer_enquiries")
+      .update({ status: status.data })
+      .eq("organization_id", member.organization_id)
+      .eq("id", id)
+      .eq("updated_at", version.data)
+      .eq("archived", false)
+      .select("id")
+      .maybeSingle();
+    if (error || !data)
+      return { error: "This request changed or could not be updated. Refresh and try again." };
+    revalidatePath("/admin/manual-enquiries", "layout");
+    return { success: "Request updated." };
+  } catch {
+    return {
+      error: "The save result could not be confirmed. Refresh the records before trying again.",
+    };
+  }
 }

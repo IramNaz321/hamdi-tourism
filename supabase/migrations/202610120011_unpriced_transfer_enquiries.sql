@@ -42,6 +42,7 @@ create index unpriced_enquiry_org_time_idx
 create index unpriced_enquiry_rate_idx
  on public.unpriced_transfer_enquiries(organization_id,email,created_at);
 alter table public.unpriced_transfer_enquiries enable row level security;
+revoke all on public.unpriced_transfer_enquiries from public,anon,authenticated,service_role;
 create policy unpriced_enquiry_read on public.unpriced_transfer_enquiries
  for select to authenticated using
  (organization_id=(select private.organization_id()) and (select private.current_role()) in ('owner','manager','dispatcher','viewer'));

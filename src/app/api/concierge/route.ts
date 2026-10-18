@@ -2,11 +2,7 @@ import { readLimitedBody } from "@/lib/bounded-body";
 import { NextResponse } from "next/server";
 import { createHmac } from "node:crypto";
 import { conciergeInput } from "@/lib/passenger-validation";
-import {
-  conciergeSystem,
-  conciergeBookingProjection,
-  extractConciergeResponse,
-} from "@/lib/concierge";
+import { conciergeSystem, conciergeBookingProjection, extractGroqResponse } from "@/lib/concierge";
 import { createClient, isConfigured } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/admin";
 import { publicBusinessId } from "@/lib/website";
@@ -21,7 +17,7 @@ export async function POST(request: Request) {
     process.env.GROQ_CONCIERGE_ENABLED !== "true" ||
     !process.env.GROQ_API_KEY ||
     !/^[a-zA-Z0-9._/-]{1,100}$/.test(model) ||
-    !process.env.AI_RATE_LIMIT_SECRET ||
+    (process.env.AI_RATE_LIMIT_SECRET?.trim().length ?? 0) < 32 ||
     !isConfigured() ||
     !publicBusinessId()
   )
@@ -57,11 +53,12 @@ export async function POST(request: Request) {
       const { data, error } = await client.rpc("passenger_booking_detail", {
         trip_id: input.bookingId,
       });
-      if (error || !data) return result({ error: "Booking information unavailable" }, 403);
+      if (error || !data || data.id !== input.bookingId)
+        return result({ error: "Booking information unavailable" }, 403);
       booking = conciergeBookingProjection(data);
     }
     // An anonymous caller gets a validated CAPTCHA token as its pseudonymous bucket, plus a persistent global hourly ceiling.
-    const subject = createHmac("sha256", process.env.AI_RATE_LIMIT_SECRET)
+    const subject = createHmac("sha256", process.env.AI_RATE_LIMIT_SECRET!)
       .update(user?.id ?? input.token ?? "")
       .digest("hex");
     const service = createServiceClient();
@@ -69,8 +66,10 @@ export async function POST(request: Request) {
       subject,
       business_id: publicBusinessId(),
     });
-    if (rateError) {
-      console.error("Concierge rate limit RPC failed", { code: rateError.code ?? "unknown" });
+    if (rateError || typeof allowed !== "boolean") {
+      console.error("Concierge rate limit RPC failed", {
+        code: rateError?.code ?? "invalid_result",
+      });
       return result(
         { error: "Travel concierge is currently unavailable. Please contact our team." },
         503,
@@ -110,7 +109,7 @@ export async function POST(request: Request) {
         { error: "Business information requires a human response. Please contact our team." },
         503,
       );
-    const response = await fetch("https://api.groq.com/openai/v1/responses", {
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
@@ -118,10 +117,9 @@ export async function POST(request: Request) {
       },
       body: JSON.stringify({
         model,
-        max_output_tokens: 220,
-        store: false,
-        instructions: conciergeSystem,
-        input: [
+        max_completion_tokens: 220,
+        messages: [
+          { role: "system", content: conciergeSystem },
           {
             role: "user",
             content: JSON.stringify({
@@ -134,8 +132,22 @@ export async function POST(request: Request) {
           },
         ],
       }),
-      signal: AbortSignal.timeout(25000),
+      signal: AbortSignal.any([request.signal, AbortSignal.timeout(25000)]),
     });
+    if (response.status === 429) {
+      const retry = Number(response.headers.get("retry-after"));
+      const seconds = Number.isFinite(retry) && retry > 0 ? Math.min(3600, Math.ceil(retry)) : 60;
+      return NextResponse.json(
+        {
+          error: "Concierge provider limit reached. Try later or contact our team.",
+          code: "provider_rate_limited",
+        },
+        {
+          status: 429,
+          headers: { "Cache-Control": "private, no-store", "Retry-After": String(seconds) },
+        },
+      );
+    }
     if (!response.ok) {
       console.error("Concierge provider request failed", { status: response.status });
       return result(
@@ -146,7 +158,7 @@ export async function POST(request: Request) {
         503,
       );
     }
-    return result({ answer: extractConciergeResponse(await response.json()) });
+    return result({ answer: extractGroqResponse(await response.json()) });
   } catch (error) {
     console.error("Concierge request failed", {
       error: error instanceof Error ? error.name : "unknown",

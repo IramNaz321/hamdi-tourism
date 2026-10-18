@@ -31,7 +31,12 @@ export function verifyNotificationEvent(
   secret: string,
 ) {
   new Webhook(secret).verify(body, headers);
-  return JSON.parse(body) as { type: string; data: { email_id: string } };
+  return z
+    .object({
+      type: z.string().min(1).max(100),
+      data: z.object({ email_id: z.string().min(1).max(200) }),
+    })
+    .parse(JSON.parse(body));
 }
 export const notificationSubject = (kind: string) => `Hamdi Tourism · ${kind.replaceAll("_", " ")}`;
 export const ownerBookingNotificationRecipient = "hamdi.tourism@mail.ru";
@@ -63,9 +68,7 @@ export function ownerBookingNotificationText(booking: OwnerBookingNotification) 
     `Luggage: ${booking.luggage ?? "Not recorded"}`,
     `Vehicle category: ${booking.vehicle_category ?? "Not recorded"}`,
     `Agreed fare: AED ${booking.price_aed.toFixed(2)} · payment status: ${booking.payment_status}`,
-    ...(booking.flight_number
-      ? [`Flight number: ${safeEmailLine(booking.flight_number)}`]
-      : []),
+    ...(booking.flight_number ? [`Flight number: ${safeEmailLine(booking.flight_number)}`] : []),
     "",
     "Review the booking in the authorized Admin dashboard.",
   ].join("\n");
@@ -77,3 +80,22 @@ export const notificationText = (
   bookingId: string,
 ) =>
   `${reference}: ${kind.replaceAll("_", " ")}.\nView your verified booking status and policies: ${origin}/passenger/bookings/${bookingId}\nThis notice does not approve a refund or payment. Only your booking page and verified provider records establish the current status.`;
+
+export function parsePassengerNotificationBatch(value: unknown) {
+  return z
+    .array(
+      z
+        .object({
+          id: z.uuid(),
+          booking_id: z.uuid(),
+          lease: z.uuid(),
+          kind: z.string().min(1).max(100),
+          email: z.email(),
+          reference: z.string().min(1).max(128),
+          attempt: z.number().int().min(1).max(5),
+        })
+        .strict(),
+    )
+    .max(10)
+    .parse(value);
+}
