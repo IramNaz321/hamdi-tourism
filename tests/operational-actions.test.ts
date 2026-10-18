@@ -125,6 +125,24 @@ test("Driver and Passenger mutations distinguish validation, permission, provide
       },
     };
     assert.deepEqual((await passenger.createPassengerBooking({}, form)).bookings, [saved]);
+    boundary.context = {
+      organizationId: "a0000000-0000-4000-8000-000000000001",
+      supabase: {
+        rpc: async () => {
+          throw new Error("private transport detail");
+        },
+      },
+    };
+    form.set("name", "Local profile fixture");
+    form.set("phone", "+971501234567");
+    const profile = await passenger.savePassengerProfile({}, form);
+    assert.match(profile.error!, /could not be confirmed/);
+    assert.ok(!profile.error?.includes("private transport detail"));
+    form.set("reason", "Client-requested change");
+    const cancellation = await passenger.requestCancellation({}, form);
+    assert.match(cancellation.error!, /could not be confirmed/);
+    assert.equal(cancellation.success, undefined);
+    assert.ok(!cancellation.error?.includes("private transport detail"));
     boundary.context = undefined;
     await assert.rejects(passenger.createPassengerBooking({}, form), { message: "AUTH_REQUIRED" });
   } finally {

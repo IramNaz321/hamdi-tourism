@@ -1,3 +1,5 @@
+> Historical phase report. Current release gates, hosted findings and acceptance steps are in [Final client handover](FINAL-CLIENT-HANDOVER.md). Do not execute outdated migration sequences below.
+
 # HAMDI TOURISM — client handover
 
 Last reviewed: 14 October 2026. Client: Hamid Shah.

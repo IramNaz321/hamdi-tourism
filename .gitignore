@@ -13,3 +13,18 @@ test-results/
 playwright-report/
 
 .next-test/
+
+# Database exports and credentials must stay outside the repository.
+backups/
+*.dump
+*.dump.part
+*.backup
+*.gpg
+*.age
+.pgpass
+*.pgpass
+*.roles.sql
+*.globals.sql
+
+# Local TLS certificates; never commit.
+.certs/

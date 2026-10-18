@@ -21,28 +21,34 @@ export async function saveRecord(
   } catch (error) {
     return { error: error instanceof Error ? error.message : "Check your entries." };
   }
-  if (id) {
-    const version = String(form.get("updated_at") ?? "");
-    const { data, error } = await supabase
-      .from(entity)
-      .update(record)
-      .eq("id", id)
-      .eq("organization_id", member.organization_id)
-      .eq("updated_at", version)
-      .eq("archived", false)
-      .select("id")
-      .maybeSingle();
-    if (error) return { error: mutationError(error.code, error.message) };
-    if (!data)
-      return {
-        error:
-          "This record was changed or archived by another team member. Refresh before editing.",
-      };
-  } else {
-    const { error } = await supabase
-      .from(entity)
-      .insert({ ...record, organization_id: member.organization_id });
-    if (error) return { error: mutationError(error.code, error.message) };
+  try {
+    if (id) {
+      const version = String(form.get("updated_at") ?? "");
+      const { data, error } = await supabase
+        .from(entity)
+        .update(record)
+        .eq("id", id)
+        .eq("organization_id", member.organization_id)
+        .eq("updated_at", version)
+        .eq("archived", false)
+        .select("id")
+        .maybeSingle();
+      if (error) return { error: mutationError(error.code, error.message) };
+      if (!data)
+        return {
+          error:
+            "This record was changed or archived by another team member. Refresh before editing.",
+        };
+    } else {
+      const { error } = await supabase
+        .from(entity)
+        .insert({ ...record, organization_id: member.organization_id });
+      if (error) return { error: mutationError(error.code, error.message) };
+    }
+  } catch {
+    return {
+      error: "The save result could not be confirmed. Refresh the records before retrying.",
+    };
   }
   revalidatePath("/admin", "layout");
   redirect(`/admin/${entity}?notice=saved`);
@@ -93,16 +99,22 @@ export async function archiveRecord(
   const { supabase, member } = await requireStaff();
   if (!entities[entity] || !canWrite(member.role, entity) || !z.uuid().safeParse(id).success)
     redirect("/admin?notice=forbidden");
-  const { data, error } = await supabase
-    .from(entity)
-    .update({ archived })
-    .eq("id", id)
-    .eq("organization_id", member.organization_id)
-    .eq("updated_at", version)
-    .select("id")
-    .maybeSingle();
+  let notice = "archive-failed";
+  try {
+    const { data, error } = await supabase
+      .from(entity)
+      .update({ archived })
+      .eq("id", id)
+      .eq("organization_id", member.organization_id)
+      .eq("updated_at", version)
+      .select("id")
+      .maybeSingle();
+    notice = error ? "archive-failed" : !data ? "changed" : archived ? "archived" : "restored";
+  } catch {
+    // An uncertain write must never be reported as archived or restored.
+    notice = "archive-failed";
+  }
   revalidatePath("/admin", "layout");
-  const notice = error ? "archive-failed" : !data ? "changed" : archived ? "archived" : "restored";
   redirect(`/admin/${entity}?notice=${notice}${archived ? "" : "&archived=true"}`);
 }
 export async function searchOptions(table: string, query: string) {
@@ -113,14 +125,18 @@ export async function searchOptions(table: string, query: string) {
     .trim()
     .slice(0, 100)
     .replace(/[\\%_]/g, "\\$&");
-  const { data, error } = await supabase
-    .from(table)
-    .select("id,name")
-    .eq("organization_id", member.organization_id)
-    .eq("archived", false)
-    .ilike("name", `%${term}%`)
-    .order("name")
-    .limit(30);
-  if (error) return { options: [], error: "Unable to load choices. Try again." };
-  return { options: data as { id: string; name: string }[], error: undefined };
+  try {
+    const { data, error } = await supabase
+      .from(table)
+      .select("id,name")
+      .eq("organization_id", member.organization_id)
+      .eq("archived", false)
+      .ilike("name", `%${term}%`)
+      .order("name")
+      .limit(30);
+    if (error) return { options: [], error: "Unable to load choices. Try again." };
+    return { options: data as { id: string; name: string }[], error: undefined };
+  } catch {
+    return { options: [], error: "Unable to load choices. Try again." };
+  }
 }

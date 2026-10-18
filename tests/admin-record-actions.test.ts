@@ -128,6 +128,37 @@ test("driver create action validates role, persists only approved fields and red
       },
     ]);
     assert.deepEqual(boundary.revalidated, ["/admin"]);
+    boundary.context = {
+      member: { role: "owner", organization_id: "test-org" },
+      supabase: {
+        from: () => {
+          throw new Error("private transport detail");
+        },
+      },
+    };
+    const uncertain = await saveRecord("drivers", null, {}, form);
+    assert.match(uncertain.error!, /could not be confirmed/);
+    assert.ok(!uncertain.error?.includes("private transport detail"));
+    const archive = compiledModule.exports.archiveRecord as unknown as (
+      entity: string,
+      id: string,
+      archived: boolean,
+      version: string,
+    ) => Promise<void>;
+    await assert.rejects(
+      archive("drivers", "a0000000-0000-4000-8000-000000000001", true, "version"),
+      {
+        message: "REDIRECT:/admin/drivers?notice=archive-failed",
+      },
+    );
+    const search = compiledModule.exports.searchOptions as unknown as (
+      table: string,
+      term: string,
+    ) => Promise<{ options: unknown[]; error?: string }>;
+    assert.deepEqual(await search("drivers", "name"), {
+      options: [],
+      error: "Unable to load choices. Try again.",
+    });
   } finally {
     delete globals.__recordBoundary;
   }

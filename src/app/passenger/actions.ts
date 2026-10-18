@@ -136,12 +136,16 @@ export async function savePassengerProfile(
     phone: form.get("phone"),
   });
   if (!parsed.success) return { error: "Enter your real name and contact phone number." };
-  const { error } = await supabase.rpc("passenger_save_profile", {
-    business_id: organizationId,
-    full_name: parsed.data.name,
-    phone_number: parsed.data.phone,
-  });
-  if (error) return { error: "Profile could not be saved. Contact support or retry." };
+  try {
+    const { error } = await supabase.rpc("passenger_save_profile", {
+      business_id: organizationId,
+      full_name: parsed.data.name,
+      phone_number: parsed.data.phone,
+    });
+    if (error) return { error: "Profile could not be saved. Contact support or retry." };
+  } catch {
+    return { error: "The profile update could not be confirmed. Refresh before retrying." };
+  }
   revalidatePath("/passenger");
   revalidatePath("/book");
   return { success: "Profile updated." };
@@ -254,11 +258,18 @@ export async function requestCancellation(
     .object({ id: z.uuid(), reason: z.string().trim().min(1).max(2000) })
     .safeParse({ id: form.get("id"), reason: form.get("reason") });
   if (!parsed.success) return { error: "Enter a cancellation reason." };
-  const { error } = await supabase.rpc("passenger_request_cancellation", {
-    trip_id: parsed.data.id,
-    reason_text: parsed.data.reason,
-  });
-  if (error) return { error: "Cancellation request unavailable. Contact our team." };
+  try {
+    const { error } = await supabase.rpc("passenger_request_cancellation", {
+      trip_id: parsed.data.id,
+      reason_text: parsed.data.reason,
+    });
+    if (error) return { error: "Cancellation request unavailable. Contact our team." };
+  } catch {
+    return {
+      error:
+        "The cancellation request could not be confirmed. Check your booking or contact our team before retrying.",
+    };
+  }
   revalidatePath(`/passenger/bookings/${parsed.data.id}`);
   return {
     success:

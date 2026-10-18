@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { publicSupabaseConfig } from "./supabase/config";
 import { isServerSupabaseKey } from "./supabase/key-validation";
 import { configuredSiteOrigin } from "./site-origin";
@@ -30,14 +31,17 @@ export function launchReadiness(env: Record<string, string | undefined>) {
       roadRouting: env.ROUTING_ENABLED === "true" && present("ORS_API_KEY"),
       concierge:
         env.GROQ_CONCIERGE_ENABLED === "true" &&
-        present("GROQ_API_KEY", "AI_RATE_LIMIT_SECRET") &&
-        /^[a-zA-Z0-9._/-]{1,100}$/.test(env.GROQ_MODEL?.trim() || "llama-3.3-70b-versatile"),
+        present("GROQ_API_KEY", "GROQ_MODEL", "AI_RATE_LIMIT_SECRET") &&
+        (env.AI_RATE_LIMIT_SECRET?.trim().length ?? 0) >= 32 &&
+        /^[a-zA-Z0-9._/-]{1,100}$/.test(env.GROQ_MODEL?.trim() || ""),
       payments:
         env.STRIPE_LIVE_PAYMENTS_APPROVED === "true" &&
         present("STRIPE_SECRET_KEY", "STRIPE_WEBHOOK_SECRET"),
       notifications:
         env.NOTIFICATION_EMAIL_ENABLED === "true" &&
-        present("BREVO_API_KEY", "BREVO_SENDER_EMAIL", "NOTIFICATION_WORKER_SECRET"),
+        present("BREVO_API_KEY", "BREVO_SENDER_EMAIL", "NOTIFICATION_WORKER_SECRET") &&
+        z.email().safeParse(env.BREVO_SENDER_EMAIL?.trim()).success &&
+        (env.NOTIFICATION_WORKER_SECRET?.length ?? 0) >= 32,
     },
     requiredExternalVerification: [
       "client_identity_and_explicit_owner_authorization",

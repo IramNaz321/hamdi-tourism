@@ -30,3 +30,26 @@ test("handover checks reject wrong project, browser secrets and malformed identi
   assert.ok(!JSON.stringify(result).includes("private-do-not-display"));
   assert.ok(!JSON.stringify(result).includes("sb_secret"));
 });
+
+test("handover requires explicit model, bounded secrets and a valid Brevo sender", () => {
+  const env: Record<string, string> = {
+    GROQ_CONCIERGE_ENABLED: "true",
+    GROQ_API_KEY: "offline-provider-fixture",
+    AI_RATE_LIMIT_SECRET: "offline-test-secret-at-least-32-characters",
+    NOTIFICATION_EMAIL_ENABLED: "true",
+    BREVO_API_KEY: "offline-provider-fixture",
+    BREVO_SENDER_EMAIL: "invalid",
+    NOTIFICATION_WORKER_SECRET: "short",
+  };
+  assert.equal(launchReadiness(env).features.concierge, false);
+  assert.equal(launchReadiness(env).features.notifications, false);
+  env.GROQ_MODEL = "openai/gpt-oss-20b";
+  assert.equal(launchReadiness(env).features.concierge, true);
+  env.AI_RATE_LIMIT_SECRET = "short";
+  assert.equal(launchReadiness(env).features.concierge, false);
+  env.BREVO_SENDER_EMAIL = "sender@example.test";
+  assert.equal(launchReadiness(env).features.notifications, false);
+  env.NOTIFICATION_WORKER_SECRET = "offline-test-secret-at-least-32-characters";
+  assert.equal(launchReadiness(env).features.notifications, true);
+  assert.equal(launchReadiness(env).productionReady, false);
+});

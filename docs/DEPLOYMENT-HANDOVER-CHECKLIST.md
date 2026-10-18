@@ -1,3 +1,5 @@
+> Historical phase report. Current release gates, hosted findings and acceptance steps are in [Final client handover](FINAL-CLIENT-HANDOVER.md). Do not execute outdated migration sequences below.
+
 # Production deployment, recovery and acceptance
 
 **Current release decision: NO.** A build or private Codespaces preview is not a
