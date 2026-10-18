@@ -33,6 +33,12 @@ test("public website renders the required sections without fictional fleet or fa
   await expect(page.getByRole("heading", { name: "Plan your transfer" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Get a route quote" })).toBeDisabled();
   await expect(page.getByLabel("Pickup location")).toBeDisabled();
+  const manualPickup = page.getByLabel("Pickup hotel, address, or landmark (optional)");
+  await manualPickup.fill("Dubai Marina hotel entrance");
+  await expect(manualPickup).toHaveValue("Dubai Marina hotel entrance");
+  await expect(
+    page.getByText("No map service or API key is needed.", { exact: false }),
+  ).toBeVisible();
   await expect(
     page.getByText("Online transfer enquiries are not set up yet", { exact: false }),
   ).toBeVisible();
@@ -77,6 +83,25 @@ test("responsive navigation works with keyboard and mobile menu", async ({ page 
       page.getByRole("navigation").getByRole("link", { name: "Our Fleet" }),
     ).toBeVisible();
   }
+});
+test("Services and Contact links navigate to their matching homepage sections", async ({ page }) => {
+  await page.goto("/");
+  const services = page.locator('a[href="#services"]').first();
+  await expect(services).toBeVisible();
+  await services.click();
+  await expect(page).toHaveURL(/#services$/);
+  await expect(page.locator("#services")).toBeInViewport();
+
+  const menu = page.getByRole("button", { name: "Open navigation" });
+  const mobile = await menu.isVisible();
+  if (mobile) await menu.click();
+  const contact = mobile
+    ? page.getByRole("dialog").locator('a[href="/#contact"]')
+    : page.locator('a[href="/#contact"]').first();
+  await expect(contact).toBeVisible();
+  await contact.click();
+  await expect(page).toHaveURL(/#contact$/);
+  await expect(page.locator("#contact")).toBeInViewport();
 });
 test("login makes missing credentials explicit and password visibility is accessible", async ({
   page,

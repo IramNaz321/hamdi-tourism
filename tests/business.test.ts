@@ -1,7 +1,11 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import sharp from "sharp";
-import { uaeDateTime, journeySchema } from "../src/lib/booking-validation";
+import {
+  uaeDateTime,
+  journeySchema,
+  formatJourneyNotes,
+} from "../src/lib/booking-validation";
 import { settingsSchema } from "../src/lib/settings-validation";
 import { prepareImage } from "../src/lib/image-validation";
 import { publishedFleetCapacityError } from "../src/lib/fleet-capacity";
@@ -44,6 +48,14 @@ test("return enquiry requires a later real return pickup and unique optional ext
 test("UAE dates are host-timezone independent and invalid dates do not normalize silently", () => {
   assert.equal(uaeDateTime("2027-01-01T10:00"), "2027-01-01T06:00:00.000Z");
   assert.throws(() => uaeDateTime("2027-02-30T10:00"));
+});
+test("manual hotel and landmark details are retained in bounded enquiry notes", () => {
+  assert.equal(
+    formatJourneyNotes("Please call on arrival", "Burj Al Arab", "Dubai Mall, main entrance"),
+    "Please call on arrival\nPickup address or landmark: Burj Al Arab\nDrop-off address or landmark: Dubai Mall, main entrance",
+  );
+  assert.throws(() => formatJourneyNotes("", "x".repeat(501), ""));
+  assert.throws(() => formatJourneyNotes("x".repeat(4000), "Hotel", ""));
 });
 test("transfer vehicle checks require a published category with sufficient real capacity", () => {
   const fleet = [

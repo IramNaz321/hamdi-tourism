@@ -97,7 +97,18 @@ export function TransferEnquiry({
         )
           return;
         const name = target.name;
-        if (!["name", "email", "phone", "notes", "website", "cf-turnstile-response"].includes(name))
+        if (
+          ![
+            "name",
+            "email",
+            "phone",
+            "notes",
+            "pickup_address",
+            "dropoff_address",
+            "website",
+            "cf-turnstile-response",
+          ].includes(name)
+        )
           setDirty(true);
       }}
       className="panel p-6 lg:p-9 shadow-lg relative"
@@ -203,6 +214,32 @@ export function TransferEnquiry({
           <input name="flight" maxLength={200} />
         </label>
       </div>
+      <div className="grid sm:grid-cols-2 gap-5 mt-5">
+        <label className="field">
+          Pickup hotel, address, or landmark (optional)
+          <input
+            name="pickup_address"
+            type="text"
+            maxLength={500}
+            autoComplete="street-address"
+            placeholder="Enter a hotel name, street address, or landmark"
+          />
+        </label>
+        <label className="field">
+          Drop-off hotel, address, or landmark (optional)
+          <input
+            name="dropoff_address"
+            type="text"
+            maxLength={500}
+            autoComplete="street-address"
+            placeholder="Enter a hotel name, street address, or landmark"
+          />
+        </label>
+      </div>
+      <p className="text-xs text-muted mt-2">
+        No map service or API key is needed. Specific address details are added to your enquiry for
+        the team to review.
+      </p>
       {quoteState.quote?.extras.length ? (
         <fieldset className="mt-6">
           <legend className="text-sm font-semibold mb-3">Optional extras</legend>

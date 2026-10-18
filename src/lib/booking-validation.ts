@@ -49,6 +49,27 @@ export function journeyData(form: FormData) {
     extras: form.getAll("extras"),
   };
 }
+export function formatJourneyNotes(notes: string, pickupAddress: string, dropoffAddress: string) {
+  const details = z
+    .object({
+      notes: z.string().trim().max(4000),
+      pickupAddress: z.string().trim().max(500),
+      dropoffAddress: z.string().trim().max(500),
+    })
+    .parse({ notes, pickupAddress, dropoffAddress });
+  return z
+    .string()
+    .max(4000)
+    .parse(
+      [
+        details.notes,
+        details.pickupAddress && `Pickup address or landmark: ${details.pickupAddress}`,
+        details.dropoffAddress && `Drop-off address or landmark: ${details.dropoffAddress}`,
+      ]
+        .filter(Boolean)
+        .join("\n"),
+    );
+}
 export type Quote = {
   pricing_id: string;
   currency: "AED";

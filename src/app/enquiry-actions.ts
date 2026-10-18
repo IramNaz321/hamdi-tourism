@@ -3,7 +3,12 @@ import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/admin";
 import { publicBusinessId, enquiriesConfigured } from "@/lib/website";
-import { journeySchema, journeyData, type Quote } from "@/lib/booking-validation";
+import {
+  journeySchema,
+  journeyData,
+  formatJourneyNotes,
+  type Quote,
+} from "@/lib/booking-validation";
 import { siteOrigin } from "@/lib/auth";
 import { publishedFleetCapacityError } from "@/lib/fleet-capacity";
 export type EnquiryState = { error?: string; quote?: Quote; reference?: string };
@@ -104,6 +109,8 @@ export async function submitEnquiry(_: EnquiryState, form: FormData): Promise<En
         email: z.email().max(254),
         phone: z.string().trim().min(7).max(100),
         notes: z.string().trim().max(4000),
+        pickup_address: z.string().trim().max(500),
+        dropoff_address: z.string().trim().max(500),
         token: z.string().min(1).max(2048),
         expected: z
           .string()
@@ -116,9 +123,16 @@ export async function submitEnquiry(_: EnquiryState, form: FormData): Promise<En
         email: form.get("email"),
         phone: form.get("phone"),
         notes: form.get("notes") ?? "",
+        pickup_address: form.get("pickup_address") ?? "",
+        dropoff_address: form.get("dropoff_address") ?? "",
         token: form.get("cf-turnstile-response"),
         expected: form.get("expected_total"),
       });
+    contact.notes = formatJourneyNotes(
+      contact.notes,
+      contact.pickup_address,
+      contact.dropoff_address,
+    );
   } catch (error) {
     return {
       error:
