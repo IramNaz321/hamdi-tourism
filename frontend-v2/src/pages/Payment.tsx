@@ -1,0 +1,12 @@
+import { CheckCircle, CreditCard, LockKey, XCircle } from '@phosphor-icons/react';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useApp } from '../state';
+import { errorMessage, money, type Booking } from '../domain';
+import { Alert, Button, Loading } from '../components/ui';
+export default function PaymentPage(){const {id=''}=useParams();const {service}=useApp();const [booking,setBooking]=useState<Booking|null>(null);const [error,setError]=useState('');const [busy,setBusy]=useState(false);const navigate=useNavigate();
+  useEffect(()=>{const c=new AbortController();service.getBooking(id,c.signal).then(setBooking).catch(e=>{if(e.name!=='AbortError')setError(errorMessage(e));});return()=>c.abort();},[id,service]);
+  async function complete(result:'paid'|'failed'){if(!service.demo)return;setBusy(true);setError('');try{await service.demo.completePayment(id,result);navigate(`/bookings/${id}`,{replace:true});}catch(e){setError(errorMessage(e));}finally{setBusy(false);}}
+  if(!booking)return <div className="container narrow-page">{error?<Alert>{error} <Link to="/bookings">My bookings</Link></Alert>:<Loading label="Preparing payment…"/>}</div>;
+  return <div className="container narrow-page"><section className="payment-panel"><div className="auth-icon"><LockKey size={28}/></div><p className="eyebrow">{service.mode==='mock'?'DEMO CHECKOUT':'PAYMENT STATUS'}</p><h1>One last thing.</h1><p className="muted">{booking.reference}</p><div className="checkout-amount"><CreditCard size={27}/><strong>{money(booking.offer.total)}</strong></div>{service.mode==='mock'?<><Alert kind="info">This is a simulated checkout. No money is charged. Please do not enter card or bank details.</Alert><Button className="full-width" busy={busy} disabled={booking.paymentStatus==='paid'} onClick={()=>complete('paid')}><CheckCircle size={19}/>Simulate successful payment</Button><Button variant="secondary" className="full-width" disabled={busy||booking.paymentStatus==='paid'} onClick={()=>complete('failed')}><XCircle size={18}/>Simulate failed payment</Button><Link className="text-link" to={`/bookings/${id}`}>Cancel and return to booking</Link></>:<><p>The payment provider handles checkout securely. Return to your booking to check the latest verified status.</p><Link className="button" to={`/bookings/${id}`}>Back to booking</Link></>}{error?<Alert>{error}</Alert>:null}</section></div>;
+}
