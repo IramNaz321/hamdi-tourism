@@ -1,0 +1,22 @@
+[
+  {
+    "category": "sedan",
+    "file": "/vehicle-photos/studio-sedan.webp",
+    "sha256": "4ae3bc7954082c6ae49928603b9149b8074dd86f449272bb9f56e9ff1885ff6c"
+  },
+  {
+    "category": "luxury",
+    "file": "/vehicle-photos/studio-luxury.webp",
+    "sha256": "44ddc90cfae59164cda75edbc6144e63ecea83f3decd3f8de894d93eb2fbb387"
+  },
+  {
+    "category": "van",
+    "file": "/vehicle-photos/studio-van.webp",
+    "sha256": "3ce13384ab7625a7fd73ae54e2498fde628aa668138e5de8183b03de56fc9211"
+  },
+  {
+    "category": "suv",
+    "file": "/vehicle-photos/studio-suv.webp",
+    "sha256": "0ab35a28c7d07a7b015fc0388123f9606f75ff924f471adf83694b3370832b96"
+  }
+]

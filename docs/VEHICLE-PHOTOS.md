@@ -1,0 +1,30 @@
+# Current category visuals
+
+The four category cards now use original AI-assisted photorealistic studio visuals,
+not the older cutout photographs described below. See
+[studio provenance](../public/vehicle-photos/STUDIO-PROVENANCE.md). Real inventory
+photos continue to come from published Supabase fleet records. The cinematic hero
+is unchanged. Earlier photograph licenses below remain applicable to retained assets.
+
+# Licensed static vehicle showcase photographs
+
+The four category cards use local licensed real photographic assets independently of Supabase fleet publication. The current hero uses a separately created original photorealistic marketing visualization; see `public/marketing/PROVENANCE.md`. These are marketing examples, not company-owned or bookable inventory. The black hero is a luxury-sedan photograph, paired with original synthesized V8-style audio; the sound is not a recording of the photographed car or a BMW make/engine claim.
+
+## Photo credits and licences
+
+| Local photo                                                  | Photographer           | Licence                                                                           | Original source                                                                                                                                                           |
+| ------------------------------------------------------------ | ---------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `black-luxury-sedan.png` (Luxury Sedan; previous hero asset) | Fadi                   | [CC BY-SA 2.0 Germany](https://creativecommons.org/licenses/by-sa/2.0/de/deed.en) | [S65AMG.JPG](https://commons.wikimedia.org/wiki/File:S65AMG.JPG)                                                                                                          |
+| `normal-sedan.png`                                           | OSX                    | Public domain, as recorded in the source attribution                              | [Sedan photograph](https://commons.wikimedia.org/wiki/File:2008-2010_BMW_M3_%28E90%29_sedan_02.jpg)                                                                       |
+| `seven-seater-style.png`                                     | Alexander Migl         | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)                   | [Full-size SUV photograph](https://commons.wikimedia.org/wiki/File:Bentley_Bentayga_Speed_Genf_2019_1Y7A5885.jpg)                                                         |
+| `five-passenger-vehicle.png`                                 | Tokumeigakarinoaoshima | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/deed.en)              | [Five-door passenger vehicle photograph](https://commons.wikimedia.org/wiki/File:Osaka_Auto_Messe_2025_%289%29_-_Toyota_GR_COROLLA_RZ_GR-DAT_%284BA-GZEA14H-BHZRZ%29.jpg) |
+
+Actual photo subjects are identifiable from source credits; none is an invented business fleet make/model. Category capacities are the client's service descriptions, not a declaration of the pictured vehicle's exact seating configuration. The full-size SUV illustrates the seven-seater body style; actual seating/luggage must be verified against the owner's genuine selected Supabase vehicle. There is no automatic assignment or reservation of a photographed car.
+
+The files were obtained from the public `Tirthraj-Raval/hypercar-colorscripts` photographic-asset mirror, pinned to the Git revision in [provenance](../public/vehicle-photos/licenses/provenance.json). That collection provides each original Wikimedia source, photographer and individual photo licence. Direct Wikimedia access was blocked here, so provenance/licence records were inspected through the pinned public mirror. No source code from that project was copied or executed. Its photographic assets have separate per-image licences, retained in `public/vehicle-photos/licenses`, together with its asset licensing statement and attribution notice.
+
+The upstream derivatives remove backgrounds and letterbox real photographs to 512×256 PNGs. They are not drawings, generated cars or 3D renders. The bytes were copied unchanged and SHA-256 recorded; no artificial enlargement or new photographic alteration was performed. These locally bundled derivatives are available without third-party image-server requests. Hero loading is prioritized; category photographs load lazily. Larger original-resolution replacements can be added under the same licensing process when available.
+
+Visible photographer/source/licence links accompany the photos. Share-alike derivative images remain under their respective CC BY-SA licences; this does not change the application code's licence. Public-domain and CC0 images retain provenance for clarity.
+
+`src/content/vehicle-photos.json` contains marketing metadata only: local path, alt text, photographer, source and licence. It contains no operational UUID, registration, price, revenue or availability. Actual fleet cards and booking selections continue to use published Supabase records only.

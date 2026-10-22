@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dubai car motion preview</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family: ui-sans-serif, system-ui, sans-serif;
+        background: #0c1015;
+        color: #f7f3ed;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        width: min(1120px, calc(100% - 40px));
+        margin: 36px auto;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(1.6rem, 4vw, 2.5rem);
+        letter-spacing: -0.04em;
+      }
+
+      .intro {
+        margin: 8px 0 24px;
+        color: #b9c0c9;
+      }
+
+      .preview-grid {
+        display: grid;
+        grid-template-columns: minmax(220px, 0.8fr) minmax(0, 2fr);
+        gap: 18px;
+        align-items: stretch;
+      }
+
+      .panel {
+        overflow: hidden;
+        border: 1px solid #ffffff20;
+        border-radius: 16px;
+        background: #141a21;
+      }
+
+      .cutout-panel {
+        display: flex;
+        min-height: 280px;
+        flex-direction: column;
+      }
+
+      .cutout {
+        display: grid;
+        flex: 1;
+        place-items: center;
+        padding: 18px;
+        background-color: #20252b;
+        background-image: linear-gradient(45deg, #ffffff0c 25%, transparent 25%),
+          linear-gradient(-45deg, #ffffff0c 25%, transparent 25%),
+          linear-gradient(45deg, transparent 75%, #ffffff0c 75%),
+          linear-gradient(-45deg, transparent 75%, #ffffff0c 75%);
+        background-position:
+          0 0,
+          0 12px,
+          12px -12px,
+          -12px 0;
+        background-size: 24px 24px;
+      }
+
+      .cutout img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      .caption {
+        padding: 14px 16px;
+      }
+
+      .caption strong {
+        display: block;
+        font-size: 0.95rem;
+      }
+
+      .caption span {
+        display: block;
+        margin-top: 4px;
+        color: #adb5bf;
+        font-size: 0.82rem;
+      }
+
+      .motion-panel {
+        display: flex;
+        min-width: 0;
+        flex-direction: column;
+      }
+
+      .stage {
+        position: relative;
+        flex: none;
+        aspect-ratio: 1200 / 650;
+        min-height: 320px;
+        overflow: hidden;
+        isolation: isolate;
+        background: #15191e;
+      }
+
+      .scene,
+      .moving-car,
+      .motion-line {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      .scene {
+        z-index: -1;
+        object-fit: cover;
+      }
+
+      .motion-line {
+        inset: auto 0 19%;
+        height: 1px;
+        border-top: 1px dashed #ffc58250;
+      }
+
+      .moving-car {
+        inset: auto auto 7% 72%;
+        width: clamp(260px, 42%, 510px);
+        height: auto;
+        transform: translateX(-50%);
+        transform-origin: center;
+        filter: drop-shadow(0 16px 12px #080a0dcc);
+        will-change: transform;
+      }
+
+      .controls {
+        display: flex;
+        min-height: 78px;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 14px;
+        padding: 16px;
+      }
+
+      button {
+        border: 0;
+        border-radius: 999px;
+        padding: 12px 18px;
+        background: #c99b55;
+        color: #15120d;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      button:disabled {
+        cursor: wait;
+        opacity: 0.7;
+      }
+
+      #status {
+        color: #c6ccd3;
+        font-size: 0.85rem;
+      }
+
+      .note {
+        margin: 18px 2px 0;
+        color: #9fa8b2;
+        font-size: 0.82rem;
+        line-height: 1.5;
+      }
+
+      @media (max-width: 700px) {
+        body {
+          width: min(100% - 24px, 560px);
+          margin: 24px auto;
+        }
+
+        .preview-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .cutout-panel {
+          min-height: 190px;
+        }
+
+        .cutout {
+          max-height: 220px;
+        }
+
+        .cutout img {
+          width: min(100%, 440px);
+        }
+
+        .stage {
+          min-height: 280px;
+        }
+
+        .moving-car {
+          left: 68%;
+          width: min(72vw, 360px);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .motion-line {
+          opacity: 0.45;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Black sedan motion preview</h1>
+    <p class="intro">A separate transparent car concept. The scenic background stays still.</p>
+
+    <main class="preview-grid">
+      <section class="panel cutout-panel" aria-label="Transparent car preview">
+        <div class="cutout">
+          <img src="./car-cutout.png" alt="Extracted black luxury sedan with a transparent background" />
+        </div>
+        <div class="caption">
+          <strong>Separate car asset</strong>
+          <span>Extracted from the existing Dubai hero image</span>
+        </div>
+      </section>
+
+      <section class="panel motion-panel" aria-label="Proposed car animation">
+        <div class="stage" id="stage">
+          <img class="scene" src="./stationary-scene.webp" alt="" />
+          <div class="motion-line" aria-hidden="true"></div>
+          <img class="moving-car" id="car" src="./car-cutout.png" alt="" />
+        </div>
+        <div class="controls">
+          <button id="play" type="button">Play VROOOM preview</button>
+          <span id="status" role="status" aria-live="polite">Click to hear the generated engine sound and replay the motion.</span>
+        </div>
+      </section>
+    </main>
+
+    <p class="note">
+      Preview only — not connected to the homepage. The animation moves the car layer while
+      leaving the Dubai scenery fixed. The VROOOM is synthesized in-browser for this preview.
+    </p>
+
+    <script>
+      const button = document.querySelector("#play");
+      const status = document.querySelector("#status");
+      const stage = document.querySelector("#stage");
+      const car = document.querySelector("#car");
+
+      button.addEventListener("click", async () => {
+        const AudioContextClass = window.AudioContext;
+        if (!AudioContextClass) {
+          status.textContent = "This browser does not support the preview engine sound.";
+          return;
+        }
+
+        button.disabled = true;
+        status.textContent = "Starting slowly, accelerating across the scene, then returning…";
+
+        let context;
+        try {
+          context = new AudioContextClass();
+          await context.resume();
+        } catch (error) {
+          button.disabled = false;
+          status.textContent = `Could not start the preview sound: ${error.message}`;
+          return;
+        }
+
+        const now = context.currentTime;
+        const oscillator = context.createOscillator();
+        const harmonic = context.createOscillator();
+        const filter = context.createBiquadFilter();
+        const gain = context.createGain();
+        const harmonicGain = context.createGain();
+
+        oscillator.type = "sawtooth";
+        harmonic.type = "triangle";
+        filter.type = "lowpass";
+        filter.frequency.setValueAtTime(280, now);
+        filter.frequency.exponentialRampToValueAtTime(1050, now + 2.6);
+        filter.frequency.exponentialRampToValueAtTime(360, now + 5.2);
+        oscillator.frequency.setValueAtTime(62, now);
+        oscillator.frequency.exponentialRampToValueAtTime(178, now + 2.7);
+        oscillator.frequency.exponentialRampToValueAtTime(74, now + 5.2);
+        harmonic.frequency.setValueAtTime(124, now);
+        harmonic.frequency.exponentialRampToValueAtTime(356, now + 2.7);
+        harmonic.frequency.exponentialRampToValueAtTime(148, now + 5.2);
+        gain.gain.setValueAtTime(0.001, now);
+        gain.gain.exponentialRampToValueAtTime(0.075, now + 1.2);
+        gain.gain.exponentialRampToValueAtTime(0.15, now + 2.7);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 5.2);
+        harmonicGain.gain.setValueAtTime(0.001, now);
+        harmonicGain.gain.exponentialRampToValueAtTime(0.045, now + 2.7);
+        harmonicGain.gain.exponentialRampToValueAtTime(0.001, now + 5.2);
+        oscillator.connect(filter);
+        harmonic.connect(harmonicGain).connect(filter);
+        filter.connect(gain).connect(context.destination);
+        oscillator.start(now);
+        harmonic.start(now);
+        oscillator.stop(now + 5.25);
+        harmonic.stop(now + 5.25);
+
+        const distance = stage.clientWidth + car.clientWidth * 0.65;
+        const animation = car.animate(
+          [
+            { offset: 0, transform: "translateX(-50%)", easing: "cubic-bezier(.2,.65,.3,1)" },
+            { offset: 0.14, transform: "translateX(calc(-50% - 3vw))", easing: "cubic-bezier(.4,0,1,1)" },
+            { offset: 0.58, transform: `translateX(calc(-50% - ${distance}px))` },
+            { offset: 0.68, transform: `translateX(calc(-50% - ${distance}px))`, easing: "cubic-bezier(.2,.65,.3,1)" },
+            { offset: 1, transform: "translateX(-50%)" },
+          ],
+          { duration: 5400, fill: "both" },
+        );
+
+        animation.onfinish = async () => {
+          animation.cancel();
+          button.disabled = false;
+          status.textContent = "Ready to replay the preview.";
+          await context.close();
+        };
+      });
+    </script>
+  </body>
+</html>

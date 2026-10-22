@@ -1,0 +1,96 @@
+name: Approved Supabase operations
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: Audit and plans are read-only; apply operations require approval
+        required: true
+        type: choice
+        options:
+          [
+            verify-read-only,
+            audit,
+            audit-driver,
+            audit-passenger,
+            baseline-plan,
+            baseline-apply,
+            owner-plan,
+            owner-apply,
+            driver-plan,
+            driver-apply,
+            passenger-plan,
+            passenger-apply,
+            repair-settings-plan,
+            repair-settings-apply,
+            repair-driver-plan,
+            repair-driver-apply,
+            repair-passenger-plan,
+            repair-passenger-apply,
+          ]
+      owner_user_id:
+        description: Confirmed real Auth UUID, required for owner operations
+        required: false
+        type: string
+      owner_name:
+        description: Real owner display name, required for owner operations
+        required: false
+        type: string
+      approval:
+        description: Explicit reviewed project/operation target (driver includes migration hash), apply only
+        required: false
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: hamdi-supabase-operations
+  cancel-in-progress: false
+jobs:
+  operate:
+    if: github.ref == 'refs/heads/feat/hamdi-tourism-application' || github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: ${{ endsWith(inputs.operation, '-apply') && 'hamdi-supabase-change' || 'hamdi-supabase-read' }}
+    env:
+      SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+      NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL }}
+      PASSENGER_AUTH_ENABLED: ${{ vars.PASSENGER_AUTH_ENABLED }}
+      HAMDI_ORGANIZATION_ID: ${{ vars.HAMDI_ORGANIZATION_ID }}
+      HAMDI_OWNER_USER_ID: ${{ vars.HAMDI_OWNER_USER_ID }}
+      OPERATION: ${{ inputs.operation }}
+      OWNER_USER_ID: ${{ inputs.owner_user_id }}
+      OWNER_NAME: ${{ inputs.owner_name }}
+      APPROVAL: ${{ inputs.approval }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Execute guarded operation
+        shell: bash
+        run: |
+          set -euo pipefail
+          case "$OPERATION" in
+            verify-read-only) npm run check:hosted ;;
+            repair-settings-plan) npm run db:repair -- --step settings ;;
+            repair-settings-apply) npm run db:repair -- --step settings --apply --approve "$APPROVAL" ;;
+            repair-driver-plan) npm run db:repair -- --step driver ;;
+            repair-driver-apply) npm run db:repair -- --step driver --apply --approve "$APPROVAL" ;;
+            repair-passenger-plan) npm run db:repair -- --step passenger ;;
+            repair-passenger-apply) npm run db:repair -- --step passenger --apply --approve "$APPROVAL" ;;
+            audit) npm run db:audit ;;
+            audit-driver) npm run db:audit -- --with-driver ;;
+            audit-passenger) npm run db:audit -- --with-passenger ;;
+            baseline-plan) npm run db:baseline ;;
+            baseline-apply) npm run db:baseline -- --apply --approve "$APPROVAL" ;;
+            owner-plan) npm run db:owner -- --organization-id "$HAMDI_ORGANIZATION_ID" --user-id "$OWNER_USER_ID" --name "$OWNER_NAME" ;;
+            owner-apply) npm run db:owner -- --organization-id "$HAMDI_ORGANIZATION_ID" --user-id "$OWNER_USER_ID" --name "$OWNER_NAME" --apply --approve "$APPROVAL" ;;
+            passenger-plan) npm run db:passenger-migration ;;
+            passenger-apply) npm run db:passenger-migration -- --apply --approve "$APPROVAL" ;;
+            driver-plan) npm run db:driver-migration ;;
+            driver-apply) npm run db:driver-migration -- --apply --approve "$APPROVAL" ;;
+            *) exit 1 ;;
+          esac
