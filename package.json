@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "node --use-env-proxy node_modules/next/dist/bin/next dev --hostname 0.0.0.0",
-    "build": "next build",
+    "build": "next build && npm run check:v2",
     "start": "node --use-env-proxy node_modules/next/dist/bin/next start --hostname 0.0.0.0",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
@@ -28,7 +28,8 @@
     "test:repair": "bash scripts/verification/repair-rehearsal.sh",
     "db:repair": "node --import tsx scripts/database/repair.ts",
     "check:concierge": "node --use-env-proxy --import tsx scripts/check-concierge.ts",
-    "check:booking-email": "node --import tsx scripts/check-booking-email.ts"
+    "check:booking-email": "node --import tsx scripts/check-booking-email.ts",
+    "check:v2": "npm --prefix frontend-v2 ci && npm --prefix frontend-v2 run typecheck && npm --prefix frontend-v2 test && npm --prefix frontend-v2 run build && npm --prefix frontend-v2 run test:sites"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.3.0",
