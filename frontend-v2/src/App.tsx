@@ -1,0 +1,31 @@
+import { Component, Suspense, lazy, type ReactNode } from 'react';
+import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
+import { AppProvider } from './state';
+import { Layout } from './components/Layout';
+import { Loading } from './components/ui';
+import Home from './pages/Home';
+import { DemoTools } from './components/DemoTools';
+const DriverTrips=lazy(()=>import('./pages/driver/Trips').then(m=>({default:m.DriverTripsPage})));
+const DriverDetail=lazy(()=>import('./pages/driver/Trips').then(m=>({default:m.DriverTripDetailPage})));
+const Quote=lazy(()=>import('./pages/Quote'));
+const Review=lazy(()=>import('./pages/Review'));
+const CustomQuote=lazy(()=>import('./pages/CustomQuote'));
+const Payment=lazy(()=>import('./pages/Payment'));
+const Bookings=lazy(()=>import('./pages/Bookings').then(m=>({default:m.BookingsPage})));
+const BookingDetail=lazy(()=>import('./pages/Bookings').then(m=>({default:m.BookingDetailPage})));
+const SignIn=lazy(()=>import('./pages/Other').then(m=>({default:m.SignInPage})));
+const Policies=lazy(()=>import('./pages/Other').then(m=>({default:m.PoliciesPage})));
+const NotFound=lazy(()=>import('./pages/Other').then(m=>({default:m.NotFoundPage})));
+const OwnerBookings=lazy(()=>import('./pages/owner/Bookings').then(m=>({default:m.OwnerBookingsPage})));
+const OwnerCreate=lazy(()=>import('./pages/owner/Bookings').then(m=>({default:m.OwnerCreateBookingPage})));
+const OwnerDetail=lazy(()=>import('./pages/owner/BookingDetail').then(m=>({default:m.OwnerBookingDetailPage})));
+const OwnerQuotes=lazy(()=>import('./pages/owner/CustomQuotes').then(m=>({default:m.OwnerCustomQuotesPage})));
+const OwnerQuoteDetail=lazy(()=>import('./pages/owner/CustomQuotes').then(m=>({default:m.OwnerCustomQuoteDetailPage})));
+const OwnerCancellations=lazy(()=>import('./pages/owner/Cancellations').then(m=>({default:m.OwnerCancellationsPage})));
+const OwnerCancellationDetail=lazy(()=>import('./pages/owner/Cancellations').then(m=>({default:m.OwnerCancellationDetailPage})));
+const OwnerPayments=lazy(()=>import('./pages/owner/Payments').then(m=>({default:m.OwnerPaymentsPage})));
+const OwnerResources=lazy(()=>import('./pages/owner/Resources').then(m=>({default:m.OwnerResourcesPage})));
+const Requests=lazy(()=>import('./pages/Requests').then(m=>({default:m.CustomerRequestsPage})));
+const RequestDetail=lazy(()=>import('./pages/Requests').then(m=>({default:m.CustomerRequestDetailPage})));
+class ErrorBoundary extends Component<{children:ReactNode},{failed:boolean}>{state={failed:false};static getDerivedStateFromError(){return {failed:true};}render(){return this.state.failed?<div className="container narrow-page"><h1>Let’s try that again.</h1><p>The page couldn’t finish loading.</p><button className="button" onClick={()=>window.location.reload()}>Reload page</button></div>:this.props.children;}}
+export function App(){return <ErrorBoundary><BrowserRouter><AppProvider><Layout><Suspense fallback={<Loading/>}><Routes><Route path="/" element={<Home/>}/><Route path="/quote" element={<Quote/>}/><Route path="/review" element={<Review/>}/><Route path="/custom-quote" element={<CustomQuote/>}/><Route path="/signin" element={<SignIn/>}/><Route path="/bookings" element={<Bookings/>}/><Route path="/bookings/:id" element={<BookingDetail/>}/><Route path="/payment/:id" element={<Payment/>}/><Route path="/requests" element={<Requests/>}/><Route path="/requests/:id" element={<RequestDetail/>}/><Route path="/driver" element={<DriverTrips/>}/><Route path="/driver/history" element={<DriverTrips/>}/><Route path="/driver/trips/:id" element={<DriverDetail/>}/><Route path="/owner" element={<OwnerBookings/>}/><Route path="/owner/bookings" element={<OwnerBookings/>}/><Route path="/owner/bookings/new" element={<OwnerCreate/>}/><Route path="/owner/bookings/:id" element={<OwnerDetail/>}/><Route path="/owner/custom-quotes" element={<OwnerQuotes/>}/><Route path="/owner/custom-quotes/:id" element={<OwnerQuoteDetail/>}/><Route path="/owner/cancellations" element={<OwnerCancellations/>}/><Route path="/owner/cancellations/:id" element={<OwnerCancellationDetail/>}/><Route path="/owner/payments" element={<OwnerPayments/>}/><Route path="/owner/drivers" element={<OwnerResources/>}/><Route path="/owner/fleet" element={<OwnerResources/>}/><Route path="/policies" element={<Policies/>}/><Route path="*" element={<NotFound/>}/></Routes></Suspense></Layout><DemoTools/></AppProvider></BrowserRouter></ErrorBoundary>;}

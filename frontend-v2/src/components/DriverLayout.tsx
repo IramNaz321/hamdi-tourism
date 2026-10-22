@@ -1,0 +1,19 @@
+import { ArrowsLeftRight, CarProfile, CaretDown, ClockCounterClockwise } from '@phosphor-icons/react';
+import { useEffect, useState, type ReactNode } from 'react';
+import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { useApp } from '../state';
+import { useRemote } from '../useRemote';
+import { Alert, Button, Field, Loading, Modal } from './ui';
+export function DriverLayout({children}:{children:ReactNode}){
+  const {service,demoRole,driverId}=useApp();const navigate=useNavigate();const location=useLocation();
+  const profile=useRemote(s=>service.driverProfile(s),[demoRole,driverId]);
+  const [menu,setMenu]=useState(false);const [chosen,setChosen]=useState(driverId||'driver-faisal');
+  useEffect(()=>{if(driverId)setChosen(driverId);},[driverId]);
+  const options=service.demo?.getDriverOptions()??[];
+  function enter(){service.demo?.selectDriver(chosen);setMenu(false);navigate('/driver');}
+  if(service.demo&&demoRole!=='driver')return <div className="driver-entry"><Link className="wordmark" to="/"><strong>HAMDI</strong><span>TOURISM</span></Link><p className="eyebrow">DRIVER WORKSPACE</p><h1>Your next journey awaits.</h1><p>Choose the driver assigned by the Owner to test the same saved bookings. This is demo access.</p><Field label="Demo driver" htmlFor="driver-identity"><select id="driver-identity" value={chosen} onChange={e=>setChosen(e.target.value)}>{options.map(d=><option key={d.id} value={d.id}>{d.name}</option>)}</select></Field><Button onClick={enter}>Enter Driver demo</Button><Link className="text-link" to="/owner/bookings">Back to Owner workspace</Link></div>;
+  if(profile.error)return <div className="driver-entry"><Alert>{profile.error}<button className="text-link" onClick={profile.reload}>Try again</button></Alert><Link to="/" className="text-link">Customer site</Link></div>;
+  if(!profile.data)return <Loading label="Loading Driver workspace…"/>;
+  const driver=profile.data;const initials=driver.name.split(' ').map(n=>n[0]).join('').slice(0,2);
+  return <div className="driver-app"><a className="skip-link" href="#driver-main">Skip to trips</a><header className="driver-header"><Link className="wordmark" to="/driver"><strong>HAMDI</strong><span>TOURISM</span></Link><span className="driver-workspace">Driver workspace</span><button className="driver-profile" onClick={()=>setMenu(true)} aria-label="Driver account and prototype tools"><span>{initials}</span><strong>{driver.name}</strong><CaretDown size={16}/></button></header><main id="driver-main" className="driver-main" tabIndex={-1}>{children}</main><nav className="driver-bottom-nav" aria-label="Driver navigation"><NavLink to="/driver" end className={location.pathname!=='/driver/history'?'active':''}><CarProfile size={25}/>Assigned trips</NavLink><NavLink to="/driver/history"><ClockCounterClockwise size={25}/>History</NavLink></nav>{menu?<Modal title="Driver workspace" onClose={()=>setMenu(false)}><p>{driver.name} · {service.mode==='mock'?'Prototype access. Roles are private to this tab; trip data is shared.':'Signed-in Driver account.'}</p>{service.demo?<><Field label="Demo driver" htmlFor="switch-driver"><select id="switch-driver" value={chosen} onChange={e=>setChosen(e.target.value)}>{options.map(d=><option key={d.id} value={d.id}>{d.name}</option>)}</select></Field><div className="prototype-actions"><Button onClick={enter}>Switch demo driver</Button><Button variant="secondary" onClick={()=>{service.demo?.switchRole('owner');setMenu(false);navigate('/owner/bookings');}}><ArrowsLeftRight/>Owner workspace</Button><Button variant="secondary" onClick={()=>{service.demo?.switchRole('customer');setMenu(false);navigate('/bookings');}}>Customer view</Button></div></>:<Button onClick={async()=>{await service.signOut();navigate('/signin');}}>Sign out</Button>}</Modal>:null}</div>;
+}
