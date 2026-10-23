@@ -1,12 +1,12 @@
 # V2 frontend API contract
 
-This is a proposed adapter contract, not a backend implementation. Default mock mode does not call these endpoints.
+The selected local implementation is in `backend-v2`. Explicit mock mode does not call these endpoints. Production providers and the remaining product backlog are tracked separately in docs/v2/SCRUM.md.
 
 ## Transport
 
-Set `VITE_DATA_SOURCE=api` and `VITE_API_BASE_URL=/api/v2` after implementing the contract. Responses are JSON DTOs validated by the Zod schemas in `src/domain.ts`. All money is integer AED minor units (fils). Dates/times in journey inputs are UAE local time; timestamps and expiry values are ISO timestamps. Persisted historical journeys do not re-run future-date checks.
+Set `VITE_DATA_SOURCE=api` and `VITE_API_BASE_URL=/api/v2` to connect the local backend. Responses are JSON DTOs validated by the Zod schemas in `src/domain.ts`. All money is integer AED minor units (fils). Dates/times in journey inputs are UAE local time; timestamps and expiry values are ISO timestamps. Persisted historical journeys do not re-run future-date checks.
 
-Use server-established sessions with credentialed requests. Enforce authentication, three-role authorization, record/business ownership, CSRF/origin checks, input validation, and rate limiting on the server. `X-Requested-With` is an additional signal, not an authorization or CSRF policy by itself. Never trust demo role controls, customer IDs, client totals, or client scheduling feedback.
+Use verified Supabase bearer sessions. The HTTP adapter stores tokens in tab-local sessionStorage, attaches Authorization, refreshes rotated tokens, and revokes the actual session on sign-out. The API checks live auth.sessions and protected database roles. Credentialed fetch is retained for same-origin compatibility; authorization does not depend on a cookie. Enforce authentication, three-role authorization, record/business ownership, CSRF/origin checks, input validation, and rate limiting on the server. `X-Requested-With` is an additional signal, not an authorization or CSRF policy by itself. Never trust demo role controls, customer IDs, client totals, or client scheduling feedback.
 
 For errors, return an appropriate non-2xx status and `{ "code": "SCHEDULING_CONFLICT", "message": "A clear, safe message." }`. Known codes include UNAUTHENTICATED, FORBIDDEN, NOT_FOUND, QUOTE_EXPIRED, CUSTOM_QUOTE, NO_CAPACITY, NOT_PAYABLE, ASSIGNMENT_REQUIRED, SCHEDULING_CONFLICT, ALREADY_RESOLVED, INVALID_REFUND, and NOT_READY. Preserve idempotent results on retries; state mutations and assignment constraints must be atomic.
 
@@ -18,7 +18,8 @@ For errors, return an appropriate non-2xx status and `{ "code": "SCHEDULING_CONF
 | POST | `/quotes` | `Journey` → `Quote`; server-authoritative priced offers and expiry |
 | GET | `/session` | `Session` or null |
 | POST | `/auth/challenges` | `{email}` → `Challenge`; never return `demoCode` in production |
-| POST | `/auth/verify` | `{challengeId,code}` → `Session`; establish the actual session cookie |
+| POST | `/auth/verify` | `{challengeId,code}` → `{session:Session,tokens:{accessToken,refreshToken,expiresAt}}` |
+| POST | `/auth/refresh` | `{refreshToken}` → rotated session/token envelope |
 | DELETE | `/auth/session` | Revoke session, 204 or JSON null |
 | POST | `/bookings` | `BookingInput` → `Booking`; `Idempotency-Key` header |
 | GET | `/bookings` | Customer-owned `Booking[]` |
@@ -78,3 +79,11 @@ The current contract loads lists in full for a small prototype dataset. Paginati
 Booking adds `tripProgress.outbound` and `.return`, each with ISO `startedAt` / `completedAt` (empty until recorded), plus historical `assignedDriverIds`. Booking activity accepts actor `driver`. Outbound completion on a return booking yields confirmed (awaiting return), not completed. Completing the final required leg yields completed. New fields default safely when reading older prototype records. An assignment cannot change and customer self-service cancellation is unavailable after the first leg starts, including between return legs. No Driver transition changes monetary fields. Production Driver DTOs should project only permitted trip/contact fields; existing prototype DTOs are shared.
 
 Customer `GET /bookings/:id` and Owner booking endpoints return the same progress. Mutations invalidate local queries; the API adapter polls while visible every 15 seconds, with focus refresh. Real-time event transport may replace polling behind the same service interface. Driver demo identity selection never calls a production endpoint and must not grant production roles.
+
+## Local release additions
+
+- `GET /places/config`, `POST /places/search {query}`, `POST /places/select {placeId}` use the persisted UAE catalogue. No Maps key is required. New bookings reject IDs outside that catalogue.
+- `POST /owner/drivers` invites a Driver; `PATCH /owner/drivers/:id/active` changes Owner-controlled eligibility. `GET /driver/profile` and `POST /driver/onboarding` support licence/contact submission and approval states.
+- `POST /owner/vehicles` adds fleet inventory; `PATCH /owner/vehicles/:id/active` controls eligibility. Open assignments block deactivation.
+- With server-side LOCAL_TEST_MODE enabled, checkout returns `{kind:'demo',bookingId}`; `POST /bookings/:id/test-payment {result:'paid'|'failed'}` and Owner refund persist clearly labelled test results without moving money. These routes do not substitute for provider evidence in production. Production startup rejects LOCAL_TEST_MODE=true.
+- Passwordless email codes replace password recovery for this local release. The inbox is local Mailpit; no external email is sent.

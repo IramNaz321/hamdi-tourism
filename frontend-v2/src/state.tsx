@@ -6,7 +6,7 @@ import { HttpTravelService } from './services/http';
 const service: TravelService = import.meta.env.VITE_DATA_SOURCE==='api'?new HttpTravelService():new MockTravelService();
 const draftSchema=z.object({journey:journeyRecordSchema,vehicleId:z.string()});
 function readDraft(){try {const parsed=draftSchema.safeParse(JSON.parse(sessionStorage.getItem('hamdi:v2:draft:1')??'null'));return parsed.success?parsed.data:{journey:defaultJourney(),vehicleId:'sedan'};}catch{return {journey:defaultJourney(),vehicleId:'sedan'};}}
-interface AppState { service:TravelService; catalog:Catalog|null; catalogError:string; retryCatalog:()=>void; session:Session|null; setSession:(s:Session|null)=>void; sessionLoading:boolean; journey:Journey; updateJourney:(j:Journey)=>void; quote:Quote|null; setQuote:(q:Quote|null)=>void; vehicleId:string; setVehicleId:(id:string)=>void; resetJourney:()=>void; dataRevision:number; demoRole:'customer'|'owner'|'driver'; driverId:string; }
+interface AppState { service:TravelService; catalog:Catalog|null; registerLocation:(l:Catalog['locations'][number])=>void; catalogError:string; retryCatalog:()=>void; session:Session|null; setSession:(s:Session|null)=>void; sessionLoading:boolean; journey:Journey; updateJourney:(j:Journey)=>void; quote:Quote|null; setQuote:(q:Quote|null)=>void; vehicleId:string; setVehicleId:(id:string)=>void; resetJourney:()=>void; dataRevision:number; demoRole:'customer'|'owner'|'driver'; driverId:string; }
 const Context=createContext<AppState|null>(null);
 export function AppProvider({children}:{children:ReactNode}) {
   const [driverId,setDriverId]=useState(()=>service.demo?.getDriverId()??'');
@@ -21,6 +21,6 @@ export function AppProvider({children}:{children:ReactNode}) {
   useEffect(()=>{try {sessionStorage.setItem('hamdi:v2:draft:1',JSON.stringify({journey,vehicleId}));}catch{/* Browsing remains usable when storage is unavailable. */}},[journey,vehicleId]);
   function updateJourney(j:Journey){setJourney(j);setQuote(null);}
   function resetJourney(){setJourney(defaultJourney());setQuote(null);setVehicleId('sedan');}
-  return <Context.Provider value={{service,catalog,catalogError,retryCatalog:()=>setRevision(v=>v+1),session,setSession,sessionLoading,journey,updateJourney,quote,setQuote,vehicleId,setVehicleId,resetJourney,dataRevision,demoRole,driverId}}>{children}</Context.Provider>;
+  return <Context.Provider value={{service,catalog,registerLocation:l=>setCatalog(c=>c?{...c,locations:[...c.locations.filter(p=>p.id!==l.id),l]}:c),catalogError,retryCatalog:()=>setRevision(v=>v+1),session,setSession,sessionLoading,journey,updateJourney,quote,setQuote,vehicleId,setVehicleId,resetJourney,dataRevision,demoRole:service.mode==='api'?session?.role??'customer':demoRole,driverId:service.mode==='api'?session?.driverId??'':driverId}}>{children}</Context.Provider>;
 }
 export function useApp(){const state=useContext(Context);if(!state)throw new Error('AppProvider is required');return state;}

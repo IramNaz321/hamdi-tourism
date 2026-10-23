@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "test:sites": "node --test tests/sites-worker.test.mjs",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run tests/service.test.ts tests/http.test.ts tests/owner-flow.test.ts tests/driver-flow.test.ts"
+    "test": "vitest run tests/service.test.ts tests/http.test.ts tests/owner-flow.test.ts tests/driver-flow.test.ts tests/useRemote.test.ts"
   },
   "dependencies": {
     "@fontsource/cormorant-garamond": "^5.3.0",

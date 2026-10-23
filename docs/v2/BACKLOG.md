@@ -519,16 +519,20 @@ Owner passenger-platform configuration is covered by OWN-010, and owner-only far
 - Include archived historical records and make cancellation/refund treatment explicit.
 - Reconcile report totals against booking/payment records and enforce Owner-only access.
 
+## Active local backend sprint — 23 October 2026
+
+The user selected the connected Customer/Owner/Driver backend release, plus Driver onboarding and fleet activation controls. [SCRUM.md](SCRUM.md) is the active epic and user-story completion record; [BACKEND-IMPLEMENTATION.md](BACKEND-IMPLEMENTATION.md) records technical gates. Google Maps is deferred by the user: places are seeded and searched in the local UAE database. Broad feature statuses below remain full-product acceptance statuses; scoped local delivery is tracked explicitly in Scrum.
+
 ## Current implementation track
 
 ### Owner prototype design selection — 22 October 2026
 
 Proposed connected screens for handling the customer frontend's requests: **OWN-013** (bookings), **OWN-015** (assignment), **OWN-011** (custom quotes), and **OWN-016 / OWN-017** (cancellation and payment review). See [Owner mockups and customer-to-owner mapping](mockups/owner/README.md). This is a design selection, not completion or approval of the Owner implementation; feature statuses remain Queued. Standard bookings bypass custom-quote review, and cancellation approval remains separate from refunds.
 
-- **Selected item:** None — awaiting user selection.
-- **Recommended first item:** CORE-001 — Three-role authorization foundation.
-- **Completed in this track:** None assessed or accepted yet.
-- **Current activity:** Backlog preparation only; no application implementation started.
+- **Selected item:** Connected local Supabase release — see SCRUM.md.
+- **Next selection:** Choose a remaining backlog epic; see deferred scope in SCRUM.md.
+- **Completed in this track:** Selected local backend release: six epics and 23 stories, with evidence in SCRUM.md. Full provider/production acceptance and broader feature criteria remain separate.
+- **Current activity:** Selected local release verified; ready for the next backlog selection.
 - **Total:** 45 items: 14 Customer, 7 Driver, 20 Owner, and 4 shared items.
 
 ## Decisions and blockers
@@ -560,3 +564,7 @@ Selected DRV-003 (assigned trips), DRV-004 (trip details), and DRV-005 (trip pro
 The user approved the three Driver mockups and requested end-to-end implementation. DRV-003, DRV-004 and DRV-005 now have a working persisted frontend, with basic completed/cancelled Driver history (DRV-007 support) and linked CUST-012 / Owner status and activity. `/driver` allows selecting a seeded demo Driver; the Owner booking provides a direct assigned-Driver demo link. Driver access is tab-local. Existing stored bookings are preserved and gain default progress fields without a reset.
 
 Return-leg behavior is resolved for the prototype: confirmed → outbound in_progress → confirmed awaiting return → return in_progress → completed. Driver/vehicle assignment and self-service cancellation lock after the first leg starts. Payment and refund records remain independent. Future scheduled trips can be exercised immediately in mock mode. See [prototype testing guide](../../frontend-v2/README.md) and [Driver design and behavior](mockups/driver/README.md). Full-delivery statuses remain queued for real authentication, backend enforcement and production integration.
+
+## Local backend completion milestone — 23 October 2026
+
+The selected Customer/Owner/Driver release now uses real local Supabase Auth and PostgreSQL, including UAE catalogue search, direct and return bookings, custom quotes, Driver invitation/onboarding and activation, fleet addition/activation, assignment/confirmation, trip completion, and cancellation with separate local test refunds. [SCRUM.md](SCRUM.md) records the six completed epics, 23 selected user stories, verification and limits. Google Maps was explicitly deferred. This is local acceptance of the selected slices; it does not mark broad Owner CRUD/configuration, live payment providers, GPS, notifications or production rollout complete.

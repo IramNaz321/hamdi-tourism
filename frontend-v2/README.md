@@ -73,3 +73,7 @@ Driver status updates act on the same persisted booking and preserve payment/ref
 Mock trip actions deliberately allow future scheduled pickups to be exercised now, with a visible prototype note. Real pickup windows and backend transaction locks are required in production. This local prototype is not a multi-device or production concurrency service. Driver selection is demo impersonation, not real Driver authentication. No live GPS or notifications are simulated.
 
 The repository root `npm run build` builds the legacy Next.js app and then runs `npm run check:v2`, which installs V2 dependencies and runs its type checks, tests, production build and hosting checks. Root Next.js lint/type checking is scoped to the legacy app; the independent V2 TypeScript project is validated separately.
+
+## Connected local backend release — 23 October 2026
+
+A real local Supabase API is now available in [backend-v2](../backend-v2/README.md). Set `VITE_DATA_SOURCE=api` in the ignored frontend `.env.local` and run both processes. API mode uses real email-code sign-in and PostgreSQL records, with tab-local sessions for multi-role testing. It supports Owner Driver onboarding/activation, vehicle addition/activation, UAE database place selection and the connected booking lifecycle. Google Maps is deferred; local test payments move no money. See [Scrum](../docs/v2/SCRUM.md) for selected scope and acceptance evidence. Earlier localStorage instructions apply only to explicit mock mode.

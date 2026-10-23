@@ -23,3 +23,11 @@ Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts
 - Customer, Owner and Driver share one persisted booking and leg progress; identity remains tab-local.
 - Start/completion require confirmation and preserve payment state. Return bookings complete only after both legs; assignments lock after the first leg starts.
 - Default mock mode permits testing future scheduled pickups immediately and labels that behavior. No backend, GPS or real Driver authentication is introduced.
+
+## Approved connected local release — 23 October 2026
+
+- The user explicitly approved implementing the backend with isolated local Supabase Docker. `VITE_DATA_SOURCE=api` uses `backend-v2`; explicit mock mode keeps the earlier browser-only demo.
+- Real Customer, Owner and invited Driver sessions remain tab-local; shared booking data persists in PostgreSQL. Never expose server credentials in the frontend.
+- Include Driver invitation/onboarding and Owner activation/deactivation, vehicle addition and activation controls, and the existing connected booking/custom-quote/cancellation/trip flows.
+- Google Maps is deferred by the user. Use searchable UAE database places across all seven emirates; do not require a Maps key or billing setup.
+- Keep Customer and Driver mobile responsive, with Owner layouts optimized for laptops. Track the selected epics/stories and actual verification in docs/v2/SCRUM.md.

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const locationSchema = z.object({ id: z.string(), name: z.string(), shortName: z.string(), type: z.enum(['airport', 'destination']), city: z.string() });
+export const locationSchema = z.object({ id: z.string(), name: z.string(), shortName: z.string(), type: z.enum(['airport', 'destination']), city: z.string(),countryCode:z.literal('AE').optional(),lat:z.number().optional(),lng:z.number().optional(),googlePlaceId:z.string().optional(),source:z.enum(['catalog','google']).optional() });
 export const vehicleSchema = z.object({ id: z.string(), name: z.string(), description: z.string(), passengers: z.number().int(), bags: z.number().int(), image: z.string() });
 export const extraSchema = z.object({ id: z.string(), name: z.string(), description: z.string(), amount: z.number().int().nonnegative() });
 export const catalogSchema = z.object({ locations: z.array(locationSchema), vehicles: z.array(vehicleSchema), extras: z.array(extraSchema) });
@@ -18,7 +18,7 @@ export const journeySchema = z.object({ pickupId: z.string().min(1, 'Choose a pi
 export type Journey = z.infer<typeof journeySchema>;
 export const contactSchema = z.object({ name: z.string().trim().min(2, 'Enter your full name.').max(100), email: z.email('Enter a valid email address.').max(254), phone: z.string().trim().regex(/^\+?[\d\s()-]{8,22}$/, 'Enter a valid phone number, including country code.') });
 export type Contact = z.infer<typeof contactSchema>;
-export const sessionSchema = z.object({ id: z.string(), name: z.string(), email: z.email() });
+export const sessionSchema = z.object({ id: z.string(), name: z.string(), email: z.email(), role:z.enum(['customer','owner','driver']).optional(),driverId:z.string().nullable().optional() });
 export type Session = z.infer<typeof sessionSchema>;
 export const offerSchema = z.object({ vehicleId: z.string(), transfer: z.number().int().nonnegative(), returnTransfer: z.number().int().nonnegative(), extras: z.number().int().nonnegative(), total: z.number().int().nonnegative() });
 export type Offer = z.infer<typeof offerSchema>;
@@ -41,7 +41,7 @@ export const bookingRecordSchema = z.object({ id: z.string(), reference: z.strin
   activity:z.array(z.object({id:z.string(),at:z.string(),message:z.string(),actor:z.enum(['customer','owner','driver','system'])})).default([])
 });
 export type Booking = z.infer<typeof bookingRecordSchema>;
-export const customRequestSchema = z.object({ contact: contactSchema, pickup: z.string().trim().min(2), destination: z.string().trim().min(2), date: z.string().min(1), time:z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/).default('10:30'), passengers:z.number().int().min(1).max(30).default(2), bags:z.number().int().min(0).max(30).default(2), details: z.string().trim().min(10, 'Tell us a little more (at least 10 characters).').max(2000), acceptedTerms: z.literal(true), idempotencyKey: z.string() });
+export const customRequestSchema = z.object({ pickupPlaceId:z.string().optional(),destinationPlaceId:z.string().optional(),contact: contactSchema, pickup: z.string().trim().min(2), destination: z.string().trim().min(2), date: z.string().min(1), time:z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/).default('10:30'), passengers:z.number().int().min(1).max(30).default(2), bags:z.number().int().min(0).max(30).default(2), details: z.string().trim().min(10, 'Tell us a little more (at least 10 characters).').max(2000), acceptedTerms: z.literal(true), idempotencyKey: z.string() });
 export type CustomRequest = z.infer<typeof customRequestSchema>;
 export const requestReceiptSchema = z.object({ reference: z.string(), status: z.literal('pending_review') });
 export type RequestReceipt = z.infer<typeof requestReceiptSchema>;
@@ -51,6 +51,10 @@ export const checkoutSchema = z.discriminatedUnion('kind', [z.object({ kind: z.l
 export type Checkout = z.infer<typeof checkoutSchema>;
 export interface TravelService {
   readonly mode: 'mock' | 'api';
+  searchPlaces(query:string,sessionToken:string,signal?:AbortSignal):Promise<{predictions:PlacePrediction[]}>;
+  selectPlace(placeId:string,sessionToken?:string):Promise<Catalog['locations'][number]>;
+  reversePlace(lat:number,lng:number):Promise<Catalog['locations'][number]>;
+  getRuntimeConfig(signal?:AbortSignal):Promise<RuntimeConfig>;
   getCatalog(signal?: AbortSignal): Promise<Catalog>;
   getQuote(journey: Journey, signal?: AbortSignal): Promise<Quote>;
   getSession(signal?: AbortSignal): Promise<Session | null>;
@@ -61,6 +65,7 @@ export interface TravelService {
   listBookings(signal?: AbortSignal): Promise<Booking[]>;
   getBooking(id: string, signal?: AbortSignal): Promise<Booking>;
   startCheckout(bookingId: string): Promise<Checkout>;
+  completeTestPayment(id:string,result:'paid'|'failed'):Promise<Booking>;
   submitCustomRequest(input: CustomRequest): Promise<RequestReceipt>;
   requestCancellation(bookingId: string,reason?:string): Promise<Booking>;
   listCustomRequests(signal?:AbortSignal):Promise<CustomRequestRecord[]>;
@@ -81,6 +86,11 @@ export interface TravelService {
   driverListBookings(signal?:AbortSignal):Promise<Booking[]>;
   driverGetBooking(id:string,signal?:AbortSignal):Promise<Booking>;
   driverTripAction(input:TripAction):Promise<Booking>;
+  ownerCreateDriver(input:DriverInput):Promise<Resources['drivers'][number]>;
+  ownerSetDriverActive(id:string,active:boolean):Promise<Resources['drivers'][number]>;
+  ownerCreateVehicle(input:VehicleInput):Promise<Resources['vehicles'][number]>;
+  ownerSetVehicleActive(id:string,active:boolean):Promise<Resources['vehicles'][number]>;
+  driverSubmitOnboarding(input:OnboardingInput):Promise<Resources['drivers'][number]>;
   subscribe?(listener:()=>void):()=>void;
   demo?:DemoControls;
 }
@@ -97,14 +107,14 @@ export function defaultJourney(): Journey {
 }
 export function errorMessage(error: unknown): string { return error instanceof ServiceError ? error.message : error instanceof z.ZodError ? error.issues[0]?.message ?? 'Check your details.' : 'Something went wrong. Please try again.'; }
 
-export const driverSchema=z.object({id:z.string(),name:z.string(),phone:z.string(),available:z.boolean(),active:z.boolean(),licenceUntil:z.string()});
+export const driverSchema=z.object({id:z.string(),name:z.string(),phone:z.string(),available:z.boolean(),active:z.boolean(),licenceUntil:z.string(),email:z.string().optional(),licenceNumber:z.string().optional(),onboardingStatus:z.enum(['invited','submitted','approved']).optional()});
 export const fleetVehicleSchema=z.object({id:z.string(),name:z.string(),categoryId:z.string(),registration:z.string(),passengers:z.number(),bags:z.number(),active:z.boolean(),registrationUntil:z.string()});
 export const resourcesSchema=z.object({drivers:z.array(driverSchema),vehicles:z.array(fleetVehicleSchema)});
 export type Resources=z.infer<typeof resourcesSchema>;
 export const assignmentInputSchema=z.object({bookingId:z.string(),driverId:z.string().min(1,'Choose a driver.'),fleetVehicleId:z.string().min(1,'Choose a vehicle.'),expectedEnd:z.string().min(1)});
 export type AssignmentInput=z.infer<typeof assignmentInputSchema>;
 export const manualQuoteSchema=z.object({vehicleId:z.string(),base:z.number().int().nonnegative(),additional:z.number().int().nonnegative(),total:z.number().int().positive(),validUntil:z.string(),notes:z.string(),sentAt:z.string()});
-export const customRequestRecordSchema=z.object({id:z.string(),reference:z.string(),createdAt:z.string(),contact:contactSchema,pickup:z.string(),destination:z.string(),date:z.string(),time:z.string(),passengers:z.number(),bags:z.number(),details:z.string(),status:z.enum(['new','draft','quoted','converted']),quote:manualQuoteSchema.nullable(),bookingId:z.string().nullable(),activity:z.array(z.object({id:z.string(),at:z.string(),message:z.string(),actor:z.enum(['customer','owner','system'])}))});
+export const customRequestRecordSchema=z.object({pickupPlaceId:z.string().optional(),destinationPlaceId:z.string().optional(),id:z.string(),reference:z.string(),createdAt:z.string(),contact:contactSchema,pickup:z.string(),destination:z.string(),date:z.string(),time:z.string(),passengers:z.number(),bags:z.number(),details:z.string(),status:z.enum(['new','draft','quoted','converted']),quote:manualQuoteSchema.nullable(),bookingId:z.string().nullable(),activity:z.array(z.object({id:z.string(),at:z.string(),message:z.string(),actor:z.enum(['customer','owner','system'])}))});
 export type CustomRequestRecord=z.infer<typeof customRequestRecordSchema>;
 export const ownerQuoteInputSchema=z.object({requestId:z.string(),vehicleId:z.string(),base:z.number().int().nonnegative(),additional:z.number().int().nonnegative(),validUntil:z.string(),notes:z.string().max(1000),send:z.boolean()});
 export type OwnerQuoteInput=z.infer<typeof ownerQuoteInputSchema>;
@@ -124,3 +134,16 @@ export interface DemoControls {
 export const uaeDateTime=(value:string)=>new Date(value).toLocaleString('en-GB',{timeZone:'Asia/Dubai',day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:false});
 export function uaeInput(value:string){if(!value)return '';const d=new Date(new Date(value).getTime()+4*3600_000);return d.toISOString().slice(0,16);}
 export const fullPickup=(j:Journey)=>new Date(`${j.date}T${j.time}:00+04:00`).getTime();
+
+export const driverInputSchema=z.object({name:z.string().trim().min(2).max(100),email:z.email().transform(v=>v.toLowerCase()),phone:z.string().trim().min(7).max(30)});
+export type DriverInput=z.infer<typeof driverInputSchema>;
+export const vehicleInputSchema=z.object({name:z.string().trim().min(2).max(100),categoryId:z.enum(['sedan','luxury','family']),registration:z.string().trim().min(3).max(30),registrationUntil:z.iso.date(),passengers:z.number().int().min(1).max(7),bags:z.number().int().min(0).max(6)});
+export type VehicleInput=z.infer<typeof vehicleInputSchema>;
+export const onboardingInputSchema=z.object({name:z.string().trim().min(2).max(100),phone:z.string().trim().min(7).max(30),licenceNumber:z.string().trim().min(3).max(60),licenceUntil:z.iso.date(),acceptedPolicies:z.literal(true)});
+export type OnboardingInput=z.infer<typeof onboardingInputSchema>;
+
+export const runtimeConfigSchema=z.object({configured:z.boolean(),browserKey:z.string(),countryCode:z.literal('AE'),localTestMode:z.boolean()});
+export type RuntimeConfig=z.infer<typeof runtimeConfigSchema>;
+
+export const placePredictionsSchema=z.object({predictions:z.array(z.object({placeId:z.string(),label:z.string()}))});
+export type PlacePrediction=z.infer<typeof placePredictionsSchema>['predictions'][number];

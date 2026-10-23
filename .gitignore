@@ -31,3 +31,5 @@ backups/
 
 # Codespace backup archives and recovery material must never enter Git.
 .local-backups/
+
+supabase/.temp/
